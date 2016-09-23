@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+	http://jax-ws.dev.java.net/spring/core http://jax-ws.java.net/spring/core.xsd
+	http://jax-ws.dev.java.net/spring/servlet http://jax-ws.java.net/spring/servlet.xsd">
+
+	<wss:binding url="/partnersystem">
+		<wss:service>
+			<ws:service bean="#partnersystemWebService" />
+		</wss:service>
+	</wss:binding>
+
+	<wss:binding url="/vertragssystem">
+		<wss:service>
+			<ws:service bean="#vertragssystemWebService" />
+		</wss:service>
+	</wss:binding>
+
+	<bean id="partnersystemWebService" class="de.viasurance.partnersystem.ws.PartnersystemWebService" />
+	<bean id="vertragssystemWebService" class="de.viasurance.vertragssystem.ws.VertragssystemWebService" />
+
+	<bean id="kontoService" class="de.viasurance.partnersystem.service.impl.DemoKontoServiceImpl" />
+	<bean id="vertragService" class="de.viasurance.vertragssystem.service.impl.DemoVertragServiceImpl" />
+
+	<context:annotation-config />
+</beans>

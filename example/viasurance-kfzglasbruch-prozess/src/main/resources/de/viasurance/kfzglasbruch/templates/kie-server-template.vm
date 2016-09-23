@@ -1,0 +1,11 @@
+<batch-execution lookup="default">
+	<insert>
+		<de.viadee.kfzglasbruch.Vertrag>
+			<teilkaskoVorhanden>${teilkaskoVorhanden}</teilkaskoVorhanden>
+			<vollkaskoVorhanden>${vollkaskoVorhanden}</vollkaskoVorhanden>
+			<mahnstatusGesetzt>${mahnstatusGesetzt}</mahnstatusGesetzt>
+		</de.viadee.kfzglasbruch.Vertrag>
+	</insert>
+	<fire-all-rules/>
+	<get-objects out-identifier="objects"/>
+</batch-execution>

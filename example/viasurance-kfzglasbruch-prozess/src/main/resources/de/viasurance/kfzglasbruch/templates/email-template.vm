@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			body {font-family: Arial}
+			h3 {margin-top: 30px; margin-bottom: 10px}
+			p {margin: 0}
+		</style>
+	</head>
+	<body>
+		<h2>Kfz-Glasbruch</h2>
+		<p>
+			Die automatische Prüfung hat ergeben, dass für die folgende Schadensmeldung kein Leistungsanspruch besteht. Bitte prüfen Sie den Fall manuell.
+		</p>
+		<h3>Kunde</h3>
+		<p>
+			Name: ${kunde.vorname} ${kunde.nachname}<br />
+			Straße: ${kunde.strasse}<br />
+			PLZ / Ort: ${kunde.plz} ${kunde.ort}
+		</p>
+		<h3>Vertrag</h3>
+		<p>
+			Kundennummer: ${vertrag.kundennummer}<br />
+			Versicherungsscheinnummer: ${vertrag.versicherungsscheinnummer}<br />
+			Deckungstyp: ${vertrag.deckungstyp}<br />
+			Zahlungsstatus: ${vertrag.zahlungsstatus}
+		</p>
+		<h3>Kfz</h3>
+		<p>
+			Kennzeichen: ${kfz.kennzeichen}<br />
+			Fahrzeugtyp: ${kfz.fahrzeugtyp}
+		</p>
+		<h3>Schaden</h3>
+		<p>
+			Reparaturtyp: ${schaden.reparaturTyp}<br />
+			Schadensbeschreibung: ${schaden.beschreibung}<br />
+			Schadenshöhe: ${schadenshoeheFormatiert}
+		</p>
+	</body>
+</html>
