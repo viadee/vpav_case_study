@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import de.viadee.bpm.camundaStaticValidator.ConstantsConfig;
 import de.viadee.bpm.camundaStaticValidator.processing.model.data.BpmnElement;
@@ -26,44 +27,45 @@ public class JsonOutputWriter implements IssueOutputWriter {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private static String transformToJsonDatastructure(final Collection<CheckerIssue> issues) {
-    final JSONArray jsonIssues = new JSONArray();
+    final JsonArray jsonIssues = new JsonArray();
     if (issues != null && issues.size() > 0) {
       for (final CheckerIssue issue : issues) {
-        final JSONObject obj = new JSONObject();
-        obj.put("id", issue.getId());
-        obj.put("bpmnFile", issue.getBpmnFile());
-        obj.put("ruleName", issue.getRuleName());
-        obj.put("elementId", issue.getElementId());
-        obj.put("elementName", issue.getElementName());
-        obj.put("classification", issue.getClassification().name());
-        obj.put("resourceFile", issue.getResourceFile());
-        obj.put("variable", issue.getVariable());
-        obj.put("anomaly", issue.getAnomaly() == null ? null : issue.getAnomaly().getDescription());
-        final JSONArray jsonPaths = new JSONArray();
+        final JsonObject obj = new JsonObject();
+        obj.addProperty("id", issue.getId());
+        obj.addProperty("bpmnFile", issue.getBpmnFile());
+        obj.addProperty("ruleName", issue.getRuleName());
+        obj.addProperty("elementId", issue.getElementId());
+        obj.addProperty("elementName", issue.getElementName());
+        obj.addProperty("classification", issue.getClassification().name());
+        obj.addProperty("resourceFile", issue.getResourceFile());
+        obj.addProperty("variable", issue.getVariable());
+        obj.addProperty("anomaly",
+            issue.getAnomaly() == null ? null : issue.getAnomaly().getDescription());
+        final JsonArray jsonPaths = new JsonArray();
         final List<Path> paths = issue.getInvalidPaths();
         if (paths != null && paths.size() > 0) {
           for (final Path path : paths) {
-            final JSONArray jsonPath = new JSONArray();
+            final JsonArray jsonPath = new JsonArray();
             final List<BpmnElement> elements = path.getElements();
             for (BpmnElement element : elements) {
-              final JSONObject jsonElement = new JSONObject();
+              final JsonObject jsonElement = new JsonObject();
               final String id = element.getBaseElement().getId();
               final String name = element.getBaseElement().getAttributeValue("name");
-              jsonElement.put("elementId", id);
-              jsonElement.put("elementName", name == null ? null : name.replaceAll("\n", ""));
+              jsonElement.addProperty("elementId", id);
+              jsonElement.addProperty("elementName",
+                  name == null ? null : name.replaceAll("\n", ""));
               jsonPath.add(jsonElement);
             }
             jsonPaths.add(jsonPath);
           }
         }
-        obj.put("paths", jsonPaths);
-        obj.put("message", issue.getMessage());
+        obj.add("paths", jsonPaths);
+        obj.addProperty("message", issue.getMessage());
         jsonIssues.add(obj);
       }
     }
 
-    return jsonIssues.toJSONString();
+    return new GsonBuilder().setPrettyPrinting().create().toJson(jsonIssues);
   }
 }
