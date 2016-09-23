@@ -41,68 +41,68 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	  <groupId>org.camunda.bpm</groupId>
-	  <artifactId>camunda-engine</artifactId>
-	  <version>7.4.0</version>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine</artifactId>
+      <version>7.4.0</version>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId> 
+      <artifactId>reflections</artifactId>
       <version>0.9.9-RC1</version>
-   	</dependency> 
-   	<dependency>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.2.1</version>
-	</dependency>
-	<dependency>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
-	  <artifactId>maven-artifact</artifactId>
-	  <version>2.2.1</version>	
-	</dependency>
-	<dependency>
-	  <groupId>de.odysseus.juel</groupId>
-	  <artifactId>juel</artifactId>
-	  <version>2.1.0</version>
-	</dependency>
-	<dependency>
+      <artifactId>maven-artifact</artifactId>
+      <version>2.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
-	  <artifactId>commons-io</artifactId>
-	  <version>2.4</version>
-    </dependency>	
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
       <version>4.1</version>
-	</dependency>
+    </dependency>
     <dependency>
-	  <groupId>log4j</groupId>
-	  <artifactId>log4j</artifactId>
-	  <version>1.2.17</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
       <version>2.4.7</version>
-	</dependency>
-	<dependency>
+    </dependency>
+    <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
-	</dependency>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<version>3.5.1</version>
-		<configuration>
-			<source>1.7</source>
-			<target>1.7</target>
-		</configuration>
-	  </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
@@ -130,46 +130,7 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>run-its</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <version>1.7</version>
-            <configuration>
-              <debug>true</debug>
-              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-              <pomIncludes>
-                <pomInclude>*/pom.xml</pomInclude>
-              </pomIncludes>
-              <postBuildHookScript>verify</postBuildHookScript>
-              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-              <settingsFile>src/it/settings.xml</settingsFile>
-              <goals>
-                <goal>clean</goal>
-                <goal>test-compile</goal>
-              </goals>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>install</goal>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-
-      </build>
-    </profile>
-  </profiles>
-  
+ 
   <distributionManagement>
     <repository>
       <id>viadeeNexus</id>
