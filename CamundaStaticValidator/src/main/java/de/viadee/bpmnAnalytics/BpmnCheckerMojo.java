@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -51,13 +52,16 @@ import org.reflections.util.ConfigurationBuilder;
 
 import de.viadee.bpmnAnalytics.beans.BeanMappingXmlParser;
 import de.viadee.bpmnAnalytics.config.model.Rule;
+import de.viadee.bpmnAnalytics.config.model.Setting;
 import de.viadee.bpmnAnalytics.config.reader.ConfigReaderException;
 import de.viadee.bpmnAnalytics.config.reader.XmlConfigReader;
 import de.viadee.bpmnAnalytics.output.IssueOutputWriter;
+import de.viadee.bpmnAnalytics.output.JsonOutputWriter;
 import de.viadee.bpmnAnalytics.output.OutputWriterException;
 import de.viadee.bpmnAnalytics.output.XmlOutputWriter;
 import de.viadee.bpmnAnalytics.processing.BpmnModelDispatcher;
 import de.viadee.bpmnAnalytics.processing.ConfigItemNotFoundException;
+import de.viadee.bpmnAnalytics.processing.checker.VersioningChecker;
 import de.viadee.bpmnAnalytics.processing.model.data.CheckerIssue;
 import de.viadee.bpmnAnalytics.processing.model.data.CriticalityEnum;
 
@@ -74,10 +78,24 @@ public class BpmnCheckerMojo extends AbstractMojo {
 
   public void execute() throws MojoExecutionException {
 
-    // 1) Scan class path for bpmn and dmn models
+    // 1a) read config file
+    final Map<String, Rule> rules;
+    try {
+      rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
+    } catch (final ConfigReaderException e) {
+      throw new MojoExecutionException("config file couldn't be read", e);
+    }
+
+    // 1b) read bean mappings, if available
+    final Map<String, String> beanMapping = BeanMappingXmlParser
+        .parse(new File(ConstantsConfig.BEAN_MAPPING));
+
+    // 2) Scan class path for bpmn models, dmn models, java files and versioned resources
     final ClassLoader classLoader;
     final Set<String> processdefinitions;
+    final Set<String> javaResources;
     final Map<String, String> decisionRefToPathMap;
+    Collection<String> resourcesNewestVersions = new ArrayList<String>();
     try {
       classLoader = getClassLoader(project);
       final Reflections reflections = new Reflections(
@@ -86,8 +104,14 @@ public class BpmnCheckerMojo extends AbstractMojo {
 
       processdefinitions = reflections
           .getResources(Pattern.compile(ConstantsConfig.BPMN_FILE_PATTERN));
+      javaResources = reflections.getResources(Pattern.compile(ConstantsConfig.JAVA_FILE_PATTERN));
       decisionRefToPathMap = createDmnKeyToPathMap(
           reflections.getResources(Pattern.compile(ConstantsConfig.DMN_FILE_PATTERN)));
+      final String versioningSchema = loadVersioningSchemaClass(rules);
+      if (versioningSchema != null) {
+        resourcesNewestVersions = createResourcesToNewestVersions(
+            reflections.getResources(Pattern.compile(versioningSchema)), versioningSchema);
+      }
 
     } catch (final MalformedURLException e) {
       throw new MojoExecutionException("wrong URL format");
@@ -95,26 +119,26 @@ public class BpmnCheckerMojo extends AbstractMojo {
       throw new MojoExecutionException("classpath couldn't be resolved");
     }
 
-    // 2a) read config file
-    final Map<String, Rule> rules;
+    // 3) get process variables from process start
+    final OuterProcessVariablesScanner scanner = new OuterProcessVariablesScanner(javaResources,
+        classLoader);
     try {
-      rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
-    } catch (final ConfigReaderException e) {
-      throw new MojoExecutionException("config file couldn't be read", e);
+      scanner.scanProcessVariables();
+    } catch (final IOException e) {
+      throw new MojoExecutionException(
+          "outer process variables couldn't be read: " + e.getMessage());
     }
 
-    // 2b) read bean mappings, if available
-    final Map<String, String> beanMapping = BeanMappingXmlParser
-        .parse(new File(ConstantsConfig.BEAN_MAPPING));
-
-    // 3) Check each model
+    // 4) Check each model
     final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
     for (final String pathToModel : processdefinitions) {
-      issues.addAll(checkModel(classLoader, decisionRefToPathMap, rules, beanMapping, pathToModel));
+      issues.addAll(checkModel(classLoader, decisionRefToPathMap, rules, beanMapping,
+          scanner.getMessageIdToVariableMap(), scanner.getProcessIdToVariableMap(),
+          resourcesNewestVersions, pathToModel));
     }
 
-    // 4) remove ignored issues
+    // 5) remove ignored issues
     Collection<CheckerIssue> filteredIssues;
     try {
       filteredIssues = getFilteredIssues(issues);
@@ -122,28 +146,35 @@ public class BpmnCheckerMojo extends AbstractMojo {
       throw new MojoExecutionException("ignored issues couldn't read successfully", e);
     }
 
-    // 5) write check results to xml file
-    final IssueOutputWriter outputWriter = new XmlOutputWriter();
+    // 6) write check results to xml and json file
+    final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
+    final IssueOutputWriter jsonOutputWriter = new JsonOutputWriter();
     try {
-      outputWriter.write(filteredIssues);
+      xmlOutputWriter.write(filteredIssues);
+      jsonOutputWriter.write(filteredIssues);
     } catch (final OutputWriterException ex) {
       throw new MojoExecutionException(ex.getMessage());
     }
 
     if (issuesWithErrors(issues))
-      throw new MojoExecutionException("BPMN validation with errors");
+      throw new MojoExecutionException(
+          "BPMN validation with errors, see " + ConstantsConfig.VALIDATION_XML_OUTPUT);
 
     logger.info("BPMN validation successful completed");
   }
 
   private Collection<CheckerIssue> checkModel(final ClassLoader classLoader,
       final Map<String, String> decisionRefToPathMap, final Map<String, Rule> rules,
-      final Map<String, String> beanMapping, final String processdef)
+      final Map<String, String> beanMapping,
+      final Map<String, Collection<String>> messageIdToVariables,
+      final Map<String, Collection<String>> processIdToVariables,
+      final Collection<String> resourcesNewestVersions, final String processdef)
       throws MojoExecutionException {
     Collection<CheckerIssue> modelIssues;
     try {
       modelIssues = BpmnModelDispatcher.dispatch(new File("src/main/resources/" + processdef),
-          decisionRefToPathMap, beanMapping, rules, classLoader);
+          decisionRefToPathMap, beanMapping, messageIdToVariables, processIdToVariables,
+          resourcesNewestVersions, rules, classLoader);
     } catch (final ConfigItemNotFoundException e) {
       throw new MojoExecutionException("config item couldn't be read", e);
     }
@@ -258,6 +289,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
       fileReader = new FileReader(filePath);
     } catch (final FileNotFoundException ex) {
       /* if file not found, fileReader will be null */
+      /* file must not exist, because there are no ignored issues */
     }
     if (fileReader != null) {
       final BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -282,5 +314,60 @@ public class BpmnCheckerMojo extends AbstractMojo {
   private static void addIgnoredIssue(final Collection<String> issues, final String zeile) {
     if (zeile != null && !zeile.isEmpty() && !zeile.trim().startsWith("#"))
       issues.add(zeile);
+  }
+
+  /**
+   * reads versioned classes and scripts and generates a map with newest versions
+   * 
+   * @return Map
+   */
+  private static Collection<String> createResourcesToNewestVersions(
+      final Set<String> versionedFiles, final String versioningSchema) {
+    final Map<String, String> newestVersionsMap = new HashMap<String, String>();
+
+    if (versionedFiles != null) {
+      for (final String versionedFile : versionedFiles) {
+        final Pattern pattern = Pattern.compile(versioningSchema);
+        final Matcher matcher = pattern.matcher(versionedFile);
+        while (matcher.find()) {
+          final String resource = matcher.group(1);
+          final String oldVersion = newestVersionsMap.get(resource);
+          if (oldVersion != null) {
+            // If smaller than 0 this version is newer
+            if (oldVersion.compareTo(versionedFile) < 0) {
+              newestVersionsMap.put(resource, versionedFile);
+            }
+          } else {
+            newestVersionsMap.put(resource, versionedFile);
+          }
+        }
+      }
+    }
+    return newestVersionsMap.values();
+  }
+
+  /**
+   * determine versioning schema for an active versioning checker
+   * 
+   * @param rules
+   * @return schema (regex), if null the checker is inactive
+   */
+  private static String loadVersioningSchemaClass(final Map<String, Rule> rules) {
+    final String SETTING_NAME = "versioningSchemaClass";
+    String schema = null;
+    final Rule rule = rules.get(VersioningChecker.class.getSimpleName());
+    if (rule != null && rule.isActive()) {
+      final Map<String, Setting> settings = rule.getSettings();
+      final Setting setting = settings.get(SETTING_NAME);
+      if (setting == null) {
+        schema = ConstantsConfig.DEFAULT_VERSIONED_FILE_PATTERN;
+        final Setting newSetting = new Setting(SETTING_NAME,
+            ConstantsConfig.DEFAULT_VERSIONED_FILE_PATTERN);
+        settings.put(SETTING_NAME, newSetting);
+      } else {
+        schema = setting.getValue();
+      }
+    }
+    return schema;
   }
 }

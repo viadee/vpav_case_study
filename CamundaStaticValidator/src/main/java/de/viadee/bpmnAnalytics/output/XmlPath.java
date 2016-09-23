@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "path")
 public class XmlPath {
 
-  private Collection<String> elementIds;
+  private Collection<XmlPathElement> elements;
 
   public XmlPath() {
   }
 
-  public XmlPath(final Collection<String> elementIds) {
-    this.elementIds = elementIds;
+  public XmlPath(final Collection<XmlPathElement> elements) {
+    this.elements = elements;
   }
 
-  @XmlElement(name = "elementId", required = false)
-  public Collection<String> getElementIds() {
-    return elementIds;
+  @XmlElement(name = "element", required = false)
+  public Collection<XmlPathElement> getElements() {
+    return elements;
   }
 
-  public void setElementIds(final Collection<String> elementIds) {
-    this.elementIds = elementIds;
+  public void setElements(final Collection<XmlPathElement> elements) {
+    this.elements = elements;
   }
 }

@@ -11,7 +11,8 @@ public enum KnownElementFieldType {
                   "Completion Condition"), InlineScript("Inline Script"), ExternalScript(
                       "External Script"), Assignee("Assignee"), CandidateUsers(
                           "Candidate Users"), CandidateGroups("Candidate Groups"), DueDate(
-                              "Due Date"), FollowUpDate("Follow Up Date"), DMN("DMN");
+                              "Due Date"), FollowUpDate("Follow Up Date"), DMN(
+                                  "DMN"), CamundaIn("Camunda:In"), CamundaOut("Camunda:Out");
 
   private String description;
 

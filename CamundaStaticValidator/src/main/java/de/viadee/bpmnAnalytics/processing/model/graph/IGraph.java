@@ -6,7 +6,9 @@ package de.viadee.bpmnAnalytics.processing.model.graph;
  * A basic graph interface.
  */
 import java.util.List;
+import java.util.Map;
 
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.data.BpmnElement;
 
 public interface IGraph {
@@ -15,15 +17,17 @@ public interface IGraph {
 
   public void addEdge(BpmnElement v1, BpmnElement v2, int weight);
 
+  public void removeEdge(BpmnElement v1, BpmnElement v2);
+
   public boolean hasEdge(BpmnElement v1, BpmnElement v2);
 
   public Edge getEdge(BpmnElement v1, BpmnElement v2);
 
-  public boolean hasPath(BpmnElement v, String varName);
+  public List<Path> getAllInvalidPaths(BpmnElement v, AnomalyContainer anomaly);
 
-  public List<BpmnElement> getDFSPath(BpmnElement v, String varName);
+  public void setAnomalyInformation(BpmnElement v);
 
-  public List<Path> getAllInvalidPaths(BpmnElement v, String varName, int maxSize);
+  public Map<BpmnElement, List<AnomalyContainer>> getNodesWithAnomalies();
 
   public String toString();
 }

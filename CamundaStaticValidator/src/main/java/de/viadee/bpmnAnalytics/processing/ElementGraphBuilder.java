@@ -10,14 +10,21 @@ import java.util.Map;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
+import org.camunda.bpm.model.bpmn.instance.EndEvent;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
+import org.camunda.bpm.model.bpmn.instance.Message;
+import org.camunda.bpm.model.bpmn.instance.MessageEventDefinition;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
 
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.data.BpmnElement;
+import de.viadee.bpmnAnalytics.processing.model.data.ElementChapter;
+import de.viadee.bpmnAnalytics.processing.model.data.KnownElementFieldType;
 import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
+import de.viadee.bpmnAnalytics.processing.model.data.VariableOperation;
 import de.viadee.bpmnAnalytics.processing.model.graph.Graph;
 import de.viadee.bpmnAnalytics.processing.model.graph.IGraph;
 import de.viadee.bpmnAnalytics.processing.model.graph.Path;
@@ -26,19 +33,27 @@ public class ElementGraphBuilder {
 
   private Map<String, BpmnElement> elementMap = new HashMap<String, BpmnElement>();
 
-  private Collection<ProcessVariable> variablesRead = new ArrayList<ProcessVariable>();
+  private Collection<BpmnElement> startNodes = new ArrayList<BpmnElement>();
 
   private Map<String, String> beanRefToClassMap;
 
   private Map<String, String> decisionRefToPathMap;
 
+  private Map<String, Collection<String>> messageIdToVariables;
+
+  private Map<String, Collection<String>> processIdToVariables;
+
   public ElementGraphBuilder() {
   }
 
   public ElementGraphBuilder(final Map<String, String> decisionRefToPathMap,
-      final Map<String, String> beanMapping) {
+      final Map<String, String> beanMapping,
+      final Map<String, Collection<String>> messageIdToVariables,
+      final Map<String, Collection<String>> processIdToVariables) {
     this.decisionRefToPathMap = decisionRefToPathMap;
     this.beanRefToClassMap = beanMapping;
+    this.messageIdToVariables = messageIdToVariables;
+    this.processIdToVariables = processIdToVariables;
   }
 
   /**
@@ -63,11 +78,11 @@ public class ElementGraphBuilder {
 
       for (final FlowElement element : elements) {
         if (element instanceof SequenceFlow) {
-          // Sequenzflüsse gesondert merken
+          // mention sequence flows
           final SequenceFlow flow = (SequenceFlow) element;
           flows.add(flow);
         } else if (element instanceof BoundaryEvent) {
-          // Boundary Events merken
+          // mention boundary events
           BoundaryEvent event = (BoundaryEvent) element;
           boundaryEvents.add(event);
         } else if (element instanceof SubProcess) {
@@ -75,24 +90,29 @@ public class ElementGraphBuilder {
           addElementsSubprocess(subProcesses, flows, boundaryEvents, graph, subprocess,
               processdefinition, cl);
         }
-        // Zu speicherndes Element initialisieren
+        // initialize element
         final BpmnElement node = new BpmnElement(processdefinition, element);
-        // Prozessvariablen ermitteln und nach Zugriffsart zwischenspeichern
+        // examine process variables and save it with access operation
         final Map<String, ProcessVariable> variables = new ProcessVariableReader(
             decisionRefToPathMap, beanRefToClassMap).getVariablesFromElement(node, cl);
-        // Gelesene Variablen merken
-        for (final ProcessVariable var : variables.values()) {
-          if (var.isWriteOperation() == false)
-            variablesRead.add(var);
-        }
-        // Prozessvariablen zu Element ermitteln und setzen
+        // examine process variables for element and set it
         node.setProcessVariables(variables);
-        // Element merken
+        // mention element
         elementMap.put(element.getId(), node);
-        // Prozess-Elemente direkt als Knoten speichern
+        if (element.getElementType().getTypeName().equals("startEvent")) {
+          // add process variables for start event, which set by call startProcessInstanceByMessage
+          addProcessVariablesByStartForMessageId(element, node);
+
+          // add process variables for start event, which set by call startProcessInstanceByKey
+          final String processId = node.getBaseElement().getParentElement().getAttributeValue("id");
+          addProcessVariablesByStartForProcessId(node, processId);
+
+          startNodes.add(node);
+        }
+        // save process elements as a node
         graph.addVertex(node);
       }
-      // Kanten in Graphen einfügen
+      // add edges into the graph
       addEdges(processdefinition, graph, flows, boundaryEvents, subProcesses);
 
       graphCollection.add(graph);
@@ -101,8 +121,42 @@ public class ElementGraphBuilder {
     return graphCollection;
   }
 
-  public Collection<ProcessVariable> getVariablesRead() {
-    return variablesRead;
+  private void addProcessVariablesByStartForProcessId(final BpmnElement node,
+      final String processId) {
+    if (processIdToVariables != null && processId != null) {
+      final Collection<String> outerVariables = processIdToVariables.get(processId);
+      // variablen hinzufügen
+      if (outerVariables != null) {
+        for (final String varName : outerVariables) {
+          node.setProcessVariable(varName,
+              new ProcessVariable(varName, node, ElementChapter.OutstandingVariable,
+                  KnownElementFieldType.Class, null, VariableOperation.WRITE, ""));
+        }
+      }
+    }
+  }
+
+  private void addProcessVariablesByStartForMessageId(final FlowElement element,
+      final BpmnElement node) {
+    if (messageIdToVariables != null) {
+      if (element instanceof StartEvent) {
+        final StartEvent startEvent = (StartEvent) element;
+        final Collection<MessageEventDefinition> messageEventDefinitions = startEvent
+            .getChildElementsByType(MessageEventDefinition.class);
+        for (MessageEventDefinition eventDef : messageEventDefinitions) {
+          final Message message = eventDef.getMessage();
+          final String messageName = message.getName();
+          final Collection<String> outerVariables = messageIdToVariables.get(messageName);
+          if (outerVariables != null) {
+            for (final String varName : outerVariables) {
+              node.setProcessVariable(varName,
+                  new ProcessVariable(varName, node, ElementChapter.OutstandingVariable,
+                      KnownElementFieldType.Class, null, VariableOperation.WRITE, ""));
+            }
+          }
+        }
+      }
+    }
   }
 
   public BpmnElement getElement(final String id) {
@@ -110,42 +164,34 @@ public class ElementGraphBuilder {
   }
 
   /**
-   * Calculate all invalid paths
-   * 
-   * TODO: divide between serveral graphs
+   * create invalid paths for data flow anomalies
    * 
    * @param graphCollection
-   * @return Map
+   * @return
    */
-  public Map<ProcessVariable, List<Path>> calculateAllInvalidPaths(
+  public Map<AnomalyContainer, List<Path>> createInvalidPaths(
       final Collection<IGraph> graphCollection) {
-    final Map<ProcessVariable, List<Path>> invalidPathMap = new HashMap<ProcessVariable, List<Path>>();
+    final Map<AnomalyContainer, List<Path>> invalidPathMap = new HashMap<AnomalyContainer, List<Path>>();
 
     for (final IGraph g : graphCollection) {
-      for (final ProcessVariable p : this.getVariablesRead()) {
-        final List<Path> paths = g.getAllInvalidPaths(p.getElement(), p.getName(), 100);
+      // add data flow information to graph
+      g.setAnomalyInformation(startNodes.iterator().next());
+      // get nodes with data anomalies
+      final Map<BpmnElement, List<AnomalyContainer>> anomalies = g.getNodesWithAnomalies();
 
-        for (final Path path : paths) {
-          // reverse order for a better readability
-          Collections.reverse(path.getElements());
-        }
-
-        // get existing paths for the variable
-        final List<Path> pathsForVariable = invalidPathMap.get(p);
-        // add paths only if the length is smaller than the existing or they don't exist
-        if (pathsForVariable == null) { // no existing paths
-          if (paths != null && paths.size() > 0) { // add paths for variable, if found
-            invalidPathMap.put(p, new ArrayList<Path>(paths));
+      for (final BpmnElement element : anomalies.keySet()) {
+        for (AnomalyContainer anomaly : anomalies.get(element)) {
+          // create paths for data flow anomalies
+          final List<Path> paths = g.getAllInvalidPaths(element, anomaly);
+          for (final Path path : paths) {
+            // reverse order for a better readability
+            Collections.reverse(path.getElements());
           }
-        } else { // there are existing paths
-          if (paths != null && paths.size() > 0
-              && paths.get(0).getElements().size() < pathsForVariable.get(0).getElements().size()) {
-            // add only if existing path is bigger
-            invalidPathMap.put(p, new ArrayList<Path>(paths));
-          }
+          invalidPathMap.put(anomaly, new ArrayList<Path>(paths));
         }
       }
     }
+
     return invalidPathMap;
   }
 
@@ -165,26 +211,42 @@ public class ElementGraphBuilder {
       final BpmnElement srcElement = elementMap.get(flow.getSource().getId());
       final BpmnElement destElement = elementMap.get(flow.getTarget().getId());
 
-      // graph.addEdge(srcElement, flowElement, 100);
-      // graph.addEdge(flowElement, destElement, 100);
-
-      graph.addEdge(destElement, flowElement, 100);
-      graph.addEdge(flowElement, srcElement, 100);
+      graph.addEdge(srcElement, flowElement, 100);
+      graph.addEdge(flowElement, destElement, 100);
     }
     for (final BoundaryEvent event : boundaryEvents) {
       final BpmnElement dstElement = elementMap.get(event.getId());
-      Activity source = event.getAttachedTo();
+      final Activity source = event.getAttachedTo();
       final BpmnElement srcElement = elementMap.get(source.getId());
-      // graph.addEdge(srcElement, dstElement, 100);
-      graph.addEdge(dstElement, srcElement, 100);
+      graph.addEdge(srcElement, dstElement, 100);
     }
     for (final SubProcess subProcess : subProcesses) {
-      final BpmnElement srcElement = elementMap.get(subProcess.getId());
-      Collection<StartEvent> startEvents = subProcess.getChildElementsByType(StartEvent.class);
-      if (startEvents != null && startEvents.size() > 0) {
-        final BpmnElement dstElement = elementMap.get(startEvents.iterator().next().getId());
-        // graph.addEdge(srcElement, dstElement, 100);
-        graph.addEdge(dstElement, srcElement, 100);
+      final BpmnElement subprocessElement = elementMap.get(subProcess.getId());
+      // integration of a subprocess in data flow graph
+      // inner elements will be directly connected into the graph
+      final Collection<StartEvent> startEvents = subProcess
+          .getChildElementsByType(StartEvent.class);
+      final Collection<EndEvent> endEvents = subProcess.getChildElementsByType(EndEvent.class);
+      if (startEvents != null && startEvents.size() > 0 && endEvents != null
+          && endEvents.size() > 0) {
+        final Collection<SequenceFlow> incomingFlows = subProcess.getIncoming();
+        for (final SequenceFlow incomingFlow : incomingFlows) {
+          final BpmnElement srcElement = elementMap.get(incomingFlow.getId());
+          for (final StartEvent startEvent : startEvents) {
+            final BpmnElement dstElement = elementMap.get(startEvent.getId());
+            graph.addEdge(srcElement, dstElement, 100);
+            graph.removeEdge(srcElement, subprocessElement);
+          }
+        }
+        final Collection<SequenceFlow> outgoingFlows = subProcess.getOutgoing();
+        for (final EndEvent endEvent : endEvents) {
+          final BpmnElement srcElement = elementMap.get(endEvent.getId());
+          for (final SequenceFlow outgoingFlow : outgoingFlows) {
+            final BpmnElement dstElement = elementMap.get(outgoingFlow.getId());
+            graph.addEdge(srcElement, dstElement, 100);
+            graph.removeEdge(subprocessElement, dstElement);
+          }
+        }
       }
     }
   }
@@ -221,11 +283,6 @@ public class ElementGraphBuilder {
       // Prozessvariablen ermitteln und nach Zugriffsart zwischenspeichern
       final Map<String, ProcessVariable> variables = new ProcessVariableReader(decisionRefToPathMap,
           beanRefToClassMap).getVariablesFromElement(node, cl);
-      // Gelesene Variablen merken
-      for (final ProcessVariable var : variables.values()) {
-        if (var.isWriteOperation() == false)
-          variablesRead.add(var);
-      }
       // Prozessvariablen zu Element ermitteln und setzen
       node.setProcessVariables(variables);
       // Element merken

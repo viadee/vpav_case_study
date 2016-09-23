@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "issue")
 @XmlType(propOrder = { "id", "ruleName", "bpmnFile", "resourceFile", "classification", "elementId",
-    "variable", "paths", "message" })
+    "elementName", "variable", "anomaly", "paths", "message" })
 public class XmlCheckerIssue {
 
   private String id;
@@ -22,11 +22,15 @@ public class XmlCheckerIssue {
 
   private String variable;
 
+  private String anomaly;
+
   private List<XmlPath> paths;
 
   private String classification;
 
   private String elementId;
+
+  private String elementName;
 
   private String message;
 
@@ -35,7 +39,8 @@ public class XmlCheckerIssue {
 
   public XmlCheckerIssue(final String id, final String ruleName, final String classification,
       final String bpmnFile, final String resourceFile, final String elementId,
-      final String message, final String variable, final List<XmlPath> invalidPaths) {
+      final String elementName, final String message, final String variable, final String anomaly,
+      final List<XmlPath> invalidPaths) {
     super();
     this.id = id;
     this.ruleName = ruleName;
@@ -43,8 +48,10 @@ public class XmlCheckerIssue {
     this.bpmnFile = bpmnFile;
     this.resourceFile = resourceFile;
     this.elementId = elementId;
+    this.elementName = elementName;
     this.message = message;
     this.variable = variable;
+    this.anomaly = anomaly;
     this.paths = invalidPaths;
   }
 
@@ -68,6 +75,11 @@ public class XmlCheckerIssue {
     return variable;
   }
 
+  @XmlElement(name = "anomaly", required = false)
+  public String getAnomaly() {
+    return anomaly;
+  }
+
   @XmlElementWrapper(name = "paths")
   @XmlElement(name = "path", required = false)
   public List<XmlPath> getPaths() {
@@ -89,6 +101,11 @@ public class XmlCheckerIssue {
     return elementId;
   }
 
+  @XmlElement(name = "elementName", required = false)
+  public String getElementName() {
+    return elementName;
+  }
+
   @XmlElement(name = "message", required = true)
   public String getMessage() {
     return message;
@@ -104,6 +121,10 @@ public class XmlCheckerIssue {
 
   public void setElementId(String elementId) {
     this.elementId = elementId;
+  }
+
+  public void setElementName(String elementName) {
+    this.elementName = elementName;
   }
 
   public void setMessage(String message) {
@@ -124,6 +145,10 @@ public class XmlCheckerIssue {
 
   public void setVariable(String variable) {
     this.variable = variable;
+  }
+
+  public void setAnomaly(String anomaly) {
+    this.anomaly = anomaly;
   }
 
   public void setPaths(List<XmlPath> paths) {

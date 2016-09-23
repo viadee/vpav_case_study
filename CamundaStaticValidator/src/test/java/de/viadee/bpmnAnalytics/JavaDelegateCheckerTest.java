@@ -34,7 +34,7 @@ public class JavaDelegateCheckerTest {
   @BeforeClass
   public static void setup() throws MalformedURLException {
     final Rule rule = new Rule("JavaDelegateChecker", true, null, null, null);
-    checker = new JavaDelegateChecker(rule);
+    checker = new JavaDelegateChecker(rule, null);
     final File file = new File(".");
     final String currentPath = file.toURI().toURL().toString();
     final URL classUrl = new URL(currentPath + "src/test/java");
@@ -84,7 +84,7 @@ public class JavaDelegateCheckerTest {
     if (issues.size() != 1) {
       Assert.fail("collection with the issues is bigger or smaller as expected");
     } else {
-      Assert.assertEquals("service task 'Service Task 1' with no code reference yet",
+      Assert.assertEquals("task 'Service Task 1' with no code reference yet",
           issues.iterator().next().getMessage());
     }
   }
@@ -109,7 +109,7 @@ public class JavaDelegateCheckerTest {
     if (issues.size() != 1) {
       Assert.fail("collection with the issues is bigger or smaller as expected");
     } else {
-      Assert.assertEquals("service task 'Service Task 1' with no class name",
+      Assert.assertEquals("task 'Service Task 1' with no class name",
           issues.iterator().next().getMessage());
     }
   }
@@ -134,7 +134,7 @@ public class JavaDelegateCheckerTest {
     if (issues.size() != 1) {
       Assert.fail("collection with the issues is bigger or smaller as expected");
     } else {
-      Assert.assertEquals("class for service task 'Service Task 1' not found",
+      Assert.assertEquals("class for task 'Service Task 1' not found",
           issues.iterator().next().getMessage());
     }
   }
@@ -159,8 +159,7 @@ public class JavaDelegateCheckerTest {
     if (issues.size() != 1) {
       Assert.fail("collection with the issues is bigger or smaller as expected");
     } else {
-      Assert.assertEquals(
-          "class for service task 'Service Task 1' not implement interface JavaDelegate",
+      Assert.assertEquals("class for task 'Service Task 1' not implement interface JavaDelegate",
           issues.iterator().next().getMessage());
     }
   }

@@ -33,6 +33,8 @@ import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormField;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaIn;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaOut;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaScript;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaTaskListener;
 import org.camunda.bpm.model.dmn.Dmn;
@@ -51,6 +53,7 @@ import de.viadee.bpmnAnalytics.processing.model.data.BpmnElement;
 import de.viadee.bpmnAnalytics.processing.model.data.ElementChapter;
 import de.viadee.bpmnAnalytics.processing.model.data.KnownElementFieldType;
 import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
+import de.viadee.bpmnAnalytics.processing.model.data.VariableOperation;
 
 /**
  * search process variables for an bpmn element
@@ -118,6 +121,10 @@ public final class ProcessVariableReader {
 
       // 3) Search in Form Data
       processVariables.putAll(getVariablesFromFormData(element, extensionElements, scopeElementId));
+
+      // 4) Search in Input/Output-Associations (Call Activities)
+      processVariables.putAll(
+          searchVariablesInInputOutputExtensions(element, extensionElements, scopeElementId));
     }
 
     return processVariables;
@@ -155,7 +162,8 @@ public final class ProcessVariableReader {
           ElementChapter.ExecutionListener, KnownElementFieldType.Class, scopeId, cl));
 
       final CamundaScript script = listener.getCamundaScript();
-      if (script != null && script.getCamundaScriptFormat().equals("groovy")) {
+      if (script != null && script.getCamundaScriptFormat() != null
+          && script.getCamundaScriptFormat().equals("groovy")) {
         // inline script or external file?
         final String inlineScript = script.getTextContent();
         if (inlineScript != null && inlineScript.trim().length() > 0) {
@@ -208,7 +216,8 @@ public final class ProcessVariableReader {
           ElementChapter.TaskListener, KnownElementFieldType.Class, scopeId, cl));
 
       final CamundaScript script = listener.getCamundaScript();
-      if (script != null && script.getCamundaScriptFormat().equals("groovy")) {
+      if (script != null && script.getCamundaScriptFormat() != null
+          && script.getCamundaScriptFormat().equals("groovy")) {
         // inline script or external file?
         final String inlineScript = script.getTextContent();
         if (inlineScript != null && inlineScript.trim().length() > 0) {
@@ -249,7 +258,48 @@ public final class ProcessVariableReader {
         for (final CamundaFormField field : formFields) {
           processVariables.put(field.getCamundaId(),
               new ProcessVariable(field.getCamundaId(), element, ElementChapter.FormData,
-                  KnownElementFieldType.FormField, null, true, scopeElementId));
+                  KnownElementFieldType.FormField, null, VariableOperation.WRITE, scopeElementId));
+        }
+      }
+    }
+
+    return processVariables;
+  }
+
+  /**
+   * get process variables from camunda input/output associations (call activities)
+   * 
+   * @param element
+   * @param extensionElements
+   * @param elementScopeId
+   * @return variables
+   */
+  private Map<String, ProcessVariable> searchVariablesInInputOutputExtensions(
+      final BpmnElement element, final ExtensionElements extensionElements, final String scopeId) {
+
+    final Map<String, ProcessVariable> processVariables = new HashMap<String, ProcessVariable>();
+
+    final BaseElement baseElement = element.getBaseElement();
+
+    if (baseElement instanceof CallActivity) {
+      final List<CamundaIn> inputAssociations = extensionElements.getElementsQuery()
+          .filterByType(CamundaIn.class).list();
+      for (final CamundaIn inputAssociation : inputAssociations) {
+        final String source = inputAssociation.getCamundaSource();
+        if (source != null && !source.isEmpty()) {
+          processVariables.put(source,
+              new ProcessVariable(source, element, ElementChapter.InputData,
+                  KnownElementFieldType.CamundaIn, null, VariableOperation.READ, scopeId));
+        }
+      }
+      final List<CamundaOut> outputAssociations = extensionElements.getElementsQuery()
+          .filterByType(CamundaOut.class).list();
+      for (final CamundaOut outputAssociation : outputAssociations) {
+        final String target = outputAssociation.getCamundaTarget();
+        if (target != null && !target.isEmpty()) {
+          processVariables.put(target,
+              new ProcessVariable(target, element, ElementChapter.OutputData,
+                  KnownElementFieldType.CamundaOut, null, VariableOperation.WRITE, scopeId));
         }
       }
     }
@@ -340,8 +390,9 @@ public final class ProcessVariableReader {
       final String t_resultVariable = baseElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
           "resultVariable");
       if (t_resultVariable != null && t_resultVariable.trim().length() > 0) {
-        processVariables.put(t_resultVariable, new ProcessVariable(t_resultVariable, element,
-            ElementChapter.Details, KnownElementFieldType.ResultVariable, null, true, scopeId));
+        processVariables.put(t_resultVariable,
+            new ProcessVariable(t_resultVariable, element, ElementChapter.Details,
+                KnownElementFieldType.ResultVariable, null, VariableOperation.WRITE, scopeId));
       }
       processVariables.putAll(getVariablesFromJavaDelegate(
           baseElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS, "class"), element,
@@ -386,7 +437,8 @@ public final class ProcessVariableReader {
     } else if (baseElement instanceof ScriptTask) {
       // Examine script task for process variables
       final ScriptTask scriptTask = (ScriptTask) baseElement;
-      if (scriptTask.getScriptFormat() != null && scriptTask.getScriptFormat().equals("groovy")) {
+      if (scriptTask.getScriptFormat() != null && scriptTask.getScriptFormat() != null
+          && scriptTask.getScriptFormat().equals("groovy")) {
         // inline script or external file?
         final Script script = scriptTask.getScript();
         if (script != null && script.getTextContent() != null
@@ -403,8 +455,9 @@ public final class ProcessVariableReader {
       }
       String resultVariable = scriptTask.getCamundaResultVariable();
       if (resultVariable != null && resultVariable.trim().length() > 0) {
-        processVariables.put(resultVariable, new ProcessVariable(resultVariable, element,
-            ElementChapter.Details, KnownElementFieldType.ResultVariable, null, true, scopeId));
+        processVariables.put(resultVariable,
+            new ProcessVariable(resultVariable, element, ElementChapter.Details,
+                KnownElementFieldType.ResultVariable, null, VariableOperation.WRITE, scopeId));
       }
     } else if (baseElement instanceof CallActivity) {
       final CallActivity callActivity = (CallActivity) baseElement;
@@ -452,14 +505,14 @@ public final class ProcessVariableReader {
       if (collectionName != null && collectionName.trim().length() > 0) {
         processVariables.put(collectionName,
             new ProcessVariable(collectionName, element, ElementChapter.MultiInstance,
-                KnownElementFieldType.CollectionElement, null, false, scopeId));
+                KnownElementFieldType.CollectionElement, null, VariableOperation.READ, scopeId));
       }
       final String elementVariable = loopCharacteristics
           .getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS, "elementVariable");
       if (elementVariable != null && elementVariable.trim().length() > 0) {
         processVariables.put(elementVariable,
             new ProcessVariable(elementVariable, element, ElementChapter.MultiInstance,
-                KnownElementFieldType.ElementVariable, null, false, scopeId));
+                KnownElementFieldType.ElementVariable, null, VariableOperation.READ, scopeId));
       }
       final ModelElementInstance loopCardinality = loopCharacteristics
           .getUniqueChildElementByType(LoopCardinality.class);
@@ -580,14 +633,14 @@ public final class ProcessVariableReader {
         for (final InputExpression inputExpression : inputExpressions) {
           final Text variable = inputExpression.getText();
           variables.put(variable.getTextContent(), new ProcessVariable(variable.getTextContent(),
-              element, chapter, fieldType, fileName, false, scopeId));
+              element, chapter, fieldType, fileName, VariableOperation.READ, scopeId));
         }
         final Collection<Output> outputs = decision.getModelInstance()
             .getModelElementsByType(Output.class);
         for (final Output output : outputs) {
           final String variable = output.getName();
-          variables.put(variable,
-              new ProcessVariable(variable, element, chapter, fieldType, fileName, true, scopeId));
+          variables.put(variable, new ProcessVariable(variable, element, chapter, fieldType,
+              fileName, VariableOperation.WRITE, scopeId));
         }
       }
     }
@@ -611,6 +664,8 @@ public final class ProcessVariableReader {
         searchReadProcessVariablesInCode(element, chapter, fieldType, fileName, scopeId, code));
     variables.putAll(
         searchWrittenProcessVariablesInCode(element, chapter, fieldType, fileName, scopeId, code));
+    variables.putAll(
+        searchRemovedProcessVariablesInCode(element, chapter, fieldType, fileName, scopeId, code));
 
     return variables;
   }
@@ -629,18 +684,30 @@ public final class ProcessVariableReader {
 
     final Map<String, ProcessVariable> variables = new HashMap<String, ProcessVariable>();
 
-    // remove white spaces from code
-    final String cleanedCode = code.replaceAll(" ", "");
+    // remove special characters from code
+    final String FILTER_PATTERN = "'|\"| ";
+    final String cleanedCode = code.replaceAll(FILTER_PATTERN, "");
 
     // search locations where variables are read
-    final Pattern getVariablePattern = Pattern.compile("(\\.getVariable\\()(.*?)(\\))");
-    final Matcher matcher = getVariablePattern.matcher(cleanedCode);
+    final Pattern getVariablePatternRuntimeService = Pattern
+        .compile("\\.getVariable\\((.*),(\\w+)\\)");
+    final Matcher matcherRuntimeService = getVariablePatternRuntimeService.matcher(cleanedCode);
 
-    final String FILTER_PATTERN = "'|\"";
-    while (matcher.find()) {
-      final String filteredMatch = matcher.group(2).replaceAll(FILTER_PATTERN, "");
-      variables.put(filteredMatch, new ProcessVariable(filteredMatch, element, chapter, fieldType,
-          fileName, false, scopeId));
+    while (matcherRuntimeService.find()) {
+      final String match = matcherRuntimeService.group(2);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.READ, scopeId));
+    }
+
+    final Pattern getVariablePatternDelegateExecution = Pattern
+        .compile("\\.getVariable\\((\\w+)\\)");
+    final Matcher matcherDelegateExecution = getVariablePatternDelegateExecution
+        .matcher(cleanedCode);
+
+    while (matcherDelegateExecution.find()) {
+      final String match = matcherDelegateExecution.group(1);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.READ, scopeId));
     }
 
     return variables;
@@ -661,18 +728,76 @@ public final class ProcessVariableReader {
 
     final Map<String, ProcessVariable> variables = new HashMap<String, ProcessVariable>();
 
-    // remove white spaces from code
-    final String cleanedCode = code.replaceAll(" ", "");
+    // remove special characters from code
+    final String FILTER_PATTERN = "'|\"| ";
+    final String cleanedCode = code.replaceAll(FILTER_PATTERN, "");
 
     // search locations where variables are written
-    final Pattern setVariablePattern = Pattern.compile("(\\.setVariable\\((.*?),)(.*?)(\\))");
-    final Matcher matcher = setVariablePattern.matcher(cleanedCode);
+    final Pattern setVariablePatternRuntimeService = Pattern
+        .compile("\\.setVariable\\((.*),(\\w+),(.*)\\)");
+    final Matcher matcherPatternRuntimeService = setVariablePatternRuntimeService
+        .matcher(cleanedCode);
+    while (matcherPatternRuntimeService.find()) {
+      final String match = matcherPatternRuntimeService.group(2);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.WRITE, scopeId));
+    }
 
-    final String FILTER_PATTERN = "'|\"";
-    while (matcher.find()) {
-      final String filteredMatch = matcher.group(2).replaceAll(FILTER_PATTERN, "");
-      variables.put(filteredMatch,
-          new ProcessVariable(filteredMatch, element, chapter, fieldType, fileName, true, scopeId));
+    final Pattern setVariablePatternDelegateExecution = Pattern
+        .compile("\\.setVariable\\((\\w+),(.*)\\)");
+    final Matcher matcherPatternDelegateExecution = setVariablePatternDelegateExecution
+        .matcher(cleanedCode);
+    while (matcherPatternDelegateExecution.find()) {
+      final String match = matcherPatternDelegateExecution.group(1);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.WRITE, scopeId));
+    }
+
+    return variables;
+  }
+
+  /**
+   * search removed process variables
+   * 
+   * @param element
+   * @param chapter
+   * @param fieldType
+   * @param fileName
+   * @param scopeId
+   * @param code
+   * @return variables
+   */
+  private Map<String, ProcessVariable> searchRemovedProcessVariablesInCode(
+      final BpmnElement element, final ElementChapter chapter,
+      final KnownElementFieldType fieldType, final String fileName, final String scopeId,
+      final String code) {
+
+    final Map<String, ProcessVariable> variables = new HashMap<String, ProcessVariable>();
+
+    // remove special characters from code
+    final String FILTER_PATTERN = "'|\"| ";
+    final String cleanedCode = code.replaceAll(FILTER_PATTERN, "");
+
+    // search locations where variables are removed
+    final Pattern removeVariablePatternRuntimeService = Pattern
+        .compile("\\.removeVariable\\((.*),(\\w+)\\)");
+    final Matcher matcherRuntimeService = removeVariablePatternRuntimeService.matcher(cleanedCode);
+
+    while (matcherRuntimeService.find()) {
+      final String match = matcherRuntimeService.group(2);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.DELETE, scopeId));
+    }
+
+    final Pattern removeVariablePatternDelegateExecution = Pattern
+        .compile("\\.removeVariable\\((\\w+)\\)");
+    final Matcher matcherDelegateExecution = removeVariablePatternDelegateExecution
+        .matcher(cleanedCode);
+
+    while (matcherDelegateExecution.find()) {
+      final String match = matcherDelegateExecution.group(1);
+      variables.put(match, new ProcessVariable(match, element, chapter, fieldType, fileName,
+          VariableOperation.DELETE, scopeId));
     }
 
     return variables;
@@ -708,11 +833,14 @@ public final class ProcessVariableReader {
         } else {
           // save variable
           variables.put(node.getName(), new ProcessVariable(node.getName(), element, chapter,
-              fieldType, null, false, scopeId));
+              fieldType, null, VariableOperation.READ, scopeId));
         }
       }
       // extract written variables
       variables.putAll(searchWrittenProcessVariablesInCode(element, chapter, fieldType, null,
+          scopeId, expression));
+      // extract deleted variables
+      variables.putAll(searchRemovedProcessVariablesInCode(element, chapter, fieldType, null,
           scopeId, expression));
     } catch (final ELException e) {
       throw new ProcessingException("el expression " + expression + " in "

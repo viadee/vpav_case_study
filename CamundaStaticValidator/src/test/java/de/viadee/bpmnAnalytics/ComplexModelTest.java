@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.viadee.bpmnAnalytics.processing.ElementGraphBuilder;
-import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.graph.IGraph;
 import de.viadee.bpmnAnalytics.processing.model.graph.Path;
 
@@ -55,8 +55,9 @@ public class ComplexModelTest {
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(processdefinition);
 
     // create many gateway paths to increase the complexity
-    // createGatewayPaths("ExclusiveGateway_0mkf3hf", "ExclusiveGateway_00pfwgg", modelInstance, 5);
-    createGatewayPaths("ExclusiveGateway_10gsr88", "ExclusiveGateway_13qew7s", modelInstance, 100);
+    createGatewayPaths("ExclusiveGateway_0mkf3hf", "ExclusiveGateway_00pfwgg", modelInstance, 1);
+    // createGatewayPaths("ExclusiveGateway_10gsr88", "ExclusiveGateway_13qew7s", modelInstance,
+    // 500);
 
     final Map<String, String> decisionRefToPathMap = new HashMap<String, String>();
     decisionRefToPathMap.put("decision", "table.dmn");
@@ -67,7 +68,7 @@ public class ComplexModelTest {
     long startTime = System.currentTimeMillis();
 
     final ElementGraphBuilder graphBuilder = new ElementGraphBuilder(decisionRefToPathMap,
-        beanMappings);
+        beanMappings, null, null);
     // create data flow graphs
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
         processdefinition.getPath(), cl);
@@ -77,8 +78,8 @@ public class ComplexModelTest {
     long startTime2 = System.currentTimeMillis();
 
     // calculate invalid paths based on data flow graphs
-    final Map<ProcessVariable, List<Path>> invalidPathMap = graphBuilder
-        .calculateAllInvalidPaths(graphCollection);
+    final Map<AnomalyContainer, List<Path>> invalidPathMap = graphBuilder
+        .createInvalidPaths(graphCollection);
 
     long estimatedTime2 = System.currentTimeMillis() - startTime2;
     System.out.println("Graph search: " + estimatedTime2 + "ms");

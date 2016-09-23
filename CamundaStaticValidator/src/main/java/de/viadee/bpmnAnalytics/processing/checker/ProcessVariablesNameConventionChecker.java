@@ -14,6 +14,7 @@ import de.viadee.bpmnAnalytics.processing.model.data.BpmnElement;
 import de.viadee.bpmnAnalytics.processing.model.data.CheckerIssue;
 import de.viadee.bpmnAnalytics.processing.model.data.CriticalityEnum;
 import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
+import de.viadee.bpmnAnalytics.processing.model.data.VariableOperation;
 
 /**
  *
@@ -58,23 +59,26 @@ public class ProcessVariablesNameConventionChecker implements ElementChecker {
         final ElementFieldTypes fieldTypes = convention.getElementFieldTypes();
         final Collection<String> fieldTypeItems = fieldTypes.getElementFieldTypes();
         for (final ProcessVariable variable : element.getProcessVariables().values()) {
-          if (fieldTypeItems != null) {
-            boolean isInRange = false;
-            if (fieldTypes.isExcluded()) {
-              isInRange = !fieldTypeItems.contains(variable.getFieldType().name());
-            } else {
-              isInRange = fieldTypeItems.contains(variable.getFieldType().name());
-            }
-            if (isInRange) {
-              final Matcher patternMatcher = pattern.matcher(variable.getName());
-              if (!patternMatcher.matches()) {
-                final BaseElement baseElement = element.getBaseElement();
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-                    element.getProcessdefinition(), variable.getResourceFilePath(),
-                    baseElement.getId(), variable.getName(), null,
-                    "process variable is against the naming convention '" + convention.getName()
-                        + "'" + " (compare " + variable.getChapter() + ", "
-                        + variable.getFieldType().getDescription() + ")"));
+          if (variable.getOperation() == VariableOperation.WRITE) {
+            if (fieldTypeItems != null) {
+              boolean isInRange = false;
+              if (fieldTypes.isExcluded()) {
+                isInRange = !fieldTypeItems.contains(variable.getFieldType().name());
+              } else {
+                isInRange = fieldTypeItems.contains(variable.getFieldType().name());
+              }
+              if (isInRange) {
+                final Matcher patternMatcher = pattern.matcher(variable.getName());
+                if (!patternMatcher.matches()) {
+                  final BaseElement baseElement = element.getBaseElement();
+                  issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
+                      element.getProcessdefinition(), variable.getResourceFilePath(),
+                      baseElement.getId(), baseElement.getAttributeValue("name"),
+                      variable.getName(), null, null,
+                      "process variable is against the naming convention '" + convention.getName()
+                          + "'" + " (compare " + variable.getChapter() + ", "
+                          + variable.getFieldType().getDescription() + ")"));
+                }
               }
             }
           }

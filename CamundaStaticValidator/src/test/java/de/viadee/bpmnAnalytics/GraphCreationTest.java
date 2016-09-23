@@ -10,14 +10,15 @@ import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.viadee.bpmnAnalytics.processing.ElementGraphBuilder;
-import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
+import de.viadee.bpmnAnalytics.processing.model.data.Anomaly;
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.graph.IGraph;
 import de.viadee.bpmnAnalytics.processing.model.graph.Path;
-import junit.framework.Assert;
 
 /**
  * Unit Tests for data flow graph creation and calculation of invalid paths
@@ -33,7 +34,7 @@ public class GraphCreationTest {
   public static void setup() throws MalformedURLException {
     final File file = new File(".");
     final String currentPath = file.toURI().toURL().toString();
-    final URL classUrl = new URL(currentPath + "src/test/java/");
+    final URL classUrl = new URL(currentPath + "src/test/java");
     final URL[] classUrls = { classUrl };
     cl = new URLClassLoader(classUrls);
   }
@@ -55,20 +56,30 @@ public class GraphCreationTest {
         processdefinition.getPath(), cl);
 
     // calculate invalid paths based on data flow graphs
-    final Map<ProcessVariable, List<Path>> invalidPathMap = graphBuilder
-        .calculateAllInvalidPaths(graphCollection);
+    final Map<AnomalyContainer, List<Path>> invalidPathMap = graphBuilder
+        .createInvalidPaths(graphCollection);
 
     // get invalid paths
+    final List<Path> validVarTest = invalidPathMap
+        .get(new AnomalyContainer("validVar", Anomaly.UR, "SequenceFlow_1mggduw", null));
+    Assert.assertNull("valid variable is marked as invalid", validVarTest);
+
     final List<Path> jepppaTest = invalidPathMap
-        .get(new ProcessVariable("jepppa", null, null, null, PATH, false, PATH));
+        .get(new AnomalyContainer("jepppa", Anomaly.DD, "SequenceFlow_0btqo3y", null));
     Assert.assertEquals(
-        "[[StartEvent_1, SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0mkf3hf, SequenceFlow_0t7iwpj, Task_0546a8y, SequenceFlow_1m6lt2o, ExclusiveGateway_00pfwgg, SequenceFlow_0btqo3y], [StartEvent_1, SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0mkf3hf, SequenceFlow_1mggduw, Task_11t5rso, SequenceFlow_06ehu4z, ExclusiveGateway_00pfwgg, SequenceFlow_0btqo3y]]",
+        "[[SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0su45e1, SequenceFlow_0t7iwpj, Task_0546a8y, SequenceFlow_1m6lt2o, ExclusiveGateway_0fsjxd1, SequenceFlow_0btqo3y], [SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0su45e1, SequenceFlow_1mggduw, Task_11t5rso, SequenceFlow_06ehu4z, ExclusiveGateway_0fsjxd1, SequenceFlow_0btqo3y]]",
         jepppaTest.toString());
 
     final List<Path> testHallo2 = invalidPathMap
-        .get(new ProcessVariable("hallo2", null, null, null, PATH, false, PATH));
+        .get(new AnomalyContainer("hallo2", Anomaly.UR, "BusinessRuleTask_119jb6t", null));
     Assert.assertEquals(
-        "[[StartEvent_1, SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0mkf3hf, SequenceFlow_1mggduw, Task_11t5rso, SequenceFlow_1ck3twv, SubProcess_00ff1kx, StartEvent_0bcezfo, SequenceFlow_0jkf21p, SubProcess_0aqkwyh, StartEvent_0sqm3mr, SequenceFlow_1qax2e0, BusinessRuleTask_119jb6t]]",
+        "[[StartEvent_1, SequenceFlow_1aapyv6, ServiceTask_108g52x, SequenceFlow_0yhv5j2, ServiceTask_05g4a96, SequenceFlow_09j6ilt, ExclusiveGateway_0su45e1, SequenceFlow_1mggduw, Task_11t5rso, SequenceFlow_1ck3twv, StartEvent_0bcezfo, SequenceFlow_0jkf21p, StartEvent_0sqm3mr, SequenceFlow_1qax2e0, BusinessRuleTask_119jb6t]]",
         testHallo2.toString());
+
+    final List<Path> geloeschteVarTest = invalidPathMap
+        .get(new AnomalyContainer("geloeschteVariable", Anomaly.DU, "SequenceFlow_0bi6kaa", null));
+    Assert.assertEquals(
+        "[[SequenceFlow_09j6ilt, ExclusiveGateway_0su45e1, SequenceFlow_1mggduw, Task_11t5rso, BoundaryEvent_11udorz, SequenceFlow_0bi6kaa]]",
+        geloeschteVarTest.toString());
   }
 }

@@ -1,2 +1,2 @@
  println "Groovy Test"
- execution.getVariable("extGroovy")
+ execution.setVariable("extGroovy", true)

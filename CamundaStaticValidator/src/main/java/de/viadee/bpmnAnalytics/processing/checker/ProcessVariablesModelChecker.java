@@ -8,6 +8,8 @@ import java.util.Map;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import de.viadee.bpmnAnalytics.config.model.Rule;
+import de.viadee.bpmnAnalytics.processing.model.data.Anomaly;
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.data.CheckerIssue;
 import de.viadee.bpmnAnalytics.processing.model.data.CriticalityEnum;
 import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
@@ -17,10 +19,10 @@ public class ProcessVariablesModelChecker implements ModelChecker {
 
   private final Rule rule;
 
-  private final Map<ProcessVariable, List<Path>> invalidPathsMap;
+  private final Map<AnomalyContainer, List<Path>> invalidPathsMap;
 
   public ProcessVariablesModelChecker(final Rule rule,
-      final Map<ProcessVariable, List<Path>> invalidPathsMap) {
+      final Map<AnomalyContainer, List<Path>> invalidPathsMap) {
     this.rule = rule;
     this.invalidPathsMap = invalidPathsMap;
   }
@@ -30,17 +32,28 @@ public class ProcessVariablesModelChecker implements ModelChecker {
       final ClassLoader cl) {
 
     final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
-    for (final ProcessVariable var : invalidPathsMap.keySet()) {
-      final List<Path> paths = invalidPathsMap.get(var);
+    for (final AnomalyContainer anomaly : invalidPathsMap.keySet()) {
+      final List<Path> paths = invalidPathsMap.get(anomaly);
+      final ProcessVariable var = anomaly.getVariable();
       if (paths != null) {
-        issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+        issues.add(new CheckerIssue(rule.getName(), determineCriticality(anomaly.getAnomaly()),
             var.getElement().getProcessdefinition(), var.getResourceFilePath(),
-            var.getElement().getBaseElement().getId(), var.getName(), paths,
-            "process variable is not initialised (compare " + var.getChapter() + ", "
-                + var.getFieldType().getDescription() + ")"));
+            var.getElement().getBaseElement().getId(),
+            var.getElement().getBaseElement().getAttributeValue("name"), var.getName(),
+            anomaly.getAnomaly(), paths, "process variable creates an anomaly " + "(compare "
+                + var.getChapter() + ", " + var.getFieldType().getDescription() + ")"));
       }
     }
 
     return issues;
+  }
+
+  private CriticalityEnum determineCriticality(final Anomaly anomaly) {
+
+    if (anomaly == Anomaly.DD || anomaly == Anomaly.DU) {
+      return CriticalityEnum.WARNING;
+    } else {
+      return CriticalityEnum.ERROR;
+    }
   }
 }

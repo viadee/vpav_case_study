@@ -8,7 +8,7 @@ public class ProcessVariable {
 
   private String name;
 
-  private boolean writeOperation;
+  private VariableOperation operation;
 
   private String scopeId;
 
@@ -23,14 +23,14 @@ public class ProcessVariable {
 
   public ProcessVariable(final String name, final BpmnElement element, final ElementChapter chapter,
       final KnownElementFieldType fieldType, final String resourceFilePath,
-      final boolean writeOperation, final String scopeId) {
+      final VariableOperation operation, final String scopeId) {
     super();
     this.name = name;
     this.element = element;
     this.resourceFilePath = resourceFilePath;
     this.chapter = chapter;
     this.fieldType = fieldType;
-    this.writeOperation = writeOperation;
+    this.operation = operation;
     this.scopeId = scopeId;
   }
 
@@ -54,8 +54,8 @@ public class ProcessVariable {
     return fieldType;
   }
 
-  public boolean isWriteOperation() {
-    return writeOperation;
+  public VariableOperation getOperation() {
+    return operation;
   }
 
   public String getScopeId() {

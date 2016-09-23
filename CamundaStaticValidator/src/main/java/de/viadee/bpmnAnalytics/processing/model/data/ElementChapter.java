@@ -5,5 +5,5 @@ package de.viadee.bpmnAnalytics.processing.model.data;
  */
 public enum ElementChapter {
 
-  General, Details, ExecutionListener, TaskListener, MultiInstance, FormData;
+  General, Details, ExecutionListener, TaskListener, MultiInstance, FormData, InputData, OutputData, OutstandingVariable;
 }

@@ -4,7 +4,7 @@
 
   <groupId>72_Tophinke_StatischeAnalyseBPM</groupId>
   <artifactId>72_Tophinke_StatischeAnalyseBPM</artifactId>
-  <version>1.0.0-RELEASE</version>
+  <version>2.0.0-RELEASE</version>
   <packaging>maven-plugin</packaging>
 
   <name>72_Tophinke_StatischeAnalyseBPM Maven Plugin</name>
@@ -71,15 +71,20 @@
 	  <version>2.4</version>
     </dependency>	
     <dependency>
-	  <groupId>org.eclipse.jdt</groupId>
-	  <artifactId>org.eclipse.jdt.core</artifactId>
-	  <version>3.7.1</version>
-    </dependency>
-    <dependency>
 	  <groupId>log4j</groupId>
 	  <artifactId>log4j</artifactId>
 	  <version>1.2.17</version>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>2.4.7</version>
+	</dependency>
+	<dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
+	</dependency>
   </dependencies>
 
   <build>

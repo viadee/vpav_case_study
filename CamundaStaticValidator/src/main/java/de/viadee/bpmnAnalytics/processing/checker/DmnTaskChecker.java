@@ -35,7 +35,7 @@ public class DmnTaskChecker implements ElementChecker {
       if (task.getCamundaExpression() == null && task.getCamundaDelegateExpression() == null
           && task.getCamundaClass() == null && task.getCamundaDecisionRef() == null) {
         issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-            element.getProcessdefinition(), null, task.getId(), null, null,
+            element.getProcessdefinition(), null, task.getId(), task.getName(), null, null, null,
             "business rule task with dmn implementation without a decision ref"));
       }
     }

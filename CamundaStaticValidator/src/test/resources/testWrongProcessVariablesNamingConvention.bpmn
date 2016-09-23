@@ -8,10 +8,13 @@
       <bpmn:outgoing>SequenceFlow_1aapyv6</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpmnAnalytics.delegates.DelegateWithVariablesAgainstConvention">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${myBean}" event="start" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1aapyv6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0yhv5j2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="ServiceTask_05g4a96" name="Service Task 2" camunda:expression="${intHallo}">
+    <bpmn:serviceTask id="ServiceTask_05g4a96" name="Service Task 2" camunda:expression="${execution.setVariable(&#34;intHallo&#34;, true)}">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="groovy" resource="scriptWithVariableAgainstConvention.groovy" />

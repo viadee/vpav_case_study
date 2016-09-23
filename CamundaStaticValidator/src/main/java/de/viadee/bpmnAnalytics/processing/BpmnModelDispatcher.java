@@ -15,9 +15,9 @@ import de.viadee.bpmnAnalytics.processing.checker.CheckerFactory;
 import de.viadee.bpmnAnalytics.processing.checker.ElementChecker;
 import de.viadee.bpmnAnalytics.processing.checker.ModelChecker;
 import de.viadee.bpmnAnalytics.processing.checker.ProcessVariablesModelChecker;
+import de.viadee.bpmnAnalytics.processing.model.data.AnomalyContainer;
 import de.viadee.bpmnAnalytics.processing.model.data.BpmnElement;
 import de.viadee.bpmnAnalytics.processing.model.data.CheckerIssue;
-import de.viadee.bpmnAnalytics.processing.model.data.ProcessVariable;
 import de.viadee.bpmnAnalytics.processing.model.graph.IGraph;
 import de.viadee.bpmnAnalytics.processing.model.graph.Path;
 
@@ -29,7 +29,10 @@ public class BpmnModelDispatcher {
 
   public static Collection<CheckerIssue> dispatch(final File processdefinition,
       final Map<String, String> decisionRefToPathMap, final Map<String, String> beanMapping,
-      final Map<String, Rule> conf, final ClassLoader cl) throws ConfigItemNotFoundException {
+      final Map<String, Collection<String>> messageIdToVariables,
+      final Map<String, Collection<String>> processIdToVariables,
+      final Collection<String> resourcesNewestVersions, final Map<String, Rule> conf,
+      final ClassLoader cl) throws ConfigItemNotFoundException {
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(processdefinition);
@@ -39,14 +42,15 @@ public class BpmnModelDispatcher {
         .getModelElementsByType(BaseElement.class);
 
     final ElementGraphBuilder graphBuilder = new ElementGraphBuilder(decisionRefToPathMap,
-        beanMapping);
-    // create data flow graphs
+        beanMapping, messageIdToVariables, processIdToVariables);
+
+    // create data flow graphs for bpmn model
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
         processdefinition.getPath(), cl);
 
-    // calculate invalid paths based on data flow graphs
-    final Map<ProcessVariable, List<Path>> invalidPathMap = graphBuilder
-        .calculateAllInvalidPaths(graphCollection);
+    // add data flow information to graph and calculate invalid paths
+    final Map<AnomalyContainer, List<Path>> invalidPathMap = graphBuilder
+        .createInvalidPaths(graphCollection);
 
     final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
@@ -71,7 +75,7 @@ public class BpmnModelDispatcher {
         element = new BpmnElement(processdefinition.getPath(), baseElement);
       }
       final Collection<ElementChecker> checkerCollection = CheckerFactory
-          .createCheckerInstancesBpmnElement(conf, element);
+          .createCheckerInstancesBpmnElement(conf, beanMapping, resourcesNewestVersions, element);
       for (final ElementChecker checker : checkerCollection) {
         issues.addAll(checker.check(element, cl));
       }

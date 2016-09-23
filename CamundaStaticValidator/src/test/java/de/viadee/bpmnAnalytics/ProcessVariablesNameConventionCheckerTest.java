@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -36,10 +37,14 @@ public class ProcessVariablesNameConventionCheckerTest {
 
   private static ElementChecker checker;
 
+  private static Map<String, String> beanMapping;
+
   private static ClassLoader cl;
 
   @BeforeClass
   public static void setup() throws MalformedURLException {
+    beanMapping = new HashMap<String, String>();
+    beanMapping.put("myBean", "de.viadee.bpmnAnalytics.delegates.TestDelegate");
     checker = new ProcessVariablesNameConventionChecker(createRule());
     final File file = new File(".");
     final String currentPath = file.toURI().toURL().toString();
@@ -64,7 +69,7 @@ public class ProcessVariablesNameConventionCheckerTest {
     final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
     for (final BaseElement baseElement : baseElements) {
       final BpmnElement element = new BpmnElement(PATH, baseElement);
-      Map<String, ProcessVariable> variables = new ProcessVariableReader(null, null)
+      Map<String, ProcessVariable> variables = new ProcessVariableReader(null, beanMapping)
           .getVariablesFromElement(element, cl);
       element.setProcessVariables(variables);
 
@@ -90,14 +95,26 @@ public class ProcessVariablesNameConventionCheckerTest {
     final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
     for (final BaseElement baseElement : baseElements) {
       final BpmnElement element = new BpmnElement(PATH, baseElement);
-      Map<String, ProcessVariable> variables = new ProcessVariableReader(null, null)
+      Map<String, ProcessVariable> variables = new ProcessVariableReader(null, beanMapping)
           .getVariablesFromElement(element, cl);
       element.setProcessVariables(variables);
 
       issues.addAll(checker.check(element, cl));
     }
+    int externalConventions = 0;
+    int internalConventions = 0;
+    for (CheckerIssue issue : issues) {
+      if (issue.getMessage().contains("external")) {
+        externalConventions++;
+      }
+      if (issue.getMessage().contains("internal")) {
+        internalConventions++;
+      }
+    }
 
-    assertEquals(3, issues.size());
+    assertEquals(4, issues.size());
+    assertEquals(1, internalConventions);
+    assertEquals(3, externalConventions);
   }
 
   /**
@@ -111,6 +128,7 @@ public class ProcessVariablesNameConventionCheckerTest {
     final Collection<String> fieldTypeNames = new ArrayList<String>();
     fieldTypeNames.add("Class");
     fieldTypeNames.add("ExternalScript");
+    fieldTypeNames.add("DelegateExpression");
 
     final ElementFieldTypes internalTypes = new ElementFieldTypes(fieldTypeNames, true);
 

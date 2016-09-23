@@ -30,7 +30,7 @@ public class XmlOutputWriter implements IssueOutputWriter {
     Writer writer = null;
     try {
       writer = new BufferedWriter(
-          new OutputStreamWriter(new FileOutputStream(ConstantsConfig.VALIDATION_OUTPUT), "utf-8"));
+          new OutputStreamWriter(new FileOutputStream(ConstantsConfig.VALIDATION_XML_OUTPUT), "utf-8"));
       final JAXBContext context = JAXBContext.newInstance(XmlCheckerIssues.class);
       final Marshaller m = context.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -59,17 +59,25 @@ public class XmlOutputWriter implements IssueOutputWriter {
       if (invalidPaths != null) {
         for (final Path path : invalidPaths) {
           List<BpmnElement> elements = path.getElements();
-          List<String> elementIds = new ArrayList<String>();
+          List<XmlPathElement> pathElements = new ArrayList<XmlPathElement>();
           for (final BpmnElement element : elements) {
-            elementIds.add(element.getBaseElement().getId());
+            String elementName = element.getBaseElement().getAttributeValue("name");
+            if (elementName != null) {
+              // filter newlines
+              elementName = elementName.replace("\n", "");
+            }
+            pathElements.add(new XmlPathElement(element.getBaseElement().getId(), elementName));
           }
-          xmlPaths.add(new XmlPath(elementIds));
+          xmlPaths.add(new XmlPath(pathElements));
         }
       }
-      xmlIssues.addIssue(
-          new XmlCheckerIssue(issue.getId(), issue.getRuleName(), issue.getClassification().name(),
-              issue.getBpmnFile(), issue.getResourceFile(), issue.getElementId(),
-              issue.getMessage(), issue.getVariable(), xmlPaths.isEmpty() ? null : xmlPaths));
+      final String elementName = issue.getElementName();
+      xmlIssues.addIssue(new XmlCheckerIssue(issue.getId(), issue.getRuleName(),
+          issue.getClassification().name(), issue.getBpmnFile(), issue.getResourceFile(),
+          issue.getElementId(), elementName == null ? null : elementName.replace("\n", ""),
+          issue.getMessage(), issue.getVariable(),
+          issue.getAnomaly() == null ? null : issue.getAnomaly().getDescription(),
+          xmlPaths.isEmpty() ? null : xmlPaths));
     }
     return xmlIssues;
   }

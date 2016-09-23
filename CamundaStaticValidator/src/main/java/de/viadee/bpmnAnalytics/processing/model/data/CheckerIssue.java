@@ -23,7 +23,11 @@ public class CheckerIssue {
 
   private String elementId;
 
+  private String elementName;
+
   private String variable;
+
+  private Anomaly anomaly;
 
   private List<Path> invalidPaths;
 
@@ -34,15 +38,18 @@ public class CheckerIssue {
 
   public CheckerIssue(final String ruleName, final CriticalityEnum classification,
       final String bpmnFile, final String resourceFile, final String elementId,
-      final String variable, final List<Path> invalidPaths, final String message) {
+      final String elementName, final String variable, final Anomaly anomaly,
+      final List<Path> invalidPaths, final String message) {
     super();
     this.ruleName = ruleName;
     this.variable = variable;
+    this.anomaly = anomaly;
     this.invalidPaths = invalidPaths;
     this.classification = classification;
     this.bpmnFile = bpmnFile;
     this.resourceFile = resourceFile;
     this.elementId = elementId;
+    this.elementName = elementName;
     this.message = message;
   }
 
@@ -57,6 +64,10 @@ public class CheckerIssue {
 
   public String getVariable() {
     return variable;
+  }
+
+  public Anomaly getAnomaly() {
+    return anomaly;
   }
 
   public List<Path> getInvalidPaths() {
@@ -79,6 +90,10 @@ public class CheckerIssue {
     return elementId;
   }
 
+  public String getElementName() {
+    return elementName;
+  }
+
   public String getMessage() {
     return message;
   }
@@ -93,6 +108,10 @@ public class CheckerIssue {
 
   public void setElementId(final String elementId) {
     this.elementId = elementId;
+  }
+
+  public void setElementName(final String elementName) {
+    this.elementName = elementName;
   }
 
   public void setMessage(final String message) {
