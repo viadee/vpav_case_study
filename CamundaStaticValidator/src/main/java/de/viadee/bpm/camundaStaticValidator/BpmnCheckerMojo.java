@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 
 /*
@@ -54,7 +54,7 @@ import de.viadee.bpm.camundaStaticValidator.processing.model.data.CriticalityEnu
 @Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class BpmnCheckerMojo extends AbstractMojo {
 
-  private static Logger logger = Logger.getLogger(BpmnCheckerMojo.class);
+  private static Logger logger = Logger.getLogger(BpmnCheckerMojo.class.getName());
 
   @Parameter(defaultValue = "${project}", required = true, readonly = true)
   private MavenProject project;
