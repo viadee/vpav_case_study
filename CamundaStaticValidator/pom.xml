@@ -2,16 +2,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>72_Tophinke_StatischeAnalyseBPM</groupId>
-  <artifactId>72_Tophinke_StatischeAnalyseBPM</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
+  <groupId>de.viadee.bpm</groupId>
+  <artifactId>CamundaStaticValidator</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>72_Tophinke_StatischeAnalyseBPM Maven Plugin</name>
+  <name>CamundaStaticValidator Maven Plugin</name>
 
 
   <!-- FIXME change it to the project's website -->
-  <url>http://maven.apache.org</url>
+  <url>https://confluence.intern.viadee.de/pages/viewpage.action?pageId=8290523</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
