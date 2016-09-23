@@ -100,7 +100,7 @@
       <bpmn:incoming>SequenceFlow_06ehu4z</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0btqo3y</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpmnAnalytics.delegates.DelegateWithVariablesAgainstConvention">
+    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpm.camundaStaticValidator.delegates.DelegateWithVariablesAgainstConvention">
       <bpmn:extensionElements>
         <camunda:executionListener expression="${execution.setVariable(&#34;hallo&#34;, &#34;10&#34;)}" event="start" />
       </bpmn:extensionElements>

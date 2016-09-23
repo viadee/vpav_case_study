@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_1aapyv6</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="ServiceTask_108g52x" name="Service Task 1" camunda:class="de.viadee.bpmnAnalytics.TestDelegate2">
+    <bpmn:serviceTask id="ServiceTask_108g52x" name="Service Task 1" camunda:class="de.viadee.bpm.camundaStaticValidator.TestDelegate2">
       <bpmn:incoming>SequenceFlow_1aapyv6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0znqs8t</bpmn:outgoing>
     </bpmn:serviceTask>

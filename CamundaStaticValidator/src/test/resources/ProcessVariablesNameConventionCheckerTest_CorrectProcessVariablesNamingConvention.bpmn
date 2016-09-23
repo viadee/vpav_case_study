@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_1aapyv6</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpmnAnalytics.delegates.DelegateWithCorrectVariable">
+    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpm.camundaStaticValidator.delegates.DelegateWithCorrectVariable">
       <bpmn:incoming>SequenceFlow_1aapyv6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1g7pl28</bpmn:outgoing>
     </bpmn:serviceTask>

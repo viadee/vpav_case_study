@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_1aapyv6</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpmnAnalytics.delegates.TestDelegate">
+    <bpmn:serviceTask id="ServiceTask_108g52x" name="Rechnung abschicken" camunda:class="de.viadee.bpm.camundaStaticValidator.delegates.TestDelegate">
       <bpmn:extensionElements>
         <camunda:executionListener expression="${event == true}" event="start" />
         <camunda:executionListener event="start">
