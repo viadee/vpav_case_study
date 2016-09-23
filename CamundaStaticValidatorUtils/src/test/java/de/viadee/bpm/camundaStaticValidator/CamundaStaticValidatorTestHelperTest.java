@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class StaticBpmnAnalysisTestHelperTest 
+public class CamundaStaticValidatorTestHelperTest 
     extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class StaticBpmnAnalysisTestHelperTest
      *
      * @param testName name of the test case
      */
-    public StaticBpmnAnalysisTestHelperTest( String testName )
+    public CamundaStaticValidatorTestHelperTest( String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class StaticBpmnAnalysisTestHelperTest
      */
     public static Test suite()
     {
-        return new TestSuite( StaticBpmnAnalysisTestHelperTest.class );
+        return new TestSuite( CamundaStaticValidatorTestHelperTest.class );
     }
 
     /**

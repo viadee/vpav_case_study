@@ -20,10 +20,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Helper methods for Maven Plugin 72_Tophinke_StatischeAnalyseBPMN
+ * Helper methods for Maven Plugin CamundaStaticValidator
  *
  */
-public final class StaticBpmnAnalysisTestHelper {
+public final class CamundaStaticValidatorTestHelper {
 
     /**
      * Generates bean mapping file for a ApplicationContext
