@@ -108,7 +108,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-          <goalPrefix>test</goalPrefix>
+          <goalPrefix>CamundaStaticValidator</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
           <source>1.7</source>
           <target>1.7</target>
