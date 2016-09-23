@@ -111,7 +111,7 @@ public class JavaDelegateChecker implements ElementChecker {
             element.getProcessdefinition(), classPath, bpmnElement.getAttributeValue("id"),
             bpmnElement.getAttributeValue("name"), null, null, null,
             "class for task '" + bpmnElement.getAttributeValue("name")
-                + "' not implement interface JavaDelegate"));
+                + "' does not implement interface JavaDelegate"));
       }
 
     } catch (final ClassNotFoundException e) {
