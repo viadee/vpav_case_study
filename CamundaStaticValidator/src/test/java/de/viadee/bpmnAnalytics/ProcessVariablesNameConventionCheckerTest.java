@@ -58,7 +58,8 @@ public class ProcessVariablesNameConventionCheckerTest {
    */
   @Test
   public void testCorrectProcessVariableNames() {
-    final String PATH = BASE_PATH + "testCorrectProcessVariablesNamingConvention.bpmn";
+    final String PATH = BASE_PATH
+        + "ProcessVariablesNameConventionCheckerTest_CorrectProcessVariablesNamingConvention.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -84,7 +85,8 @@ public class ProcessVariablesNameConventionCheckerTest {
    */
   @Test
   public void testWrongProcessVariableNames() {
-    final String PATH = BASE_PATH + "testWrongProcessVariablesNamingConvention.bpmn";
+    final String PATH = BASE_PATH
+        + "ProcessVariablesNameConventionCheckerTest_WrongProcessVariablesNamingConvention.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

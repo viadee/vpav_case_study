@@ -4,7 +4,7 @@
 
   <groupId>72_Tophinke_StatischeAnalyseBPM</groupId>
   <artifactId>72_Tophinke_StatischeAnalyseBPM</artifactId>
-  <version>2.0.0-RELEASE</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>72_Tophinke_StatischeAnalyseBPM Maven Plugin</name>
@@ -70,6 +70,11 @@
 	  <artifactId>commons-io</artifactId>
 	  <version>2.4</version>
     </dependency>	
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.1</version>
+	</dependency>
     <dependency>
 	  <groupId>log4j</groupId>
 	  <artifactId>log4j</artifactId>

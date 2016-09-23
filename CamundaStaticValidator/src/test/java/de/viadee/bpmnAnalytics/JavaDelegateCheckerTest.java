@@ -47,7 +47,7 @@ public class JavaDelegateCheckerTest {
    */
   @Test
   public void testCorrectJavaDelegateReference() {
-    final String PATH = BASE_PATH + "testCorrectJavaDelegateReference.bpmn";
+    final String PATH = BASE_PATH + "JavaDelegateCheckerTest_CorrectJavaDelegateReference.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -69,7 +69,7 @@ public class JavaDelegateCheckerTest {
    */
   @Test
   public void testNoTechnicalAttributes() {
-    final String PATH = BASE_PATH + "testNoTechnicalAttributes.bpmn";
+    final String PATH = BASE_PATH + "JavaDelegateCheckerTest_NoTechnicalAttributes.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -94,7 +94,7 @@ public class JavaDelegateCheckerTest {
    */
   @Test
   public void testNoJavaDelegateEntered() {
-    final String PATH = BASE_PATH + "testNoJavaDelegateEntered.bpmn";
+    final String PATH = BASE_PATH + "JavaDelegateCheckerTest_NoJavaDelegateEntered.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -119,7 +119,7 @@ public class JavaDelegateCheckerTest {
    */
   @Test
   public void testWrongJavaDelegatePath() {
-    final String PATH = BASE_PATH + "testWrongJavaDelegatePath.bpmn";
+    final String PATH = BASE_PATH + "JavaDelegateCheckerTest_WrongJavaDelegatePath.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -144,7 +144,7 @@ public class JavaDelegateCheckerTest {
    */
   @Test
   public void testWrongJavaDelegateInterface() {
-    final String PATH = BASE_PATH + "testWrongJavaDelegateInterface.bpmn";
+    final String PATH = BASE_PATH + "JavaDelegateCheckerTest_WrongJavaDelegateInterface.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

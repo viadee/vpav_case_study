@@ -29,8 +29,8 @@ public class XmlOutputWriter implements IssueOutputWriter {
 
     Writer writer = null;
     try {
-      writer = new BufferedWriter(
-          new OutputStreamWriter(new FileOutputStream(ConstantsConfig.VALIDATION_XML_OUTPUT), "utf-8"));
+      writer = new BufferedWriter(new OutputStreamWriter(
+          new FileOutputStream(ConstantsConfig.VALIDATION_XML_OUTPUT), "utf-8"));
       final JAXBContext context = JAXBContext.newInstance(XmlCheckerIssues.class);
       final Marshaller m = context.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -40,7 +40,6 @@ public class XmlOutputWriter implements IssueOutputWriter {
     } catch (final FileNotFoundException e) {
       throw new OutputWriterException("output file couldn't be generated");
     } catch (final JAXBException e) {
-      e.printStackTrace();
       throw new OutputWriterException("xml output couldn't be generated (jaxb-error)");
     } finally {
       try {

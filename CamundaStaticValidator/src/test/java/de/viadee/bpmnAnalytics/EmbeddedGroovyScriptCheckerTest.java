@@ -44,7 +44,7 @@ public class EmbeddedGroovyScriptCheckerTest {
    */
   @Test
   public void testEmptyScriptReference() {
-    final String PATH = BASE_PATH + "testEmptyScriptReference.bpmn";
+    final String PATH = BASE_PATH + "EmbeddedGroovyScriptCheckerTest_EmptyScriptReference.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -68,7 +68,7 @@ public class EmbeddedGroovyScriptCheckerTest {
    */
   @Test
   public void testEmptyScriptFormat() {
-    final String PATH = BASE_PATH + "testEmptyScriptFormat.bpmn";
+    final String PATH = BASE_PATH + "EmbeddedGroovyScriptCheckerTest_EmptyScriptFormat.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -92,7 +92,7 @@ public class EmbeddedGroovyScriptCheckerTest {
    */
   @Test
   public void testEmptyScript() {
-    final String PATH = BASE_PATH + "testEmptyScript.bpmn";
+    final String PATH = BASE_PATH + "EmbeddedGroovyScriptCheckerTest_EmptyScript.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -116,7 +116,7 @@ public class EmbeddedGroovyScriptCheckerTest {
    */
   @Test
   public void testInvalidGroovyScript() {
-    final String PATH = BASE_PATH + "testInvalidGroovyScript.bpmn";
+    final String PATH = BASE_PATH + "EmbeddedGroovyScriptCheckerTest_InvalidGroovyScript.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

@@ -43,7 +43,7 @@ public class VersioningCheckerTest {
    */
   @Test
   public void testJavaClassVersioning() {
-    final String PATH = BASE_PATH + "testJavaClassVersioning.bpmn";
+    final String PATH = BASE_PATH + "VersioningCheckerTest_JavaClassVersioning.bpmn";
 
     final Rule rule = new Rule("VersioningChecker", true, null, null, null);
 
@@ -69,7 +69,7 @@ public class VersioningCheckerTest {
    */
   @Test
   public void testScriptVersioning() {
-    final String PATH = BASE_PATH + "testScriptVersioning.bpmn";
+    final String PATH = BASE_PATH + "VersioningCheckerTest_ScriptVersioning.bpmn";
 
     final Rule rule = new Rule("VersioningChecker", true, null, null, null);
 
@@ -95,7 +95,7 @@ public class VersioningCheckerTest {
    */
   @Test
   public void testBeanVersioningWithOutdatedClass() {
-    final String PATH = BASE_PATH + "testBeanVersioningOutdatedClass.bpmn";
+    final String PATH = BASE_PATH + "VersioningCheckerTest_BeanVersioningOutdatedClass.bpmn";
 
     final Map<String, Setting> settings = new HashMap<String, Setting>();
     settings.put("versioningSchemaClass",

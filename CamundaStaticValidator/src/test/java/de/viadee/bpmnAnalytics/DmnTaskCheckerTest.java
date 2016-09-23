@@ -46,8 +46,8 @@ public class DmnTaskCheckerTest {
    * Case: DMN task without a reference should produce an error
    */
   @Test
-  public void testDmnTask() {
-    final String PATH = BASE_PATH + "testDmnTask.bpmn";
+  public void testWrongDmnTask() {
+    final String PATH = BASE_PATH + "DmnTaskCheckerTest_WrongDmnTask.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

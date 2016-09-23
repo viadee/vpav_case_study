@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class GraphCreationTest {
    */
   @Test
   public void testGraph() {
-    final String PATH = BASE_PATH + "testGraphCreation.bpmn";
+    final String PATH = BASE_PATH + "ProcessVariablesModelCheckerTest_GraphCreation.bpmn";
     final File processdefinition = new File(PATH);
 
     // parse bpmn model
@@ -53,7 +54,7 @@ public class GraphCreationTest {
     final ElementGraphBuilder graphBuilder = new ElementGraphBuilder();
     // create data flow graphs
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
-        processdefinition.getPath(), cl);
+        processdefinition.getPath(), cl, new ArrayList<String>());
 
     // calculate invalid paths based on data flow graphs
     final Map<AnomalyContainer, List<Path>> invalidPathMap = graphBuilder

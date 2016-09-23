@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class LoopAnalysisTest {
    */
   @Test
   public void testLoop() {
-    final String PATH = BASE_PATH + "testLoopAnalysis.bpmn";
+    final String PATH = BASE_PATH + "LoopAnalysisTest_TestLoop.bpmn";
     final File processdefinition = new File(PATH);
 
     // parse bpmn model
@@ -49,7 +50,7 @@ public class LoopAnalysisTest {
     final ElementGraphBuilder graphBuilder = new ElementGraphBuilder();
     // create data flow graphs
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
-        processdefinition.getPath(), cl);
+        processdefinition.getPath(), cl, new ArrayList<String>());
 
     graphBuilder.createInvalidPaths(graphCollection);
 

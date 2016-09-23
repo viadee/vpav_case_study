@@ -1,6 +1,7 @@
 package de.viadee.bpmnAnalytics.processing.model.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,12 @@ public class BpmnElement {
   private Map<String, InOutState> in = new HashMap<String, InOutState>();
 
   private Map<String, InOutState> out = new HashMap<String, InOutState>();
+
+  /* in interface for call activity */
+  private Collection<String> inCa;
+
+  /* out interface for call activity */
+  private Collection<String> outCa;
 
   private Map<String, ProcessVariable> processVariables;
 
@@ -83,12 +90,41 @@ public class BpmnElement {
 
   public void setIn(final Map<String, InOutState> outPredecessor) {
     this.in = outPredecessor;
+    // TODO: call activity (create own method)
+    if (inCa != null) {
+      final Collection<String> removeCandidates = new ArrayList<String>();
+      for (final String variable : in.keySet()) {
+        if (!inCa.contains(variable)) {
+          removeCandidates.add(variable);
+        }
+      }
+      for (final String var : removeCandidates) {
+        in.remove(var);
+      }
+    }
   }
 
   public void setOut() {
     out.putAll(defined());
     changeStatusToRead(in);
     out.putAll(killed());
+    // TODO: call activity (create own method)
+    if (outCa != null) {
+      final Collection<String> removeCandidates = new ArrayList<String>();
+      for (final String variable : out.keySet()) {
+        if (!outCa.contains(variable)) {
+          removeCandidates.add(variable);
+        } else {
+          final InOutState state = out.get(variable);
+          if (state == InOutState.DELETED) {
+            removeCandidates.add(variable);
+          }
+        }
+      }
+      for (final String var : removeCandidates) {
+        out.remove(var);
+      }
+    }
   }
 
   private Map<String, InOutState> used() {
@@ -121,6 +157,14 @@ public class BpmnElement {
       }
     }
     return killedVariables;
+  }
+
+  public void setInCa(final Collection<String> in) {
+    this.inCa = in;
+  }
+
+  public void setOutCa(final Collection<String> out) {
+    this.outCa = out;
   }
 
   public boolean ur(final String varName) {

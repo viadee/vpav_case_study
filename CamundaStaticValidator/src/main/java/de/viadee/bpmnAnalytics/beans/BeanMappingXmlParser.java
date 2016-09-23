@@ -15,6 +15,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * parses bean mapping file for recognition in the analysis
+ *
+ */
 public class BeanMappingXmlParser {
 
   public static Map<String, String> parse(final File beanMappingFile) {
@@ -25,7 +29,7 @@ public class BeanMappingXmlParser {
       final Document xmlDoc = readXmlDocumentFile(beanMappingFile);
       beanNamesCorrespondingClasses.putAll(readBeanNamesAndCorrespondingClasses(xmlDoc));
     } catch (final ParserConfigurationException | SAXException | IOException ex) {
-      throw new RuntimeException("bean mapping couldn't be loaded from beanMapping.xml");
+      throw new RuntimeException("bean mapping couldn't be loaded from beanMapping.xml", ex);
     }
 
     return beanNamesCorrespondingClasses;

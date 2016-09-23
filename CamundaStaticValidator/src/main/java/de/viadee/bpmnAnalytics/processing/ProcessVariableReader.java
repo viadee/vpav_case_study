@@ -437,8 +437,7 @@ public final class ProcessVariableReader {
     } else if (baseElement instanceof ScriptTask) {
       // Examine script task for process variables
       final ScriptTask scriptTask = (ScriptTask) baseElement;
-      if (scriptTask.getScriptFormat() != null && scriptTask.getScriptFormat() != null
-          && scriptTask.getScriptFormat().equals("groovy")) {
+      if (scriptTask.getScriptFormat() != null && scriptTask.getScriptFormat().equals("groovy")) {
         // inline script or external file?
         final Script script = scriptTask.getScript();
         if (script != null && script.getTextContent() != null

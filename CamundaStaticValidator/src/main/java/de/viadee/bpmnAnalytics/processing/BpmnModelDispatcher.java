@@ -28,7 +28,8 @@ import de.viadee.bpmnAnalytics.processing.model.graph.Path;
 public class BpmnModelDispatcher {
 
   public static Collection<CheckerIssue> dispatch(final File processdefinition,
-      final Map<String, String> decisionRefToPathMap, final Map<String, String> beanMapping,
+      final Map<String, String> decisionRefToPathMap, final Map<String, String> processIdToPathMap,
+      final Map<String, String> beanMapping,
       final Map<String, Collection<String>> messageIdToVariables,
       final Map<String, Collection<String>> processIdToVariables,
       final Collection<String> resourcesNewestVersions, final Map<String, Rule> conf,
@@ -42,11 +43,11 @@ public class BpmnModelDispatcher {
         .getModelElementsByType(BaseElement.class);
 
     final ElementGraphBuilder graphBuilder = new ElementGraphBuilder(decisionRefToPathMap,
-        beanMapping, messageIdToVariables, processIdToVariables);
+        processIdToPathMap, beanMapping, messageIdToVariables, processIdToVariables);
 
     // create data flow graphs for bpmn model
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
-        processdefinition.getPath(), cl);
+        processdefinition.getPath(), cl, new ArrayList<String>());
 
     // add data flow information to graph and calculate invalid paths
     final Map<AnomalyContainer, List<Path>> invalidPathMap = graphBuilder

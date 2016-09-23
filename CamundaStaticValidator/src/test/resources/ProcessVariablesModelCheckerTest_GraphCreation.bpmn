@@ -65,9 +65,6 @@
       <bpmn:sequenceFlow id="SequenceFlow_0jkf21p" sourceRef="StartEvent_0bcezfo" targetRef="SubProcess_0aqkwyh" />
       <bpmn:sequenceFlow id="SequenceFlow_0gxaqnk" sourceRef="SubProcess_0aqkwyh" targetRef="EndEvent_0tlartu" />
     </bpmn:subProcess>
-    <bpmn:boundaryEvent id="BoundaryEvent_11udorz" attachedToRef="Task_11t5rso">
-      <bpmn:outgoing>SequenceFlow_0bi6kaa</bpmn:outgoing>
-    </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0yhv5j2" sourceRef="ServiceTask_108g52x" targetRef="ServiceTask_05g4a96">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${execution.setVariable("validVar", true)}]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -113,6 +110,9 @@
     <bpmn:sequenceFlow id="SequenceFlow_1aapyv6" sourceRef="StartEvent_1" targetRef="ServiceTask_108g52x">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${execution.setVariable("jepppa", true)}]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:boundaryEvent id="BoundaryEvent_11udorz" attachedToRef="Task_11t5rso">
+      <bpmn:outgoing>SequenceFlow_0bi6kaa</bpmn:outgoing>
+    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1bndksh">
@@ -198,12 +198,6 @@
           <dc:Bounds x="904" y="94" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BoundaryEvent_11udorz_di" bpmnElement="BoundaryEvent_11udorz">
-        <dc:Bounds x="809" y="215" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="782" y="251" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0bi6kaa_di" bpmnElement="SequenceFlow_0bi6kaa">
         <di:waypoint xsi:type="dc:Point" x="845" y="233" />
         <di:waypoint xsi:type="dc:Point" x="909" y="233" />
@@ -336,6 +330,12 @@
           <dc:Bounds x="157" y="94" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_11udorz_di" bpmnElement="BoundaryEvent_11udorz">
+        <dc:Bounds x="809" y="215" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="782" y="251" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -38,7 +38,7 @@ public class ProcessVariableReaderTest {
 
   @Test
   public void testRecogniseVariablesInClass() {
-    final String PATH = BASE_PATH + "testProcessVariableReader.bpmn";
+    final String PATH = BASE_PATH + "ProcessVariableReaderTest_RecogniseVariablesInClass.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -56,7 +56,7 @@ public class ProcessVariableReaderTest {
 
   @Test
   public void testRecogniseInputOutputAssociations() {
-    final String PATH = BASE_PATH + "testInputOutputCallActivity.bpmn";
+    final String PATH = BASE_PATH + "ProcessVariableReaderTest_InputOutputCallActivity.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

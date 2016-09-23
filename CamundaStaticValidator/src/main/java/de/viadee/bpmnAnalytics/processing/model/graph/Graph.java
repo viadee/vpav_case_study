@@ -6,6 +6,7 @@ package de.viadee.bpmnAnalytics.processing.model.graph;
  * A class for a directed graph. Implemented by an adjacency list representation of a graph.
  */
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,18 +22,51 @@ import de.viadee.bpmnAnalytics.processing.model.data.InOutState;
 
 public class Graph implements IGraph {
 
+  private String processId;
+
   private Map<BpmnElement, List<Edge>> adjacencyListSucessor; // [vertices] -> [edge]
 
   private Map<BpmnElement, List<Edge>> adjacencyListPredecessor; // [vertices] -> [edge]
 
   private Map<BpmnElement, VertexInfo> vertexInfo; // [vertex] -> [info]
 
-  public Graph() {
+  private Collection<BpmnElement> startNodes = new ArrayList<BpmnElement>();
+
+  private Collection<BpmnElement> endNodes = new ArrayList<BpmnElement>();
+
+  public Graph(final String processId) {
+    this.processId = processId;
     this.adjacencyListSucessor = new HashMap<BpmnElement, List<Edge>>();
     this.adjacencyListPredecessor = new HashMap<BpmnElement, List<Edge>>();
     this.vertexInfo = new HashMap<BpmnElement, VertexInfo>();
   }
 
+  @Override
+  public String getProcessId() {
+    return processId;
+  }
+
+  @Override
+  public void addStartNode(final BpmnElement node) {
+    startNodes.add(node);
+  }
+
+  @Override
+  public Collection<BpmnElement> getStartNodes() {
+    return startNodes;
+  }
+
+  @Override
+  public void addEndNode(final BpmnElement node) {
+    endNodes.add(node);
+  }
+
+  @Override
+  public Collection<BpmnElement> getEndNodes() {
+    return endNodes;
+  }
+
+  @Override
   public void addVertex(BpmnElement v) {
     if (v == null) {
       throw new IllegalArgumentException("null");
@@ -43,6 +77,17 @@ public class Graph implements IGraph {
     vertexInfo.put(v, new VertexInfo(v));
   }
 
+  @Override
+  public Collection<BpmnElement> getVertices() {
+    return vertexInfo.keySet();
+  }
+
+  @Override
+  public Collection<List<Edge>> getEdges() {
+    return adjacencyListSucessor.values();
+  }
+
+  @Override
   public void addEdge(BpmnElement from, BpmnElement to, int weight) {
     // add successor
     List<Edge> edgeSucessorList = adjacencyListSucessor.get(from);
@@ -63,6 +108,7 @@ public class Graph implements IGraph {
     edgePredecessorList.add(newPredecessorEdge);
   }
 
+  @Override
   public void removeEdge(BpmnElement from, BpmnElement to) {
     final List<Edge> edgeSucessorList = adjacencyListSucessor.get(from);
     Edge foundEdge = null;
@@ -85,10 +131,12 @@ public class Graph implements IGraph {
     edgePredecessorList.remove(foundEdge);
   }
 
+  @Override
   public boolean hasEdge(BpmnElement from, BpmnElement to) {
     return getEdge(from, to) != null;
   }
 
+  @Override
   public Edge getEdge(BpmnElement from, BpmnElement to) {
     List<Edge> edgeList = adjacencyListSucessor.get(from);
     if (edgeList == null) {
@@ -108,6 +156,7 @@ public class Graph implements IGraph {
    * set anomaly information on data flow graph
    * 
    */
+  @Override
   public void setAnomalyInformation(final BpmnElement source) {
     setAnomalyInformationRecursive(source, new LinkedList<BpmnElement>());
   }
@@ -192,6 +241,7 @@ public class Graph implements IGraph {
   /**
    * get nodes with data flow anomalies
    */
+  @Override
   public Map<BpmnElement, List<AnomalyContainer>> getNodesWithAnomalies() {
 
     final Map<BpmnElement, List<AnomalyContainer>> anomalies = new HashMap<BpmnElement, List<AnomalyContainer>>();
@@ -207,6 +257,7 @@ public class Graph implements IGraph {
    * source:
    * http://codereview.stackexchange.com/questions/45678/find-all-paths-from-source-to-destination
    */
+  @Override
   public List<Path> getAllInvalidPaths(final BpmnElement source, final AnomalyContainer anomaly) {
     final List<Path> paths = getAllInvalidPathsRecursive(source, anomaly,
         new LinkedList<BpmnElement>());

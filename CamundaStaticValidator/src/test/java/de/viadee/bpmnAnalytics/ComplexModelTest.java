@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ComplexModelTest {
    */
   @Test
   public void testGraphOnComplexModel() {
-    final String PATH = BASE_PATH + "testComplexModel.bpmn";
+    final String PATH = BASE_PATH + "ComplexModelTest_GraphOnComplexModel.bpmn";
     final File processdefinition = new File(PATH);
 
     // parse bpmn model
@@ -67,11 +68,11 @@ public class ComplexModelTest {
 
     long startTime = System.currentTimeMillis();
 
-    final ElementGraphBuilder graphBuilder = new ElementGraphBuilder(decisionRefToPathMap,
+    final ElementGraphBuilder graphBuilder = new ElementGraphBuilder(decisionRefToPathMap, null,
         beanMappings, null, null);
     // create data flow graphs
     final Collection<IGraph> graphCollection = graphBuilder.createProcessGraph(modelInstance,
-        processdefinition.getPath(), cl);
+        processdefinition.getPath(), cl, new ArrayList<String>());
 
     long estimatedTime = System.currentTimeMillis() - startTime;
     System.out.println("Graph creation: " + estimatedTime + "ms");

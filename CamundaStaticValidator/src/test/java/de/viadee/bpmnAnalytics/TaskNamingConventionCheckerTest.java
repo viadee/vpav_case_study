@@ -46,7 +46,8 @@ public class TaskNamingConventionCheckerTest {
    */
   @Test
   public void testCorrectTaskNamingConvention() {
-    final String PATH = BASE_PATH + "testCorrectTaskNamingConvention.bpmn";
+    final String PATH = BASE_PATH
+        + "TaskNamingConventionCheckerTest_CorrectTaskNamingConvention.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -70,7 +71,8 @@ public class TaskNamingConventionCheckerTest {
    */
   @Test
   public void testWrongTaskNamingConvention() {
-    final String PATH = BASE_PATH + "testWrongTaskNamingConvention.bpmn";
+    final String PATH = BASE_PATH
+        + "TaskNamingConventionCheckerTest_WrongTaskNamingConvention.bpmn";
 
     // parse bpmn model
     final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));

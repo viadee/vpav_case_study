@@ -5,11 +5,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.IOUtils;
 
 import groovyjarjarasm.asm.ClassReader;
@@ -20,6 +23,7 @@ import groovyjarjarasm.asm.Opcodes;
 /**
  * scan process variables, which are set in outer java classes
  *
+ * important TODO: variables to bpmn element (message correlation)
  */
 public class OuterProcessVariablesScanner {
 
@@ -39,7 +43,7 @@ public class OuterProcessVariablesScanner {
 
   /**
    * scan variables
-   * 
+   *
    * @throws IOException
    */
   public void scanProcessVariables() throws IOException {
@@ -49,9 +53,23 @@ public class OuterProcessVariablesScanner {
         if (content != null) {
           final Collection<String> processVariables = readProcessVariables(filePath);
           if (!processVariables.isEmpty()) {
-            final Collection<String> messageIds = checkStartProcessByMessageIdPattern(content);
+            // if correlateMessage and startProcessInstanceByMessage called
+            // together in one class take the intersection to avoid duplicates
+            final Set<String> messageIds = new HashSet<String>();
+            messageIds.addAll(checkStartProcessByMessageIdPattern(content));
+            messageIds.addAll(checkCorrelateMessagePattern(content));
             for (final String messageId : messageIds) {
-              messageIdToVariableMap.put(messageId, processVariables);
+              if (messageIdToVariableMap.containsKey(messageId)) {
+                // if messageId is already set, create intersection of variables and overwrite map
+                // item
+                final Collection<String> existingProcessVariables = messageIdToVariableMap
+                    .get(messageId);
+                final List<String> intersectionProcessVariables = ListUtils.intersection(
+                    (List<String>) existingProcessVariables, (List<String>) processVariables);
+                messageIdToVariableMap.put(messageId, intersectionProcessVariables);
+              } else {
+                messageIdToVariableMap.put(messageId, processVariables);
+              }
             }
             final Collection<String> processIds = checkStartProcessByKeyPattern(content);
             for (final String processId : processIds) {
@@ -96,7 +114,7 @@ public class OuterProcessVariablesScanner {
           methodBody = IOUtils.toString(classLoader.getResourceAsStream(fileName));
         } catch (final IOException ex) {
           throw new RuntimeException(
-              "resource '" + fileName + "' could not be read: " + ex.getMessage());
+              "resource '" + fileName + "' could not be read: " + ex.getMessage(), ex);
         }
       }
     }
@@ -107,7 +125,7 @@ public class OuterProcessVariablesScanner {
    * check pattern for startProcessInstanceByMessage
    * 
    * @param code
-   * @return
+   * @return message ids
    */
   private Collection<String> checkStartProcessByMessageIdPattern(final String code) {
 
@@ -132,7 +150,7 @@ public class OuterProcessVariablesScanner {
    * check pattern for startProcessInstanceByKey
    * 
    * @param code
-   * @return
+   * @return process keys
    */
   private Collection<String> checkStartProcessByKeyPattern(final String code) {
 
@@ -151,6 +169,31 @@ public class OuterProcessVariablesScanner {
     }
 
     return processIds;
+  }
+
+  /**
+   * check pattern for correlateMessage
+   * 
+   * @param code
+   * @return message ids
+   */
+  private Collection<String> checkCorrelateMessagePattern(final String code) {
+
+    // remove special characters from code
+    final String FILTER_PATTERN = "'|\"| ";
+    final String cleanedCode = code.replaceAll(FILTER_PATTERN, "");
+
+    // search locations where variables are read
+    final Pattern pattern = Pattern.compile("\\.correlateMessage\\((\\w+),(.*)");
+    final Matcher matcher = pattern.matcher(cleanedCode);
+
+    final Collection<String> messageIds = new ArrayList<String>();
+    while (matcher.find()) {
+      final String match = matcher.group(1);
+      messageIds.add(match);
+    }
+
+    return messageIds;
   }
 
   /**
