@@ -1,0 +1,311 @@
+[
+  {
+    "id": "aad8453177d32ed74d31a7293854c3dd",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesModelChecker",
+    "elementId": "sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6",
+    "elementName": "Konto des VN ermitteln",
+    "classification": "ERROR",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/KontoErmittelnDelegate_1_0.java",
+    "variable": "ext_vertrag",
+    "anomaly": "undefined-read",
+    "paths": [
+      [
+        {
+          "elementId": "sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8",
+          "elementName": "Leistungs-anspruch prüfen"
+        },
+        {
+          "elementId": "sid-2E1B8972-BFF9-48F2-8F0B-153026CEA5D5"
+        },
+        {
+          "elementId": "sid-D8512EA4-1D0B-41BA-B945-758A92127B21",
+          "elementName": "Besteht Versicherungsschutz?"
+        },
+        {
+          "elementId": "sid-0FDDF026-08CA-4AAB-9C8B-75AF8CF21ABA",
+          "elementName": "ja"
+        },
+        {
+          "elementId": "sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6",
+          "elementName": "Konto des VN ermitteln"
+        }
+      ]
+    ],
+    "message": "process variable creates an anomaly (compare Details, Delegate Expression)"
+  },
+  {
+    "id": "ba7c27679d878307e9f5ad65901fcb2d",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesModelChecker",
+    "elementId": "sid-CD42EBF4-2128-46D4-8F07-15196AF68641",
+    "elementName": "Sachbearbeiter per Mail informieren",
+    "classification": "ERROR",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/SachbearbeiterInformierenDelegate_1_0.java",
+    "variable": "ext_useremail",
+    "anomaly": "undefined-read",
+    "paths": [
+      [
+        {
+          "elementId": "sid-C96E47EE-4F71-4671-AEED-47D7853E64F6",
+          "elementName": "Schadenmeldungeingetroffen"
+        },
+        {
+          "elementId": "sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12"
+        },
+        {
+          "elementId": "sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C",
+          "elementName": "VSNR übergeben?"
+        },
+        {
+          "elementId": "sid-050F66DC-777E-49F9-B001-970F87C47372",
+          "elementName": "Ja"
+        },
+        {
+          "elementId": "sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33"
+        },
+        {
+          "elementId": "sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C"
+        },
+        {
+          "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+          "elementName": "Vertrag anhand VSNR lesen"
+        },
+        {
+          "elementId": "sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D"
+        },
+        {
+          "elementId": "sid-73C4C8D1-F0CF-4531-BBAF-6FB0F491FA56",
+          "elementName": "Schaden anlegen"
+        },
+        {
+          "elementId": "sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE"
+        },
+        {
+          "elementId": "sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8",
+          "elementName": "Leistungs-anspruch prüfen"
+        },
+        {
+          "elementId": "sid-2E1B8972-BFF9-48F2-8F0B-153026CEA5D5"
+        },
+        {
+          "elementId": "sid-D8512EA4-1D0B-41BA-B945-758A92127B21",
+          "elementName": "Besteht Versicherungsschutz?"
+        },
+        {
+          "elementId": "sid-5973171C-3C73-48FE-807B-4A274BC15019",
+          "elementName": "nein"
+        },
+        {
+          "elementId": "sid-CD42EBF4-2128-46D4-8F07-15196AF68641",
+          "elementName": "Sachbearbeiter per Mail informieren"
+        }
+      ]
+    ],
+    "message": "process variable creates an anomaly (compare Details, Delegate Expression)"
+  },
+  {
+    "id": "f05b7931b5533dec3488a9ab9d60df94",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesModelChecker",
+    "elementId": "sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8",
+    "elementName": "Leistungs-anspruch \nprüfen",
+    "classification": "WARNING",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/LeistungsanspruchPruefenDelegate_1_0.java",
+    "variable": "ext_vertrag",
+    "anomaly": "defined-undefined",
+    "paths": [
+      [
+        {
+          "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+          "elementName": "Vertrag anhand VSNR lesen"
+        },
+        {
+          "elementId": "sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D"
+        },
+        {
+          "elementId": "sid-73C4C8D1-F0CF-4531-BBAF-6FB0F491FA56",
+          "elementName": "Schaden anlegen"
+        },
+        {
+          "elementId": "sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE"
+        },
+        {
+          "elementId": "sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8",
+          "elementName": "Leistungs-anspruch prüfen"
+        }
+      ]
+    ],
+    "message": "process variable creates an anomaly (compare Details, Delegate Expression)"
+  },
+  {
+    "id": "1c623db07f129679ca861abbb6259cc5",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesModelChecker",
+    "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+    "elementName": "Vertrag anhand VSNR lesen",
+    "classification": "WARNING",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/VertragErmittelnDelegate_1_0.java",
+    "variable": "ext_schaden",
+    "anomaly": "defined-defined",
+    "paths": [
+      [
+        {
+          "elementId": "sid-C96E47EE-4F71-4671-AEED-47D7853E64F6",
+          "elementName": "Schadenmeldungeingetroffen"
+        },
+        {
+          "elementId": "sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12"
+        },
+        {
+          "elementId": "sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C",
+          "elementName": "VSNR übergeben?"
+        },
+        {
+          "elementId": "sid-050F66DC-777E-49F9-B001-970F87C47372",
+          "elementName": "Ja"
+        },
+        {
+          "elementId": "sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33"
+        },
+        {
+          "elementId": "sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C"
+        },
+        {
+          "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+          "elementName": "Vertrag anhand VSNR lesen"
+        }
+      ],
+      [
+        {
+          "elementId": "sid-C96E47EE-4F71-4671-AEED-47D7853E64F6",
+          "elementName": "Schadenmeldungeingetroffen"
+        },
+        {
+          "elementId": "sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12"
+        },
+        {
+          "elementId": "sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C",
+          "elementName": "VSNR übergeben?"
+        },
+        {
+          "elementId": "sid-5706BFA7-1651-4569-8AA4-86F610922A50",
+          "elementName": "Nein"
+        },
+        {
+          "elementId": "sid-B70B9DC2-798A-4500-8757-BACCE156E8AE",
+          "elementName": "Versicherungsscheinnummer manuellermitteln"
+        },
+        {
+          "elementId": "sid-AC89A8AA-5111-4843-B690-B17A29B2E28E"
+        },
+        {
+          "elementId": "sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33"
+        },
+        {
+          "elementId": "sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C"
+        },
+        {
+          "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+          "elementName": "Vertrag anhand VSNR lesen"
+        }
+      ]
+    ],
+    "message": "process variable creates an anomaly (compare Details, Delegate Expression)"
+  },
+  {
+    "id": "3297a3c7e3f6864374268e8a4188224c",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "VersioningChecker",
+    "elementId": "sid-7D0E4D10-3116-4FDD-8B9F-B177D237CBCA",
+    "elementName": "Vertrag anhand VSNR lesen",
+    "classification": "WARNING",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/VertragErmittelnDelegate_1_0.java",
+    "paths": [],
+    "message": "bean reference is deprecated or file with version doesn\u0027t exist"
+  },
+  {
+    "id": "864618034d0b6dbef4122a2cccfa7ce6",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "JavaDelegateChecker",
+    "elementId": "sid-73C4C8D1-F0CF-4531-BBAF-6FB0F491FA56",
+    "elementName": "Schaden anlegen",
+    "classification": "WARNING",
+    "paths": [],
+    "message": "task \u0027Schaden anlegen\u0027 with no code reference yet"
+  },
+  {
+    "id": "d10440e8b286cf76a727f291be641bee",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "JavaDelegateChecker",
+    "elementId": "sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6",
+    "elementName": "Konto des VN ermitteln",
+    "classification": "ERROR",
+    "resourceFile": "de/viasurance/kfzglasbruch/delegate/KontoErmittelnDelegate_1_0.java",
+    "paths": [],
+    "message": "class for task \u0027Konto des VN ermitteln\u0027 not implement interface JavaDelegate"
+  },
+  {
+    "id": "e28437c20d54f9612592bf627e13b1b1",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesNameConventionChecker",
+    "elementId": "sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE",
+    "classification": "WARNING",
+    "variable": "schadenNr",
+    "paths": [],
+    "message": "process variable is against the naming convention \u0027internal\u0027 (compare Details, Expression)"
+  },
+  {
+    "id": "64689f4e0c095da1be4145e20553f677",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "ProcessVariablesNameConventionChecker",
+    "elementId": "sid-C96E47EE-4F71-4671-AEED-47D7853E64F6",
+    "elementName": "Schadenmeldung\neingetroffen",
+    "classification": "WARNING",
+    "variable": "dateiname",
+    "paths": [],
+    "message": "process variable is against the naming convention \u0027external\u0027 (compare OutstandingVariable, Class)"
+  },
+  {
+    "id": "0b1276dd4dde4246323c9f5f77721bb0",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "JavaDelegateChecker",
+    "elementId": "ScriptTask_17pb5vg",
+    "elementName": "Betrag berechnen",
+    "classification": "WARNING",
+    "paths": [],
+    "message": "task \u0027Betrag berechnen\u0027 with no code reference yet"
+  },
+  {
+    "id": "5007e0d400685e9130727565fe325a48",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "EmbeddedGroovyScriptChecker",
+    "elementId": "ScriptTask_17pb5vg",
+    "elementName": "Betrag berechnen",
+    "classification": "ERROR",
+    "paths": [],
+    "message": "startup failed:\r\nScript1.groovy: 1: unexpected token: % @ line 1, column 1.\r\n   %\u0026\u0026//((%\u0026\r\n   ^\r\n\r\n1 error\r\n"
+  },
+  {
+    "id": "1d7f13a5ba5b31fee811261bf35ca6c1",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "JavaDelegateChecker",
+    "elementId": "sid-948AEDAC-9E6D-4B1F-93BE-BB6D96741CA1",
+    "elementName": "Betrag auszahlen",
+    "classification": "ERROR",
+    "resourceFile": "de/viasurance/kfzglasbruch/BetragAuszahlenDelegate_1_0.java",
+    "paths": [],
+    "message": "class for task \u0027Betrag auszahlen\u0027 not found"
+  },
+  {
+    "id": "071b8bb2333da00946fd6ffe6b62bc31",
+    "bpmnFile": "src\\main\\resources\\KfzGlasbruch.bpmn",
+    "ruleName": "VersioningChecker",
+    "elementId": "sid-948AEDAC-9E6D-4B1F-93BE-BB6D96741CA1",
+    "elementName": "Betrag auszahlen",
+    "classification": "WARNING",
+    "resourceFile": "de/viasurance/kfzglasbruch/BetragAuszahlenDelegate_1_0.java",
+    "paths": [],
+    "message": "class reference is deprecated or file with version doesn\u0027t exist"
+  }
+]

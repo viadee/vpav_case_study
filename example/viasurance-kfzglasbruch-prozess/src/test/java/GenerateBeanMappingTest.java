@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.viadee.bpm.camundaStaticValidator.CamundaStaticValidatorTestHelper;
+import de.viadee.bpm.vPAV.ViadeeProcessApplicationValidatorTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
@@ -16,6 +16,6 @@ public class GenerateBeanMappingTest {
 
     @Test
     public void generateMapping() {
-        CamundaStaticValidatorTestHelper.generateBeanMappingFile(ctx);
+        ViadeeProcessApplicationValidatorTestHelper.generateBeanMappingFile(ctx);
     }
 }

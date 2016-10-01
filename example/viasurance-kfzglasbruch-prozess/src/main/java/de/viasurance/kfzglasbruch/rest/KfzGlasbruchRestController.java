@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.viadee.bpm.camundaStaticValidator.InitialProcessVariablesBase;
+import de.viadee.bpm.vPAV.InitialProcessVariablesBase;
 import de.viasurance.kfzglasbruch.config.EnvironmentProperties;
 import de.viasurance.model.Anhang;
 import de.viasurance.model.AnhangTyp;
