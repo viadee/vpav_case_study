@@ -51,7 +51,7 @@ public class OuterProcessVariablesScanner {
       if (!filePath.startsWith("javax")) {
         final String content = readResourceFile(filePath);
         if (content != null) {
-          final Collection<String> processVariables = readProcessVariables(filePath);
+          final Collection<String> processVariables = readVariablesOfInnerClassInitialProcessVariables(filePath);
           if (!processVariables.isEmpty()) {
             // if correlateMessage and startProcessInstanceByMessage called
             // together in one class take the intersection to avoid duplicates
@@ -196,14 +196,15 @@ public class OuterProcessVariablesScanner {
     return messageIds;
   }
 
-  /**
-   * examine process variables for class (use bytecode analysis)
-   * 
-   * @param filePath
-   * @return
-   * @throws IOException
-   */
-  private Collection<String> readProcessVariables(final String filePath) throws IOException {
+    /**
+     * For given filePath returns fields of inner class InitialProcessVariables. This class is used to initialize the
+     * process
+     * 
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
+  private Collection<String> readVariablesOfInnerClassInitialProcessVariables(final String filePath) throws IOException {
 
     final Collection<String> processVariables = new ArrayList<String>();
 
