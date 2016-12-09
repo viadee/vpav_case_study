@@ -51,8 +51,8 @@ public class OuterProcessVariablesScanner {
       if (!filePath.startsWith("javax")) {
         final String content = readResourceFile(filePath);
         if (content != null) {
-          final Collection<String> processVariables = readVariablesOfInnerClassInitialProcessVariables(filePath);
-          if (!processVariables.isEmpty()) {
+          final Collection<String> initialProcessVariablesInFilePath = readVariablesOfInnerClassInitialProcessVariables(filePath);
+          if (!initialProcessVariablesInFilePath.isEmpty()) {
             // if correlateMessage and startProcessInstanceByMessage called
             // together in one class take the intersection to avoid duplicates
             final Set<String> messageIds = new HashSet<String>();
@@ -65,15 +65,15 @@ public class OuterProcessVariablesScanner {
                 final Collection<String> existingProcessVariables = messageIdToVariableMap
                     .get(messageId);
                 final List<String> intersectionProcessVariables = ListUtils.intersection(
-                    (List<String>) existingProcessVariables, (List<String>) processVariables);
+                    (List<String>) existingProcessVariables, (List<String>) initialProcessVariablesInFilePath);
                 messageIdToVariableMap.put(messageId, intersectionProcessVariables);
               } else {
-                messageIdToVariableMap.put(messageId, processVariables);
+                messageIdToVariableMap.put(messageId, initialProcessVariablesInFilePath);
               }
             }
             final Collection<String> processIds = checkStartProcessByKeyPattern(content);
             for (final String processId : processIds) {
-              processIdToVariableMap.put(processId, processVariables);
+              processIdToVariableMap.put(processId, initialProcessVariablesInFilePath);
             }
           }
         }
