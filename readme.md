@@ -1,4 +1,4 @@
-# vidaee Process Application Validator (vPAV)
+# viadee Process Application Validator (vPAV)
 Das vPAV überprüft die Konsistenz von Camunda-Projekten und deckt dabei typische Fehler in prozessgesteuerten Anwendungen auf. Über ein Maven-Plugin werden potenzielle Fehler im Zusammenspiel von Prozessmodell und Quellcode aufgedeckt.
 
 -- TEASER
