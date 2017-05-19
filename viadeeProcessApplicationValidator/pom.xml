@@ -9,10 +9,6 @@
 
   <name>viadee Process Application Validator - Maven Plugin</name>
 
-
-  <!-- FIXME change it to the project's website -->
-  <url>https://confluence.intern.viadee.de/pages/viewpage.action?pageId=8290523</url>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -125,17 +121,4 @@
       </plugin>
     </plugins>
   </build>
- 
-  <distributionManagement>
-    <repository>
-      <id>viadeeNexus</id>
-      <name>Internal Releases</name>
-      <url>http://vmslx065.intern.viadee.de:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>viadeeNexus</id>
-      <name>Internal Snapshots</name>
-      <url>http://vmslx065.intern.viadee.de:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
