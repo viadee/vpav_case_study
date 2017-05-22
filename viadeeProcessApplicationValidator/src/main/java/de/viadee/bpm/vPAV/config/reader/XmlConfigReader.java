@@ -11,7 +11,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import de.viadee.bpm.vPAV.ConstantsConfig;
-import de.viadee.bpm.vPAV.PathFinder;
 import de.viadee.bpm.vPAV.config.model.ElementConvention;
 import de.viadee.bpm.vPAV.config.model.ElementFieldTypes;
 import de.viadee.bpm.vPAV.config.model.ModelConvention;
@@ -31,13 +30,11 @@ public final class XmlConfigReader implements ConfigReader {
                 final XmlRuleSet ruleSet = (XmlRuleSet) jaxbUnmarshaller.unmarshal(file);
                 return transformFromXmlDatastructues(ruleSet);
             } else {
-                final String pathRuleSetDefault = new PathFinder(this.getClass().getClassLoader())
-                        .readResourceFile(ConstantsConfig.RULESETDEFAULT);
                 final XmlRuleSet ruleSet = (XmlRuleSet) jaxbUnmarshaller
-                        .unmarshal(new File(pathRuleSetDefault));
+                        .unmarshal(this.getClass().getClassLoader()
+                                .getResourceAsStream(ConstantsConfig.RULESETDEFAULT));
                 return transformFromXmlDatastructues(ruleSet);
             }
-
         } catch (JAXBException e) {
             throw new ConfigReaderException(e);
         }

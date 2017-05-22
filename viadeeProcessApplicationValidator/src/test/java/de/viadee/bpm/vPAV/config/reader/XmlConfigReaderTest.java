@@ -10,7 +10,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import de.viadee.bpm.vPAV.ConstantsConfig;
-import de.viadee.bpm.vPAV.PathFinder;
 import de.viadee.bpm.vPAV.config.model.Rule;
 
 public class XmlConfigReaderTest {
@@ -24,11 +23,9 @@ public class XmlConfigReaderTest {
     public void testLoadingCorrectXMLConfigFile() throws ConfigReaderException {
         // Given
         XmlConfigReader reader = new XmlConfigReader();
-        final String pathRuleSetDefault = new PathFinder(this.getClass().getClassLoader())
-                .readResourceFile(ConstantsConfig.RULESETDEFAULT);
 
         // When
-        Map<String, Rule> result = reader.read(new File(pathRuleSetDefault));
+        Map<String, Rule> result = reader.read(new File(ConstantsConfig.RULESET));
 
         // Then
         assertFalse("No rules could be read", result.isEmpty());
@@ -83,5 +80,4 @@ public class XmlConfigReaderTest {
             }
         }
     }
-
 }
