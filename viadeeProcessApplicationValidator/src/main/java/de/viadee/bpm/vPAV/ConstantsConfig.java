@@ -4,7 +4,7 @@ public final class ConstantsConfig {
 
     public static final String RULESET = "src/main/resources/ruleSet.xml";
 
-    public static final String RULESETDEFAULT = "src/main/resources/ruleSetDefault.xml";
+    public static final String RULESETDEFAULT = "ruleSetDefault.xml";
 
     public static final String BEAN_MAPPING = "target/beanMapping.xml";
 
