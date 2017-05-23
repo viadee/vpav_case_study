@@ -8,6 +8,16 @@
   <packaging>maven-plugin</packaging>
 
   <name>viadee Process Application Validator - Maven Plugin</name>
+  
+  <licenses>
+	<license>
+		<name>FreeBSD License</name>
+		<url>https://opensource.org/licenses/bsd-license.php</url>
+	</license>
+  </licenses>
+   
+   
+   
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -118,7 +128,43 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin>      
+	  <plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<header>src/main/resources/BSD4-license.txt</header>
+						<properties>
+							<owner>viadee Unternehmensberatung GmbH</owner>
+							<inceptionYear>2017</inceptionYear>
+							<email>frank.koehne@viadee.de</email>							
+						</properties>
+						<excludes>
+							<exclude>**/README</exclude>
+							<exclude>src/test/resources/**</exclude>
+							<exclude>src/main/resources/**</exclude>
+							<exclude>*.xml</exclude>
+							<exclude>*.log</exclude>
+							<exclude>*.pmd</exclude>
+						</excludes>						
+					</configuration>
+					<executions>
+						<execution>
+							<id>Check licenses</id>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>Insert or update license</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
+</plugin>
     </plugins>
   </build>
 </project>
