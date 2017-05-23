@@ -40,3 +40,8 @@ master/viadeeProcessApplicationValidator/src/main/java/de/viadee/bpm/vPAV/BpmnCh
 - Lizenz
 - BSD4-Lizenz
 - Austausch: Wer mag kann uns gerne einen Pull-Request schicken.
+
+## Lizenz
+pom.xml für vPAV und vPAV Utils um das "license-maven-plugin" erweitert. Beim Build wird automatisch die BSD4-Lizenz als Header in jede Klasse gesetzt.
+
+
