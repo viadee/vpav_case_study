@@ -31,10 +31,10 @@ public final class XmlConfigReader implements ConfigReader {
                 return transformFromXmlDatastructues(ruleSet);
             } else {
                 final XmlRuleSet ruleSet = (XmlRuleSet) jaxbUnmarshaller
-                        .unmarshal(new File(ConstantsConfig.RULESETDEFAULT));
+                        .unmarshal(this.getClass().getClassLoader()
+                                .getResourceAsStream(ConstantsConfig.RULESETDEFAULT));
                 return transformFromXmlDatastructues(ruleSet);
             }
-
         } catch (JAXBException e) {
             throw new ConfigReaderException(e);
         }
