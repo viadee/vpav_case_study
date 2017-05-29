@@ -22,7 +22,6 @@ package de.viadee.bpm.vPAV.config.reader;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Map;
@@ -78,27 +77,33 @@ public class XmlConfigReaderTest {
     }
 
     /**
-     * Test loading an incorrect config file
+     * Test loading an incorrect config file (rulename empty)
      * 
      * 
      */
-    @Test()
+    @Test(expected = ConfigReaderException.class)
+    public void testLoadingIncorrectXMLNameConfigFile() throws ConfigReaderException {
+        // Given
+        XmlConfigReader reader = new XmlConfigReader();
+
+        // When Then
+        reader.read(new File("src/test/resources/ruleSetIncorrectName.xml"));
+
+    }
+
+    /**
+     * Test loading an incorrect config file (no xml)
+     * 
+     * 
+     */
+    @Test(expected = ConfigReaderException.class)
     public void testLoadingIncorrectXMLConfigFile() throws ConfigReaderException {
         // Given
         XmlConfigReader reader = new XmlConfigReader();
 
         // When Then
-        try {
-            reader.read(new File("src/test/resources/ruleSetIncorrectName.xml"));
-            fail("Erwartete ConfigReaderException (Regelname leer) nicht geworfen");
-        } catch (ConfigReaderException eN) {
-        }
+        reader.read(new File("src/test/resources/ruleSetIncorrect.xml"));
 
-        try {
-            reader.read(new File("src/test/resources/ruleSetIncorrect.xml"));
-            fail("Erwartete ConfigReaderException (xml nicht erkannt) nicht geworfen");
-        } catch (ConfigReaderException eI) {
-        }
     }
 
     /**
