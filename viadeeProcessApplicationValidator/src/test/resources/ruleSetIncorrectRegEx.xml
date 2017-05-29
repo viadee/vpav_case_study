@@ -1,6 +1,6 @@
 <ruleSet>
   <rule>
-    <nam>JavaDelegateChecker</nam>   <!-- name Tag typo -->
+    <name>JavaDelegateChecker</name> 
     <state>true</state>
   </rule>
   <rule>
@@ -21,7 +21,13 @@
   </rule>
   <rule>
     <name>ProcessVariablesModelChecker</name>
-    <state>false</state>
+    <state>true</state>
+    <modelConventions>
+      <modelConvention>
+        <name>test</name>
+        <pattern></pattern>    <!--  Falscher RegEx Ausdruck -->
+      </modelConvention>
+    </modelConventions>
   </rule>
   <rule>
     <name>ProcessVariablesNameConventionChecker</name>
@@ -47,7 +53,7 @@
           <elementFieldType>DMN</elementFieldType>
           <elementFieldType>DelegateExpression</elementFieldType>
         </elementFieldTypes>
-        <pattern>ext_[a-zA-Z]+</pattern>
+        <pattern>ext_[a-zA-Z]+</pattern>    
       </elementConvention>
     </elementConventions>
   </rule>

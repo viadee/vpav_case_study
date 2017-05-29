@@ -1,4 +1,4 @@
-<ruleSe>
+<ruleSe>	<!--  XML wird nicht erkannt, da Tag typo -->
   <rule>
     <name>JavaDelegateChecker</name>
     <state>true</state>
