@@ -44,4 +44,10 @@ master/viadeeProcessApplicationValidator/src/main/java/de/viadee/bpm/vPAV/BpmnCh
 ## Lizenz
 pom.xml für vPAV und vPAV Utils um das "license-maven-plugin" erweitert. Beim Build wird automatisch die BSD4-Lizenz als Header in jede Klasse gesetzt.
 
+## Getestete Camunda BPM Versionen
+- Camunda BPM Engine 7.4.0
+- Camunda BPM Engine 7.5.0
+- Camunda BPM Engine 7.6.0
+- (Camunda BPM Engine 7.7.0)
+
 
