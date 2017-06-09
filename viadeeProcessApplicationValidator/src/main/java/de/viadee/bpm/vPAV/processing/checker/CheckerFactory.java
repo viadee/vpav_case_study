@@ -72,11 +72,18 @@ public final class CheckerFactory {
     final Rule javaDelegateRule = ruleConf.get(getClassName(JavaDelegateChecker.class));
     if (javaDelegateRule == null)
       throw new ConfigItemNotFoundException(getClassName(JavaDelegateChecker.class) + " not found");
-
+    
+      
+    
     if ((baseElement instanceof ServiceTask || baseElement instanceof SendTask
-        || baseElement instanceof ReceiveTask || baseElement instanceof ScriptTask
-        || baseElement instanceof BusinessRuleTask) && javaDelegateRule.isActive()) {
+        || baseElement instanceof ReceiveTask || baseElement instanceof ScriptTask) 
+        && javaDelegateRule.isActive()) {
       checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
+    }  
+    
+    final Rule businessRuleTaskRule = ruleConf.get(getClassName(BusinessRuleTaskChecker.class));
+    if (baseElement instanceof BusinessRuleTask){
+        checkers.add(new BusinessRuleTaskChecker(businessRuleTaskRule));
     }
 
     final Rule processVariablesNameConventionRule = ruleConf
