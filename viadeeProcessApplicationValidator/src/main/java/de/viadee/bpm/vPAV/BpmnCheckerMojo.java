@@ -104,8 +104,6 @@ public class BpmnCheckerMojo extends AbstractMojo {
         // 5) remove ignored issues
         final Collection<CheckerIssue> filteredIssues = filterIssues(issues);
 
-        // 6) write check results to xml and json file
-        writeOutput(filteredIssues);
         // 6) write check results to xml and json and js file
         writeOutput(filteredIssues, ("src/main/resources/" + fileScanner.getProcessdefinitions().toString().substring(1,
                 fileScanner.getProcessdefinitions().toString().length() - 1)));
