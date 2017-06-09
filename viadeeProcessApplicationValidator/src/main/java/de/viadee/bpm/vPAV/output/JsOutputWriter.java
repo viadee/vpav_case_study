@@ -22,6 +22,8 @@ package de.viadee.bpm.vPAV.output;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,17 +36,39 @@ import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.graph.Path;
 
-public class JsonOutputWriter implements IssueOutputWriter {
+public class JsOutputWriter implements IssueOutputWriter {
 
-    public void write(final Collection<CheckerIssue> issues) throws OutputWriterException {
+    public void write(final Collection<CheckerIssue> issues, final String bpmnFile) throws OutputWriterException {
         final String json = transformToJsonDatastructure(issues);
+        final String bpmn = transformToXMLDatastructure(bpmnFile);
         if (json != null && !json.isEmpty()) {
-            try (final FileWriter file = new FileWriter(ConstantsConfig.VALIDATION_JSON_OUTPUT)) {
+            try (final FileWriter file = new FileWriter(ConstantsConfig.VALIDATION_JS_OUTPUT)) {
+                file.write(bpmn);
                 file.write(json);
             } catch (final IOException ex) {
-                throw new OutputWriterException("json output couldn't be written");
+                throw new OutputWriterException("js output couldn't be written");
             }
         }
+    }
+
+    private String transformToXMLDatastructure(String bpmnPath) throws OutputWriterException {
+        String output = "";
+        try {
+            output = convertBpmnFile(bpmnPath);
+        } catch (IOException e) {
+            throw new OutputWriterException("bpmnFile not found");
+        }
+        return "var diagramXMLSource = \"" + output + "\";\n";
+    }
+
+    private String convertBpmnFile(String path) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        String s = new String(encoded);
+        s = s.replace("\"", "\\\""); // ersetze " durch \"
+        s = s.replace('\n', ' '); // umbrueche entfernen
+        s = s.replace('\r', ' '); // umbrueche entfernen
+        s = s.replaceAll(">\\u0020*<", "><");
+        return s;
     }
 
     private static String transformToJsonDatastructure(final Collection<CheckerIssue> issues) {
@@ -86,11 +110,11 @@ public class JsonOutputWriter implements IssueOutputWriter {
             }
         }
 
-        return new GsonBuilder().setPrettyPrinting().create().toJson(jsonIssues);
+        return ("var elementsToMark = " + new GsonBuilder().setPrettyPrinting().create().toJson(jsonIssues) + ";");
     }
 
     @Override
-    public void write(Collection<CheckerIssue> issues, String processdefinitions) throws OutputWriterException {
-        write(issues);
+    public void write(Collection<CheckerIssue> issues) throws OutputWriterException {
+        write(issues, null);
     }
 }
