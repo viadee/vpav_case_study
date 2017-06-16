@@ -93,24 +93,36 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
     var overlays = bpmnViewer.get('overlays');
     for (id in issues) {
         var overlayHtml = $('<div class="diagram-zahl">' + issues[id].anz + '</div>');
-        // add DialofMessage
+        // add DialogMessage
         function clickOverlay(event) {
+            //clear dialog
+            var dp = document.querySelectorAll('.d');
+            for (var i = 0; i < dp.length; i++) {
+                if (dp[i].children.length === 0) {
+                    dp[i].parentNode.removeChild(dp[i]);
+                }
+            }
+
+
             var eId = issues[event.data.id].i.elementId;
             for (y in issues) {
                 if (issues[y].i.elementId == eId) {
                     var issue = issues[y].i;
                     var dl = document.getElementById("dia");
-                    
+
                     var hClass = document.createElement("h3");
                     var pRule = document.createElement("p");
                     var pMessage = document.createElement("p");
 
-                    pMessage.setAttribute("id", "message");
+                    pMessage.setAttribute("id", "d_message");
+                    pMessage.setAttribute("class", "d");
+                    hClass.setAttribute("class", "d");
+                    pRule.setAttribute("class", "d");
 
                     hClass.appendChild(document.createTextNode(issue.classification));
                     pRule.appendChild(document.createTextNode(issue.ruleName));
                     pMessage.appendChild(document.createTextNode(issue.message));
-                
+
                     dl.appendChild(hClass);
                     dl.appendChild(pRule);
                     dl.appendChild(pMessage);
