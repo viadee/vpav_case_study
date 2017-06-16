@@ -32,6 +32,8 @@ package de.viadee.bpm.vPAV.processing.checker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
@@ -58,6 +60,9 @@ public final class CheckerFactory {
    * @param element
    * @return Checkers
    */
+    
+    
+  
   public static Collection<ElementChecker> createCheckerInstancesBpmnElement(
       final Map<String, Rule> ruleConf, final Map<String, String> beanMapping,
       final Collection<String> resourcesNewestVersions, final BpmnElement element)
@@ -73,18 +78,19 @@ public final class CheckerFactory {
     if (javaDelegateRule == null)
       throw new ConfigItemNotFoundException(getClassName(JavaDelegateChecker.class) + " not found");
     
-      
-    
     if ((baseElement instanceof ServiceTask || baseElement instanceof SendTask
-        || baseElement instanceof ReceiveTask || baseElement instanceof ScriptTask) 
+        || baseElement instanceof ReceiveTask || baseElement instanceof ScriptTask || baseElement instanceof BusinessRuleTask) 
         && javaDelegateRule.isActive()) {
       checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
     }  
-    
-    final Rule businessRuleTaskRule = ruleConf.get(getClassName(BusinessRuleTaskChecker.class));
+        
+    final Rule businessRuleTaskRule = ruleConf.get(getClassName(JavaDelegateChecker.class));     
+    if(businessRuleTaskRule == null)
+        throw new ConfigItemNotFoundException(getClassName(BusinessRuleTaskChecker.class) + " not found");    
     if (baseElement instanceof BusinessRuleTask){
         checkers.add(new BusinessRuleTaskChecker(businessRuleTaskRule));
-    }
+    } 
+   
 
     final Rule processVariablesNameConventionRule = ruleConf
         .get(getClassName(ProcessVariablesNameConventionChecker.class));
