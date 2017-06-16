@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -90,7 +91,7 @@ public class JsonOutputWriter implements IssueOutputWriter {
     }
 
     @Override
-    public void write(Collection<CheckerIssue> issues, String processdefinitions) throws OutputWriterException {
+    public void write(Collection<CheckerIssue> issues, Set<String> processdefinitions) throws OutputWriterException {
         write(issues);
     }
 }

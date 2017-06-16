@@ -25,11 +25,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -97,8 +102,14 @@ public class BpmnCheckerMojo extends AbstractMojo {
         final Collection<CheckerIssue> filteredIssues = filterIssues(issues);
 
         // 6) write check results to xml and json and js file
-        writeOutput(filteredIssues, ("src/main/resources/" + fileScanner.getProcessdefinitions().toString().substring(1,
-                fileScanner.getProcessdefinitions().toString().length() - 1)));
+        writeOutput(filteredIssues, fileScanner.getProcessdefinitions());
+
+        // 7) copy html-files to target
+        try {
+            copyFilesToTarget();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (issuesWithErrors(issues))
             // throw error for maven build process
@@ -110,12 +121,12 @@ public class BpmnCheckerMojo extends AbstractMojo {
     }
 
     /**
-     * write output files (xml / json)
+     * write output files (xml / json/ js)
      * 
      * @param filteredIssues
      * @throws MojoExecutionException
      */
-    private void writeOutput(final Collection<CheckerIssue> filteredIssues, String bpmnPath)
+    private void writeOutput(final Collection<CheckerIssue> filteredIssues, Set<String> set)
             throws MojoExecutionException {
         final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
         final IssueOutputWriter jsonOutputWriter = new JsonOutputWriter();
@@ -123,10 +134,26 @@ public class BpmnCheckerMojo extends AbstractMojo {
         try {
             xmlOutputWriter.write(filteredIssues);
             jsonOutputWriter.write(filteredIssues);
-            jsOutputWriter.write(filteredIssues, bpmnPath);
+            jsOutputWriter.write(filteredIssues, set);
+
         } catch (final OutputWriterException ex) {
             throw new MojoExecutionException(ex.getMessage());
         }
+    }
+
+    private void copyFilesToTarget() throws IOException {
+        copyFileToTarget("bpmn-viewer.js");
+        copyFileToTarget("bpmn.io.viewer.app.js");
+        copyFileToTarget("bpmn.io.viewer.html");
+        copyFileToTarget("jquery-3.2.1.js");
+    }
+
+    private void copyFileToTarget(String File) throws IOException {
+        InputStream source = this.getClass().getClassLoader().getResourceAsStream(File);
+        Path destination = Paths.get("target/" + File);
+        if (destination.toFile().exists()) // if file exist, delete
+            destination.toFile().delete();
+        Files.copy(source, destination);
     }
 
     /**

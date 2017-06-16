@@ -29,6 +29,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -102,7 +103,7 @@ public class XmlOutputWriter implements IssueOutputWriter {
     }
 
     @Override
-    public void write(Collection<CheckerIssue> issues, String processdefinitions) throws OutputWriterException {
+    public void write(Collection<CheckerIssue> issues, Set<String> processdefinitions) throws OutputWriterException {
         // TODO Auto-generated method stub
         write(issues);
     }

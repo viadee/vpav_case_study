@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -36,11 +37,15 @@ import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.graph.Path;
 
+/*
+ * Create the JavaScript file for HTML-output; Needs: issues and bpmnFile names
+ * 
+ */
 public class JsOutputWriter implements IssueOutputWriter {
 
-    public void write(final Collection<CheckerIssue> issues, final String bpmnFile) throws OutputWriterException {
+    public void write(final Collection<CheckerIssue> issues, Set<String> bpmnFiles) throws OutputWriterException {
         final String json = transformToJsonDatastructure(issues);
-        final String bpmn = transformToXMLDatastructure(bpmnFile);
+        final String bpmn = transformToXMLDatastructure(bpmnFiles);
         if (json != null && !json.isEmpty()) {
             try (final FileWriter file = new FileWriter(ConstantsConfig.VALIDATION_JS_OUTPUT)) {
                 file.write(bpmn);
@@ -51,14 +56,18 @@ public class JsOutputWriter implements IssueOutputWriter {
         }
     }
 
-    private String transformToXMLDatastructure(String bpmnPath) throws OutputWriterException {
-        String output = "";
+    private String transformToXMLDatastructure(Set<String> bpmnFiles) throws OutputWriterException {
+        String output = "var diagramXMLSource = [\n";
         try {
-            output = convertBpmnFile(bpmnPath);
+            for (final String path : bpmnFiles) {
+                output += "{\"name\":\"" + path + "\",\n \"xml\": \"";
+                output += convertBpmnFile("src/main/resources/" + path);
+                output += "\"},\n";
+            }
         } catch (IOException e) {
             throw new OutputWriterException("bpmnFile not found");
         }
-        return "var diagramXMLSource = \"" + output + "\";\n";
+        return output + "];\n";
     }
 
     private String convertBpmnFile(String path) throws IOException {
@@ -109,7 +118,6 @@ public class JsOutputWriter implements IssueOutputWriter {
                 jsonIssues.add(obj);
             }
         }
-
         return ("var elementsToMark = " + new GsonBuilder().setPrettyPrinting().create().toJson(jsonIssues) + ";");
     }
 

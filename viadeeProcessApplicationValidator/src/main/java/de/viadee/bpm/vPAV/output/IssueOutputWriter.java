@@ -21,6 +21,7 @@
 package de.viadee.bpm.vPAV.output;
 
 import java.util.Collection;
+import java.util.Set;
 
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -28,6 +29,5 @@ public interface IssueOutputWriter {
 
     void write(final Collection<CheckerIssue> issues) throws OutputWriterException;
 
-    void write(final Collection<CheckerIssue> issues, String bpmnPath) throws OutputWriterException;
-
+    void write(final Collection<CheckerIssue> issues, Set<String> set) throws OutputWriterException;
 }
