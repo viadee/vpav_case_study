@@ -70,6 +70,12 @@ public class BpmnCheckerMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
+    private static String modelPath;
+
+    public static String getModelPath() {
+        return modelPath;
+    }
+    
     public void execute() throws MojoExecutionException {
 
         // 1a) read config file
@@ -88,6 +94,8 @@ public class BpmnCheckerMojo extends AbstractMojo {
         } catch (final DependencyResolutionRequiredException e) {
             throw new MojoExecutionException("classpath couldn't be resolved");
         }
+
+        modelPath = ("src/main/resources/" + fileScanner.getProcessdefinitions().toString().substring(1,fileScanner.getProcessdefinitions().toString().length() - 1));
 
         // 3) get process variables from process start
         final OuterProcessVariablesScanner variableScanner = new OuterProcessVariablesScanner(
@@ -138,7 +146,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
 
         } catch (final OutputWriterException ex) {
             throw new MojoExecutionException(ex.getMessage());
-        }
+        }   
     }
 
     private void copyFilesToTarget() throws IOException {
