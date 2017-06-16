@@ -26,80 +26,8 @@ function markNodes(bpmnViewer, elementsToMark, bpmnFile) {
     }
 }
 
-/*function addClickMessageOld(bpmnViewer, processInstance) {
-    var overlays = bpmnViewer.get('overlays');
-    for (id in processInstance) {
-        if (processInstance[id].classification == "ERROR") {
-            var overlayHtml = $('<div class="diagram-error">' + "E" + '</div>');
-            // add message        
-            function clickOverlay(event) {
-                var issue = processInstance[event.data.id];
-                $('h3').html(issue.classification);
-                $("#ruleName").html(issue.ruleName);
-                $("#message").html(issue.message);
-                toggleDialog('show');
-            }
-            overlayHtml.click({ id: id }, clickOverlay);
-            // attach the overlayHtml to a node
-            attachOverlay(5);
-
-        } else if (processInstance[id].classification == "WARNING") {
-            var overlayHtml = $('<div class="diagram-warning">' + "W" + '</div>');
-            // add message        
-            function clickOverlay(event) {
-                var issue = processInstance[event.data.id];
-                $('h3').html(issue.classification);
-                $("#ruleName").html(issue.ruleName);
-                $("#message").html(issue.message);
-                toggleDialog('show');
-            }
-            overlayHtml.click({ id: id }, clickOverlay);
-            // attach the overlayHtml to a node
-            attachOverlay(25);
-
-        } else if (processInstance[id].classification == "INFO") {
-            var overlayHtml = $('<div class="diagram-info">' + "I" + '</div>');
-            // add message        
-            function clickOverlay(event) {
-                var issue = processInstance[event.data.id];
-                $('h3').html(issue.classification);
-                $("#ruleName").html(issue.ruleName);
-                $("#message").html(issue.message);
-                toggleDialog('show');
-            }
-            overlayHtml.click({ id: id }, clickOverlay);
-            // attach the overlayHtml to a node
-            attachOverlay(45);
-        } else {
-            var overlayHtml = $('<div class="diagram-x">' + "X" + '</div>');
-            // add message        
-            function clickOverlay(event) {
-                var issue = processInstance[event.data.id];
-                $('h3').html(issue.classification);
-                $("#ruleName").html(issue.ruleName);
-                $("#message").html(issue.message);
-                toggleDialog('show');
-            }
-            overlayHtml.click({ id: id }, clickOverlay);
-            // attach the overlayHtml to a node
-            attachOverlay(65);
-        }
-    }
-    function attachOverlay(r) {
-        // attach the overlayHtml to a node
-        overlays.add(processInstance[id].elementId, {
-            position: {
-                bottom: 5,
-                right: r
-            },
-            html: overlayHtml
-        });
-    }
-}
-*/
-
 //create issue count on each node
-function addClickMessage(bpmnViewer, elementsToMark, bpmnFile) {
+function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
 
     //getElemtIds
     var eId = [];
@@ -165,12 +93,29 @@ function addClickMessage(bpmnViewer, elementsToMark, bpmnFile) {
     var overlays = bpmnViewer.get('overlays');
     for (id in issues) {
         var overlayHtml = $('<div class="diagram-zahl">' + issues[id].anz + '</div>');
-        // add message
+        // add DialofMessage
         function clickOverlay(event) {
-            var issue = issues[event.data.id].i;
-            $("#dialogH").html(issue.classification);
-            $("#ruleName").html(issue.ruleName);
-            $("#message").html(issue.message);
+            var eId = issues[event.data.id].i.elementId;
+            for (y in issues) {
+                if (issues[y].i.elementId == eId) {
+                    var issue = issues[y].i;
+                    var dl = document.getElementById("dia");
+                    
+                    var hClass = document.createElement("h3");
+                    var pRule = document.createElement("p");
+                    var pMessage = document.createElement("p");
+
+                    pMessage.setAttribute("id", "message");
+
+                    hClass.appendChild(document.createTextNode(issue.classification));
+                    pRule.appendChild(document.createTextNode(issue.ruleName));
+                    pMessage.appendChild(document.createTextNode(issue.message));
+                
+                    dl.appendChild(hClass);
+                    dl.appendChild(pRule);
+                    dl.appendChild(pMessage);
+                }
+            }
             toggleDialog('show');
         }
         overlayHtml.click({ id: id }, clickOverlay);
@@ -206,30 +151,43 @@ function deleteTable() {
     }
 }
 
-function markNodesIssue(bpmnViewer, eId, bpmnFile) {
+function markNodesIssue(bpmnViewer, paths, bpmnFile) {
     var canvas = bpmnViewer.get('canvas');
-    for (id in elementsToMark) {
-        if (elementsToMark[id].id == eId && elementsToMark[id].bpmnFile == ("src\\main\\resources\\" + bpmnFile)) {
-            if (elementsToMark[id].ruleName == "VersioningChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'VersioningChecker');
-            } else if (elementsToMark[id].ruleName == "ProcessVariablesNameConventionChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesNameConventionChecker');
-            } else if (elementsToMark[id].ruleName == "JavaDelegateChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'JavaDelegateChecker');
-            } else if (elementsToMark[id].ruleName == "EmbeddedGroovyScriptChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'EmbeddedGroovyScriptChecker');
-            } else if (elementsToMark[id].ruleName == "DmnTaskChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'DmnTaskChecker');
-            } else if (elementsToMark[id].ruleName == "ProcessVariablesModelChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesModelChecker');
-            } else if (elementsToMark[id].ruleName == "TaskNamingConventionChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'TaskNamingConventionChecker');
-            } else {
-                canvas.addMarker(elementsToMark[id].elementId, 'new');
-            }
-        }
+
+    for (id in paths[0]) {
+        console.log(paths[0][id].elementId);
+        //canvas.addMarker(paths[0][id].elementId, 'VersioningChecker');
     }
+
+
+    /*
+        for (id in elementsToMark)
+            if (elementsToMark[id].bpmnFile == ("src\\main\\resources\\" + bpmnFile))
+                for (i in paths)
+                    if (elementsToMark[id].elementId == paths[i].elementId) {
+                        if (elementsToMark[id].ruleName == "VersioningChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'VersioningChecker');
+                        } else if (elementsToMark[id].ruleName == "ProcessVariablesNameConventionChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesNameConventionChecker');
+                        } else if (elementsToMark[id].ruleName == "JavaDelegateChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'JavaDelegateChecker');
+                        } else if (elementsToMark[id].ruleName == "EmbeddedGroovyScriptChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'EmbeddedGroovyScriptChecker');
+                        } else if (elementsToMark[id].ruleName == "DmnTaskChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'DmnTaskChecker');
+                        } else if (elementsToMark[id].ruleName == "ProcessVariablesModelChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesModelChecker');
+                        } else if (elementsToMark[id].ruleName == "TaskNamingConventionChecker") {
+                            canvas.addMarker(elementsToMark[id].elementId, 'TaskNamingConventionChecker');
+                        } else {
+                            canvas.addMarker(elementsToMark[id].elementId, 'new');
+                        }
+                    }
+                    */
 }
+
+
+
 
 //create issue table
 function createTable(elementsToMark, bpmnFile) {
@@ -251,10 +209,8 @@ function createTable(elementsToMark, bpmnFile) {
             //create link to mark the issue path
             var a = document.createElement("a");
             a.appendChild(myText);
-            a.setAttribute("onclick", "selectModel('" + bpmnFile + "','" + issue.id + "')");
+            a.setAttribute("onclick", "selectModel('" + bpmnFile + "'," + issue.paths + ")");
             a.setAttribute("href", "#");
-            //bpmnViewer, elementsToMark, bpmnFile
-
 
             myCell.appendChild(a);
             myRow.appendChild(myCell);
@@ -275,12 +231,19 @@ function createTable(elementsToMark, bpmnFile) {
             myRow.appendChild(myCell);
 
             myCell = document.createElement("td");
-            myText = document.createTextNode(issue.paths);
+            myText = document.createTextNode(issue.message);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
 
             myCell = document.createElement("td");
-            myText = document.createTextNode(issue.message);
+            var path_text = "";
+            for (id in issue.paths[0]) {
+                if (issue.paths[0][id].elementName == null)
+                    path_text += issue.paths[0][id].elementId + " -> ";
+                else
+                    path_text += issue.paths[0][id].elementName + " -> ";
+            }
+            myText = document.createTextNode(path_text);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
 
@@ -297,7 +260,7 @@ function createTable(elementsToMark, bpmnFile) {
  * This is an example script that loads an embedded diagram file <diagramXML>
  * and opens it using the bpmn-js viewer.
  */
-function initDiagram(diagramXML, r, eId) {
+function initDiagram(diagramXML, r, paths) {
     // create viewer
     var bpmnViewer = new window.BpmnJS({
         container: '#canvas'
@@ -322,9 +285,9 @@ function initDiagram(diagramXML, r, eId) {
             setUeberschrift(diagramXML.name);
             if (r == 0) {
                 markNodes(bpmnViewer, elementsToMark, diagramXML.name);
-                addClickMessage(bpmnViewer, elementsToMark, diagramXML.name);
+                addCountOverlay(bpmnViewer, elementsToMark, diagramXML.name);
             } else {
-                markNodesIssue(bpmnViewer, eId, diagramXML.name);
+                markNodesIssue(bpmnViewer, paths, diagramXML.name);
             }
             createTable(elementsToMark, diagramXML.name);
         });
@@ -335,13 +298,13 @@ function initDiagram(diagramXML, r, eId) {
     bpmnViewer.reload = function (model) {
         $("#canvas").empty();
         deleteTable();
-        initDiagram(model, 0, 0);
+        initDiagram(model, 0, null);
     };
 
-    bpmnViewer.reloadMark = function (model, eId) {
+    bpmnViewer.reloadMark = function (model, paths) {
         $("#canvas").empty();
         deleteTable();
-        initDiagram(model, 1, eId);
+        initDiagram(model, 1, paths);
     };
 
     // import xml
@@ -352,7 +315,7 @@ function initDiagram(diagramXML, r, eId) {
 
 //set Filename as Header
 function setUeberschrift(name) {
-    $("#modell").html(name);
+    $("#modell").html("Consistency check: " + name);
 }
 
 //dialog
@@ -380,23 +343,21 @@ function toggleDialog(sh) {
         var a = document.createElement("a");
         li.appendChild(a);
         a.appendChild(document.createTextNode(model.name));
-        a.setAttribute("onclick", "selectModel('" + model.name +"', 0 )");
+        a.setAttribute("onclick", "selectModel('" + model.name + "', null )");
         a.setAttribute("href", "#");
         ul.appendChild(li);
     }
 })();
 
 //reload model diagram
-function selectModel(name, eId) {
+function selectModel(name, paths) {
     for (id in diagramXMLSource) {
         if (diagramXMLSource[id].name == name) {
-            if (eId == 0)
+            if (paths == null)
                 viewer.reload(diagramXMLSource[id]);
             else
-                viewer.reloadMark(diagramXMLSource[id], eId);
+                viewer.reloadMark(diagramXMLSource[id], paths);
         }
     }
 }
-viewer = initDiagram(diagramXMLSource[0], 0, 0);
-
-
+viewer = initDiagram(diagramXMLSource[0], 0, null);
