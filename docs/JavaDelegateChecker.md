@@ -1,5 +1,5 @@
 # Java Delegate Checker
-Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to Service Tasks, Send Tasks, Receive Tasks, Script Tasks, or Business Rule Tasks:
+Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 - No implementation specified
 - Class specified as implementation, but not found
 - Class does not implement the JavaDelegate interface
