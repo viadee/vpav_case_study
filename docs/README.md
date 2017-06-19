@@ -15,7 +15,7 @@
 
 ### DmnTaskChecker
 
-### EmbeddedGroovyScriptChecker
+### [EmbeddedGroovyScriptChecker](EmbeddedGroovyScriptChecker.md)
 
 ### [JavaDelegateChecker] (JavaDelegateChecker.md)
 
