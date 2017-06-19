@@ -1,11 +1,17 @@
-# Java Delegate Checker
+Java Delegate Checker
+=================================
 Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 - No implementation specified
 - Class specified as implementation, but not found
 - Class does not implement the JavaDelegate interface
 
-## Configuration
+## Assumptions
+----------------------------------------------
+- BPMN-model have to be in classpath
+- The Java class have to be in the classpath
 
+## Configuration
+------------------------------------------
 The rule should be configured as follows:
 ```xml
 <rule>
@@ -19,7 +25,7 @@ Via `<state>true</state>` the check can be enabled.
 Via `<state>false</state>` the check can be disabled.
 
 ## Error messages:
-
+-----------------------------------------
 **task '%taskName%' with no code reference yet**
 
 _No reference to source code has been deposited. An implementation is to be stored so that the warning no longer appears._
@@ -31,3 +37,12 @@ _A Java class has been specified that does not exist. Check whether the package-
 **class for task %taskName% does not implement interface JavaDelegate**
 
 _A Java class has been specified that does not implement the JavaDelegate interface. The Java class have to be changed, so that it implements the JavaDelegate interface._
+
+## Examples
+----------------------------------------
+### No implementation specified
+![No value in JavaClass](img/JavaDelegateChecker_NoImplementation.png "No implementation specified")
+### Class specified as implementation, but not found
+![Missing java class](img/JavaDelegateChecker_NoClass.png "Class not found")
+### Class does not implement the JavaDelegate interface
+![Doesn't implement javaDelegate interface](img/JavaDelegateChecker_NoInterface.png "No interface")
