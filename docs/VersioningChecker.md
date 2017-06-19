@@ -6,7 +6,7 @@ When a versioned implementation is referenced, it is checked whether it is up-to
 
 ## Assumptions
 ----------------------------------------------
-- The **BPMN-models** have to be in **classpath**
+- The **BPMN-models** have to be in the **classpath**
 - Classes have to be versioned
 
 ## Configuration
@@ -57,18 +57,18 @@ _Unless a versioned spring-bean is undeposited, it must be adapted to the versio
 ## Examples
 ----------------------------------------
 
-| current situation                                                                                                | **class reference is deprecated or file with version doesn't exist**               | 
+| **current situation**                                                                                               | **class reference is deprecated or file with version doesn't exist**               | 
 | :---------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------:| 
-| newest version is _"de/test/TestDelegate_1_2"_                                                                   |![class has old/no version](img/VersioningChecker_JavaClassVersioning.PNG "old Version")|
+| newest version is <br/> *de/test/TestDelegate_1_2*                                                                |![class has old/no version](img/VersioningChecker_JavaClassVersioning.PNG "old Version")|
 
-| current situation                                                                                                | **script reference is deprecated or file with version doesn't exist**       | 
+|                                                                                                  | **script reference is deprecated or file with version doesn't exist**       | 
 | :---------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------:| 
-| newest version is _"de/test/testScript_1_2.groovy"_                                                              |![script has old/no version](img/VersioningChecker_ScriptVersioning.PNG "old Version") |
+| newest version is <br/> *de/test/testScript_1_2.groovy*                                                              |![script has old/no version](img/VersioningChecker_ScriptVersioning.PNG "old Version") |
 
 
-| current situation                                                                                                | **bean reference is deprecated or file with version doesn't exist**                | 
+|                                                                                                  | **bean reference is deprecated or file with version doesn't exist**                | 
 | :---------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------:| 
-| beanmapping = "myBean_1_1", "de.test.TestDelegate_1_1" <br/> newest version is *"de/test/TestDelegate_1_2"*      | ![bean has old/no version](img/VersioningChecker_BeanVersioning.PNG "old Version") | 
+| beanmapping: <br/> myBean_1_1  **<->**  de.test.TestDelegate\_1\_1 <br/><br/> newest version is<br/> *de/test/TestDelegate_1_2*      | ![bean has old/no version](img/VersioningChecker_BeanVersioning.PNG "old Version") | 
 
 
 
