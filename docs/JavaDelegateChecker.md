@@ -8,7 +8,7 @@ Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 
 ## Assumptions
 ----------------------------------------------
-- The **BPMN-models** have to be in **classpath**
+- The **BPMN-models** have to be in the **classpath**
 - The **java classes _(delegates)_** have to be in the **classpath**
 
 ## Configuration
