@@ -1,10 +1,17 @@
-# Java Delegate Checker
-Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to Service Tasks, Send Tasks, Receive Tasks, Script Tasks, or Business Rule Tasks:
+Java Delegate Checker
+=================================
+Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 - No implementation specified
 - Class specified as implementation, but not found
 - Class does not implement the JavaDelegate interface
 
+## Assumptions
+----------------------------------------------
+- BPMN-model have to be in classpath
+- The Java class have to be in the classpath
+
 ## Configuration
+------------------------------------------
 The rule should be configured as follows:
 ```xml
 <rule>
@@ -14,14 +21,28 @@ The rule should be configured as follows:
 ```
 
 Via `<state>true</state>` the check can be enabled.
+
 Via `<state>false</state>` the check can be disabled.
 
 ## Error messages:
+-----------------------------------------
 **task '%taskName%' with no code reference yet**
-*No reference to source code has been deposited. An implementation is to be stored so that the warning no longer appears.*
+
+_No reference to source code has been deposited. An implementation is to be stored so that the warning no longer appears._
 
 **class for task '%taskName' not found**
-*A Java class has been specified that does not exist. Check whether the package-path has changed (e.g. in the context of a refactoring) or the file has been accidentally deleted.*
+
+_A Java class has been specified that does not exist. Check whether the package-path has changed (e.g. in the context of a refactoring) or the file has been accidentally deleted._
 
 **class for task %taskName% does not implement interface JavaDelegate**
-*A Java class has been specified that does not implement the JavaDelegate interface. The Java class have to be changed, so that it implements the JavaDelegate interface.*
+
+_A Java class has been specified that does not implement the JavaDelegate interface. The Java class have to be changed, so that it implements the JavaDelegate interface._
+
+## Examples
+----------------------------------------
+### No implementation specified
+![No value in JavaClass](img/JavaDelegateChecker_NoImplementation.png "No implementation specified")
+### Class specified as implementation, but not found
+![Missing java class](img/JavaDelegateChecker_NoClass.png "Class not found")
+### Class does not implement the JavaDelegate interface
+![Doesn't implement javaDelegate interface](img/JavaDelegateChecker_NoInterface.png "No interface")

@@ -17,7 +17,7 @@
 
 ### EmbeddedGroovyScriptChecker
 
-### JavaDelegateChecker
+### [JavaDelegateChecker] (JavaDelegateChecker.md)
 
 ### ProcessVariablesModelChecker
 
