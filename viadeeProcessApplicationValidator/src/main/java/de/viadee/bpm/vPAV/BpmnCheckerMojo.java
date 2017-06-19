@@ -70,13 +70,12 @@ public class BpmnCheckerMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
-    
     private static FileScanner fileScanner;
-    
-    public static Set<String> getModelPath() {        
+
+    public static Set<String> getModelPath() {
         return fileScanner.getProcessdefinitions();
     }
-    
+
     public void execute() throws MojoExecutionException {
 
         // 1a) read config file
@@ -87,7 +86,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
                 .parse(new File(ConstantsConfig.BEAN_MAPPING));
 
         // 2) Scan class path for bpmn models, dmn models, java files and versioned resources
-        
+
         try {
             fileScanner = new FileScanner(project, rules);
         } catch (final MalformedURLException e) {
@@ -145,7 +144,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
 
         } catch (final OutputWriterException ex) {
             throw new MojoExecutionException(ex.getMessage());
-        }   
+        }
     }
 
     private void copyFilesToTarget() throws IOException {
@@ -153,6 +152,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
         copyFileToTarget("bpmn.io.viewer.app.js");
         copyFileToTarget("bpmn.io.viewer.html");
         copyFileToTarget("jquery-3.2.1.js");
+        copyFileToTarget("logo.png");
     }
 
     private void copyFileToTarget(String File) throws IOException {
