@@ -17,7 +17,7 @@
 
 ### [EmbeddedGroovyScriptChecker](EmbeddedGroovyScriptChecker.md)
 
-### [JavaDelegateChecker] (JavaDelegateChecker.md)
+### [JavaDelegateChecker](JavaDelegateChecker.md)
 
 ### ProcessVariablesModelChecker
 
@@ -25,7 +25,7 @@
 
 ### TaskNamingConventionChecker
 
-### VersioningChecker
+### [VersioningChecker](VersioningChecker.md)
 
 
 ## Output Writer
