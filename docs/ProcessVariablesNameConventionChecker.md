@@ -1,4 +1,4 @@
- Checker
+Process Variables Name Convention Checker
 =================================
 
 
