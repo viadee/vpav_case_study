@@ -1,6 +1,6 @@
 Process Variables Name Convention Checker
 =================================
-
+Elements in business processes are regularly subject to naming conventions. This checker validates the names of process variables with a configurable regular expression.
 
 ## Assumptions
 ----------------------------------------------
