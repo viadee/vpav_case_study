@@ -1,6 +1,6 @@
 Java Delegate Checker
 =================================
-Using the Java Delegate Checker, process models can be used to check whether the following conditions apply to 
+The Java Delegate Checker processes BPMN models and checks, whether the following conditions apply to 
 Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 - No implementation specified
 - Class not found, although specified as implemented
@@ -8,8 +8,8 @@ Service Tasks, Send Tasks, Receive Tasks, Script Tasks or Business Rule Tasks:
 
 ## Assumptions
 ----------------------------------------------
-- The **BPMN-models** have to be in the **classpath**
-- The **java classes _(delegates)_** have to be in the **classpath**
+- The **BPMN-models** have to be in the **classpath** at build time
+- The **java classes _(delegates)_** have to be in the **classpath** at build time
 
 ## Configuration
 ------------------------------------------
