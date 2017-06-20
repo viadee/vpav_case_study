@@ -3,6 +3,8 @@ Business Rule Task Checker
 The Business Rule Task Checker processes BPMN models and checks, whether the following conditions apply to Business Rule Tasks:
 - No implementation specified
 - Implementation without its respective reference specified
+ 
+If a java class is referenced, the checker returns and forwards the BusinessRuleTask to the JavaDelegateChecker
 
 ## Assumptions
 ----------------------------------------------
