@@ -15,3 +15,19 @@ The Business Rule Task Checker processes BPMN models and checks, whether the fol
 
 _No implementation or reference to source code has been deposited._
 
+## Examples
+----------------------------------------
+
+| **No implementation specified**                                                                        | 
+|:------------------------------------------------------------------------------------------------------:| 
+|![No value in JavaClass](img/BusinessRuleTaskChecker_NoImplementation.PNG "No implementation specified")    |
+| |
+
+| **Class specified as implementation, but not found**                                                   |
+|:------------------------------------------------------------------------------------------------------:| 
+| ![Missing reference for java class](img/BusinessRuleTaskChecker_NoClass.PNG "Class not found")                           |
+| |
+
+| **No DMN File has been specified via decision ref**                                                |
+|:------------------------------------------------------------------------------------------------------:| 
+![Missing reference for DMN File](img/BusinessRuleTaskChecker_NoDecisionRef.PNG "Missing Dec. Ref")      |
