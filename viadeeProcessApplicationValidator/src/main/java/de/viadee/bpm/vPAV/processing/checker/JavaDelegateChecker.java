@@ -32,7 +32,6 @@ package de.viadee.bpm.vPAV.processing.checker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.camunda.bpm.model.bpmn.impl.BpmnModelConstants;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
@@ -52,14 +51,12 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  * Checks a bpmn model, if code references (java delegates) for tasks have been set correctly.
  *
  */
-public class JavaDelegateChecker implements ElementChecker {
-
-  private final Rule rule;
-
+public class JavaDelegateChecker extends AbstractElementChecker {
+  
   private Map<String, String> beanMapping;
 
   public JavaDelegateChecker(final Rule rule, final Map<String, String> beanMapping) {
-    this.rule = rule;
+    super(rule);
     this.beanMapping = beanMapping;
   }
 

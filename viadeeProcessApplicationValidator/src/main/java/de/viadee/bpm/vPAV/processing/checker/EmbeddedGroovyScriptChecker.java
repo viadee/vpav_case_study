@@ -54,12 +54,10 @@ import groovy.lang.GroovyShell;
  * Checks a bpmn model, if embedded groovy script references have been set correctly.
  *
  */
-public class EmbeddedGroovyScriptChecker implements ElementChecker {
-
-  private final Rule rule;
+public class EmbeddedGroovyScriptChecker extends AbstractElementChecker {
 
   public EmbeddedGroovyScriptChecker(final Rule rule) {
-    this.rule = rule;
+    super(rule);
   }
 
   @Override

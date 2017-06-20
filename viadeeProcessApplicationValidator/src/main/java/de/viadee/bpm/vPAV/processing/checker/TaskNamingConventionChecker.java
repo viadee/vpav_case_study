@@ -44,12 +44,10 @@ import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 
-public class TaskNamingConventionChecker implements ElementChecker {
-
-  private Rule rule;
+public class TaskNamingConventionChecker extends AbstractElementChecker {
 
   public TaskNamingConventionChecker(final Rule rule) {
-    this.rule = rule;
+    super(rule);
   }
 
   @Override

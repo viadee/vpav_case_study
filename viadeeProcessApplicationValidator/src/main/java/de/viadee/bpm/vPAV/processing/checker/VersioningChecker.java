@@ -64,9 +64,7 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  * check versioning of the referenced classes, scripts and beans
  *
  */
-public class VersioningChecker implements ElementChecker {
-
-  private Rule rule;
+public class VersioningChecker extends AbstractElementChecker {
 
   private Map<String, String> beanMapping;
 
@@ -74,7 +72,7 @@ public class VersioningChecker implements ElementChecker {
 
   public VersioningChecker(final Rule rule, final Map<String, String> beanMapping,
       final Collection<String> resourcesNewestVersions) {
-    this.rule = rule;
+    super(rule);
     this.beanMapping = beanMapping;
     this.resourcesNewestVersions = resourcesNewestVersions;
   }

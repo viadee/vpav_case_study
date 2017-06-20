@@ -71,12 +71,7 @@ public class XmlConfigReaderTest {
 
         // When
         Map<String, Rule> result = reader.read(new File("non-existing.xml"));
-
-        for (Map.Entry<String, Rule> entry : result.entrySet())
-        {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
-        }
-        
+     
         // Then
         // DefaultXML correctly read
         assertFalse("No rules could be read - no defaults are returned", result.isEmpty());

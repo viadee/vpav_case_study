@@ -44,12 +44,10 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  * Checks, whether a business rule task with dmn implementation is valid
  * 
  */
-public class DmnTaskChecker implements ElementChecker {
-
-  private Rule rule;
+public class DmnTaskChecker extends AbstractElementChecker {
 
   public DmnTaskChecker(final Rule rule) {
-    this.rule = rule;
+      super(rule);
   }
 
   @Override

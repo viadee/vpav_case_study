@@ -58,16 +58,14 @@ import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 
-public class BusinessRuleTaskChecker implements ElementChecker {
-
-    private final Rule rule;
+public class BusinessRuleTaskChecker extends AbstractElementChecker {
 
     private final String basePath = "src/main/resources/";
 
     private String path;
 
     public BusinessRuleTaskChecker(final Rule rule) {
-        this.rule = rule;
+        super(rule);
     }
 
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {

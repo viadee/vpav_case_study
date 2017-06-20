@@ -48,12 +48,10 @@ import de.viadee.bpm.vPAV.processing.model.data.VariableOperation;
 /**
  *
  */
-public class ProcessVariablesNameConventionChecker implements ElementChecker {
-
-  private Rule rule;
+public class ProcessVariablesNameConventionChecker extends AbstractElementChecker {
 
   public ProcessVariablesNameConventionChecker(final Rule rule) {
-    this.rule = rule;
+    super(rule);
   }
 
   /**

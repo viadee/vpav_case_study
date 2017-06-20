@@ -44,7 +44,7 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 import de.viadee.bpm.vPAV.processing.model.data.ProcessVariable;
 import de.viadee.bpm.vPAV.processing.model.graph.Path;
 
-public class ProcessVariablesModelChecker implements ModelChecker {
+public class ProcessVariablesModelChecker implements ModelChecker{
 
   private final Rule rule;
 
