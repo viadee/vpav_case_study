@@ -61,42 +61,45 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 public class BusinessRuleTaskChecker implements ElementChecker {
 
     private final Rule rule;
-    private String path;   
+
+    private final String basePath = "src/main/resources/";
+
+    private String path;
 
     public BusinessRuleTaskChecker(final Rule rule) {
         this.rule = rule;
     }
-        
+
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement baseElement = element.getBaseElement();
-        final BusinessRuleTask task = (BusinessRuleTask) baseElement;        
+        final BusinessRuleTask task = (BusinessRuleTask) baseElement;
         final String id = baseElement.getId();
-        
-        ArrayList<String> errors = new ArrayList<String>();        
-        
-        for (final String output : BpmnCheckerMojo.getModelPath()){
-            path = "src/main/resources/" + output;
+
+        ArrayList<String> errors = new ArrayList<String>();
+
+        for (final String output : BpmnCheckerMojo.getModelPath()) {
+            path = basePath + output;
         }
-       
+
         if (task instanceof BusinessRuleTask) {
             try {
 
                 XmlScanner scan = new XmlScanner();
                 errors = scan.getImplementation(path, id);
-               
+
             } catch (ParserConfigurationException | XPathExpressionException | SAXException | IOException e) {
                 e.printStackTrace();
             }
-            
-            for (String error : errors) {                                 
+
+            for (String error : errors) {
                 if (!error.isEmpty()) {
-                    issues.add(new CheckerIssue(BusinessRuleTaskChecker.class.getSimpleName(), CriticalityEnum.ERROR,
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
                             element.getProcessdefinition(), null, baseElement.getAttributeValue("id"),
                             baseElement.getAttributeValue("name"), null, null, null,
-                            "no implementation or reference has been specified for '" + baseElement.getAttributeValue("name")));
-                } 
-            }           
+                            "no implementation or reference has been specified for '"+ baseElement.getAttributeValue("name")));
+                }
+            }
 
         }
         return issues;

@@ -17,11 +17,15 @@
   </rule>
   <rule>
     <name>DmnTaskChecker</name>
-    <state>false</state>
+    <state>true</state>
+  </rule>
+  <rule>
+    <name>BusinessRuleTaskChecker</name>
+    <state>true</state>
   </rule>
   <rule>
     <name>ProcessVariablesModelChecker</name>
-    <state>false</state>
+    <state>true</state>
   </rule>
   <rule>
     <name>ProcessVariablesNameConventionChecker</name>
@@ -53,7 +57,7 @@
   </rule>
   <rule>
     <name>TaskNamingConventionChecker</name>
-    <state>false</state>
+    <state>true</state>
     <elementConventions>
       <elementConvention>
         <name>convention</name>

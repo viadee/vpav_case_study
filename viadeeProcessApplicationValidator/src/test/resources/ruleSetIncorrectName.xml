@@ -7,6 +7,10 @@
     <name>EmbeddedGroovyScriptChecker</name>
     <state>true</state>
   </rule>
+   <rule>
+    <name>BusinessRuleTaskChecker</name>
+    <state>true</state>
+  </rule>
   <rule>
     <name>VersioningChecker</name>
     <state>true</state>

@@ -32,8 +32,6 @@ package de.viadee.bpm.vPAV.processing.checker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
@@ -84,7 +82,7 @@ public final class CheckerFactory {
       checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
     }  
         
-    final Rule businessRuleTaskRule = ruleConf.get(getClassName(JavaDelegateChecker.class));     
+    final Rule businessRuleTaskRule = ruleConf.get(getClassName(BusinessRuleTaskChecker.class));     
     if(businessRuleTaskRule == null)
         throw new ConfigItemNotFoundException(getClassName(BusinessRuleTaskChecker.class) + " not found");    
     if (baseElement instanceof BusinessRuleTask){

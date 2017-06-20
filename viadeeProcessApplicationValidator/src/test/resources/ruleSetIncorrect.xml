@@ -4,6 +4,10 @@
     <state>true</state>
   </rule>
   <rule>
+    <name>BusinessRuleTask</name>
+    <state>true</state>
+  </rule>
+  <rule>
     <name>EmbeddedGroovyScriptChecker</name>
     <state>true</state>
   </rule>

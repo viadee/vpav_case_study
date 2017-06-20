@@ -59,7 +59,7 @@ public class XmlScanner {
         builder = factory.newDocumentBuilder();
     }
 
-    public ArrayList getImplementation(String path, String id)
+    public ArrayList<String> getImplementation(String path, String id)
             throws SAXException, IOException, XPathExpressionException {
         // List to hold return values               
         ArrayList<String> return_values = new ArrayList<String>();

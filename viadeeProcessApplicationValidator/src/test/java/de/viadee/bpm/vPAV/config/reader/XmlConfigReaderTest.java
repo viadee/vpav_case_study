@@ -72,6 +72,11 @@ public class XmlConfigReaderTest {
         // When
         Map<String, Rule> result = reader.read(new File("non-existing.xml"));
 
+        for (Map.Entry<String, Rule> entry : result.entrySet())
+        {
+            System.out.println(entry.getKey() + "/" + entry.getValue());
+        }
+        
         // Then
         // DefaultXML correctly read
         assertFalse("No rules could be read - no defaults are returned", result.isEmpty());
@@ -79,10 +84,12 @@ public class XmlConfigReaderTest {
         assertTrue("False Default ruleSet ", result.get("JavaDelegateChecker").isActive());
         assertTrue("False Default ruleSet ", result.get("EmbeddedGroovyScriptChecker").isActive());
         assertTrue("False Default ruleSet ", result.get("VersioningChecker").isActive());
+        assertTrue("False Default ruleSet ", result.get("BusinessRuleTaskChecker").isActive());
         assertFalse("False Default ruleSet ", result.get("DmnTaskChecker").isActive());
         assertFalse("False Default ruleSet ", result.get("ProcessVariablesModelChecker").isActive());
         assertFalse("False Default ruleSet ", result.get("ProcessVariablesNameConventionChecker").isActive());
         assertFalse("False Default ruleSet ", result.get("TaskNamingConventionChecker").isActive());
+        
     }
 
     /**
