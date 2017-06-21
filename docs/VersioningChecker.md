@@ -6,7 +6,7 @@ When a versioned implementation is referenced, it is checked whether it is up-to
 
 ## Assumptions
 ----------------------------------------------
-- The **BPMN-models** have to be in the **classpath**
+- The **BPMN-models** have to be in the **classpath** at build time
 - Classes have to be versioned
 
 ## Configuration
