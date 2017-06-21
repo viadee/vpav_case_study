@@ -19,6 +19,8 @@ function markNodes(bpmnViewer, elementsToMark, bpmnFile) {
                 canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesModelChecker');
             } else if (elementsToMark[id].ruleName == "TaskNamingConventionChecker") {
                 canvas.addMarker(elementsToMark[id].elementId, 'TaskNamingConventionChecker');
+            } else if (elementsToMark[id].ruleName == "BusinessRuleTaskChecker") {
+                canvas.addMarker(elementsToMark[id].elementId, 'BusinessRuleTaskChecker');
             } else {
                 canvas.addMarker(elementsToMark[id].elementId, 'new');
             }
@@ -220,7 +222,7 @@ function createTable(elementsToMark, bpmnFile) {
             a.appendChild(myText);
             //link to docu
             a.setAttribute("href", "https://github.com/viadee/vPAV/tree/master/docs/" + issue.ruleName + ".md");
-           
+
             myCell.appendChild(a);
             myRow.appendChild(myCell);
             //elementId
