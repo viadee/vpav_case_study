@@ -167,7 +167,7 @@ function markNodesIssue(bpmnViewer, paths, bpmnFile) {
     var canvas = bpmnViewer.get('canvas');
 
     for (id in paths[0]) {
-        console.log(paths[0][id].elementId);
+        //console.log(paths[0][id].elementId);
         //canvas.addMarker(paths[0][id].elementId, 'VersioningChecker');
     }
 
@@ -198,9 +198,6 @@ function markNodesIssue(bpmnViewer, paths, bpmnFile) {
                     */
 }
 
-
-
-
 //create issue table
 function createTable(elementsToMark, bpmnFile) {
     var myTable = document.getElementById("table_issues");
@@ -213,7 +210,7 @@ function createTable(elementsToMark, bpmnFile) {
 
             myTBody = document.createElement("tbody");
             myRow = document.createElement("tr");
-
+            //ruleName
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.ruleName);
             myRow.setAttribute("id", issue.ruleName) // mark hole row
@@ -221,49 +218,77 @@ function createTable(elementsToMark, bpmnFile) {
             //create link to mark the issue path
             var a = document.createElement("a");
             a.appendChild(myText);
-            a.setAttribute("onclick", "selectModel('" + bpmnFile + "'," + issue.paths + ")");
-            a.setAttribute("href", "#");
-
+            //link to docu
+            a.setAttribute("href", "https://github.com/viadee/vPAV/tree/master/docs/" + issue.ruleName + ".md");
+           
             myCell.appendChild(a);
             myRow.appendChild(myCell);
-
+            //elementId
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.elementId);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
-
+            //elementName
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.elementName);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
-
+            //classification
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.classification);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
-
+            //message
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.message);
             myCell.appendChild(myText);
             myRow.appendChild(myCell);
-
+            //path
             myCell = document.createElement("td");
             var path_text = "";
-            for (id in issue.paths[0]) {
-                if (issue.paths[0][id].elementName == null)
-                    path_text += issue.paths[0][id].elementId + " -> ";
-                else
-                    path_text += issue.paths[0][id].elementName + " -> ";
-            }
-            myText = document.createTextNode(path_text);
-            myCell.appendChild(myText);
-            myRow.appendChild(myCell);
+            for (x in issue.paths) {
+                for (y in issue.paths[x]) {
+                    if (issue.paths[x][y].elementName == null)
+                        if (y < issue.paths[x].length - 1)
+                            path_text += issue.paths[x][y].elementId + " -> ";
+                        else
+                            path_text += issue.paths[x][y].elementId;
+                    else
+                        if (y < issue.paths[x].length - 1)
+                            path_text += issue.paths[x][y].elementName + " -> ";
+                        else
+                            path_text += issue.paths[x][y].elementName
+                }
+                myText = document.createTextNode(path_text);
+                myCell.appendChild(myText);
+                path_text = "";
 
+                //add break
+                br = document.createElement("br");
+                myCell.appendChild(br);
+                //only add break if its not the last one
+                if (x < issue.paths.length - 1) {
+                    brz = document.createElement("br");
+                    myCell.appendChild(brz);
+                }
+            }
+            myRow.appendChild(myCell);
+            //---------
             myTBody.appendChild(myRow);
             myTable.appendChild(myTBody);
             myParent.appendChild(myTable);
         }
     }
+
+    //path markieren
+    /*           
+    var array = [];
+    for (a in issue.paths[0])
+        array[a] = issue.paths[0][a].elementId;
+    a.setAttribute("onclick", "selectModel('" + bpmnFile + "'," + array + ")");
+    a.setAttribute("href", "#");
+     */
+
 }
 
 /**
