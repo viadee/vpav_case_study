@@ -33,3 +33,10 @@ _The task name is missing and has to be specified in the model._
 
 _The task name is invalid and has to be changed according to the naming convention._
 
+## Example
+----------------------------------------
+
+| **task name 'Rechnung 1' is against the naming convention**                                                                        | 
+|:------------------------------------------------------------------------------------------------------:| 
+| name convention: `[A-ZÄÖÜ][a-zäöü\\-\\s]+` (All words starting with a capital letter and containing no number) <br/> <br/> ![Task name against naming convention](img/TaskNamingConventionChecker.PNG "Task name against naming convention")    |
+| |
