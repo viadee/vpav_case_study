@@ -72,7 +72,7 @@ _**Solution:** the variable has to be adapted to the convention._
 
 | **process variable is against the naming convention 'external' (compare Details, Class)**              | 
 |:------------------------------------------------------------------------------------------------------:| 
-|![Java class definition](img/ProcessVariablesNameConventionChecker_extBlubBpmn.PNG "BPMN model")  ![Delegate with variables against convention](img/ProcessVariablesNameConventionChecker_extBlub.PNG "extBlub against naming convention") |
+|![Java class definition](img/ProcessVariablesNameConventionChecker_extBlubBpmn.PNG "BPMN model") <br/><br/>  ![Delegate with variables against convention](img/ProcessVariablesNameConventionChecker_extBlub.PNG "extBlub against naming convention") |
 | |
 
 | **process variable is against the naming convention 'internal' (compare Details, Expression)**         | 
@@ -82,6 +82,6 @@ _**Solution:** the variable has to be adapted to the convention._
 
 | **process variable is against the naming convention 'external' (compare ExecutionListener, External Script)**| 
 |:------------------------------------------------------------------------------------------------------------:| 
-|![script definition](img/ProcessVariablesNameConventionChecker_script_Bpmn.PNG "BPMN model")   ![script with variable against convention](img/ProcessVariablesNameConventionChecker_script_Bpmn.PNG "extGroovy against naming convention") |
+|![script definition](img/ProcessVariablesNameConventionChecker_script_Bpmn.PNG "BPMN model") <br/>scriptWithVariableAgainstConvention.groovy: <br/>  ![script with variable against convention](img/ProcessVariablesNameConventionChecker_script.PNG "extGroovy against naming convention") |
 | |
 
