@@ -4,7 +4,7 @@ The Task Naming Convention Checker verifies if tasks match a predefined naming c
 
 ## Assumptions
 ----------------------------------------------
-- The **BPMN-models** have to be in the **classpath**
+- The **BPMN-models** have to be in the **classpath** at build time
 
 ## Configuration
 ------------------------------------------
