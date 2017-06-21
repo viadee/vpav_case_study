@@ -34,4 +34,20 @@ _This message indicates that an anomaly was found for a certain process variable
 
 For debugging purposes check **%Chapter%** and **%ElementFieldType%**.
 
+## Examples
+-----------------------------------------
 
+| **Defined-Deleted**                                  | 
+|:------------------------------------------------------------------------------------------------------:| 
+|![Delete unused variable](img/ProcessVariablesModelChecker_DU.PNG "remove unused variable")             |
+| |
+
+| **Defined-Defined (Overwritten)**                                  | 
+|:------------------------------------------------------------------------------------------------------:| 
+|![Defined-defined variable](img/ProcessVariablesModelChecker_DD.PNG "overwritten variable")             |
+| |
+
+| **Undefined-Reference**                                  | 
+|:------------------------------------------------------------------------------------------------------:| 
+|![Try to read undefined variable](img/ProcessVariablesModelChecker_UR.PNG "Undefined-reference variable")             |
+| |
