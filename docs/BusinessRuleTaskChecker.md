@@ -11,6 +11,17 @@ If a java class is referenced, the checker returns and forwards the BusinessRule
 - The **BPMN-models** have to be in the **classpath** at build time
 - The **java classes _(delegates)_** have to be in the **classpath** at build time
 
+## Configuration
+------------------------------------------
+The rule should be configured as follows:
+```xml
+<rule>
+  <name>BusinessRuleTaskChecker</name>
+  <state>true</state>
+</rule>
+
+```
+
 ## Error messages:
 -----------------------------------------
 **no implementation or reference has been specified for '%taskName%'**
