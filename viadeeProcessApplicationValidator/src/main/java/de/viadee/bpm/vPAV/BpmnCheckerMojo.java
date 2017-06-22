@@ -108,7 +108,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
         final Collection<CheckerIssue> filteredIssues = filterIssues(issues);
 
         // 6) write check results to xml and json and js file
-        writeOutput(filteredIssues, fileScanner.getProcessdefinitions());
+        writeOutput(filteredIssues);
 
         // 7) copy html-files to target
         try {
@@ -132,7 +132,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
      * @param filteredIssues
      * @throws MojoExecutionException
      */
-    private void writeOutput(final Collection<CheckerIssue> filteredIssues, Set<String> set)
+    private void writeOutput(final Collection<CheckerIssue> filteredIssues)
             throws MojoExecutionException {
         final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
         final IssueOutputWriter jsonOutputWriter = new JsonOutputWriter();
@@ -140,7 +140,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
         try {
             xmlOutputWriter.write(filteredIssues);
             jsonOutputWriter.write(filteredIssues);
-            jsOutputWriter.write(filteredIssues, set);
+            jsOutputWriter.write(filteredIssues);
 
         } catch (final OutputWriterException ex) {
             throw new MojoExecutionException(ex.getMessage());

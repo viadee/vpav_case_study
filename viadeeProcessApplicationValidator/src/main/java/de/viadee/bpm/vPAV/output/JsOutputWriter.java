@@ -26,12 +26,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import de.viadee.bpm.vPAV.BpmnCheckerMojo;
 import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
@@ -43,9 +43,11 @@ import de.viadee.bpm.vPAV.processing.model.graph.Path;
  */
 public class JsOutputWriter implements IssueOutputWriter {
 
-    public void write(final Collection<CheckerIssue> issues, Set<String> bpmnFiles) throws OutputWriterException {
+    private String basePath = "src/main/resources/";
+
+    public void write(final Collection<CheckerIssue> issues) throws OutputWriterException {
         final String json = transformToJsonDatastructure(issues);
-        final String bpmn = transformToXMLDatastructure(bpmnFiles);
+        final String bpmn = transformToXMLDatastructure();
         if (json != null && !json.isEmpty()) {
             try (final FileWriter file = new FileWriter(ConstantsConfig.VALIDATION_JS_OUTPUT)) {
                 file.write(bpmn);
@@ -56,12 +58,12 @@ public class JsOutputWriter implements IssueOutputWriter {
         }
     }
 
-    private String transformToXMLDatastructure(Set<String> bpmnFiles) throws OutputWriterException {
+    private String transformToXMLDatastructure() throws OutputWriterException {
         String output = "var diagramXMLSource = [\n";
         try {
-            for (final String path : bpmnFiles) {
-                output += "{\"name\":\"" + path + "\",\n \"xml\": \"";
-                output += convertBpmnFile("src/main/resources/" + path);
+            for (final String bpmnFilename : BpmnCheckerMojo.getModelPath()) {
+                output += "{\"name\":\"" + bpmnFilename + "\",\n \"xml\": \"";
+                output += convertBpmnFile(basePath + bpmnFilename);
                 output += "\"},\n";
             }
         } catch (IOException e) {
@@ -119,10 +121,5 @@ public class JsOutputWriter implements IssueOutputWriter {
             }
         }
         return ("var elementsToMark = " + new GsonBuilder().setPrettyPrinting().create().toJson(jsonIssues) + ";");
-    }
-
-    @Override
-    public void write(Collection<CheckerIssue> issues) throws OutputWriterException {
-        write(issues, null);
     }
 }
