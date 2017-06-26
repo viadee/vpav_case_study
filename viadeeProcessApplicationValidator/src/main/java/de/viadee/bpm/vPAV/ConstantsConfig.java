@@ -45,4 +45,6 @@ public final class ConstantsConfig {
     public static final String VALIDATION_JS_OUTPUT = "target/bpmn_validation.js";
 
     public static final String VALIDATION_JSON_OUTPUT = "target/bpmn_validation.json";
+
+    public static final String BASEPATH = "src/main/resources/";
 }

@@ -52,6 +52,7 @@ import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.BpmnCheckerMojo;
+import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -59,8 +60,6 @@ import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 
 public class BusinessRuleTaskChecker extends AbstractElementChecker {
-
-    private final String basePath = "src/main/resources/";
 
     private String path;
 
@@ -77,28 +76,28 @@ public class BusinessRuleTaskChecker extends AbstractElementChecker {
         ArrayList<String> errors = new ArrayList<String>();
 
         for (final String output : BpmnCheckerMojo.getModelPath()) {
-            path = basePath + output;
-        }
+            path = ConstantsConfig.BASEPATH + output;
 
-        if (task instanceof BusinessRuleTask) {
-            try {
+            if (task instanceof BusinessRuleTask) {
+                try {
 
-                XmlScanner scan = new XmlScanner();
-                errors = scan.getImplementation(path, id);
+                    XmlScanner scan = new XmlScanner();
+                    errors = scan.getImplementation(path, id);
 
-            } catch (ParserConfigurationException | XPathExpressionException | SAXException | IOException e) {
-                e.printStackTrace();
-            }
+                } catch (ParserConfigurationException | XPathExpressionException | SAXException | IOException e) {
+                    e.printStackTrace();
+                }
 
-            for (String error : errors) {
-                if (!error.isEmpty()) {
-                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                            element.getProcessdefinition(), null, baseElement.getAttributeValue("id"),
-                            baseElement.getAttributeValue("name"), null, null, null,
-                            "no implementation or reference has been specified for '"+ baseElement.getAttributeValue("name")));
+                for (String error : errors) {
+                    if (!error.isEmpty()) {
+                        issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                                element.getProcessdefinition(), null, baseElement.getAttributeValue("id"),
+                                baseElement.getAttributeValue("name"), null, null, null,
+                                "no implementation or reference has been specified for '"
+                                        + baseElement.getAttributeValue("name")));
+                    }
                 }
             }
-
         }
         return issues;
     }

@@ -32,6 +32,7 @@ import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.BpmnCheckerMojo;
+import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -44,8 +45,6 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  */
 public class DmnTaskChecker extends AbstractElementChecker {
 
-    final private String basePath = "src/main/resources/";
-
     public DmnTaskChecker(final Rule rule) {
         super(rule);
     }
@@ -56,7 +55,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
         String path;
 
         for (final String output : BpmnCheckerMojo.getModelPath()) {
-            path = basePath + output;
+            path = ConstantsConfig.BASEPATH + output;
             issues.addAll(checkSingleModel(element, path));
         }
         return issues;

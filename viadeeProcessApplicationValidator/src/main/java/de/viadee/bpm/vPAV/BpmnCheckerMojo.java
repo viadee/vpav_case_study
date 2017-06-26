@@ -251,7 +251,7 @@ public class BpmnCheckerMojo extends AbstractMojo {
             final OuterProcessVariablesScanner variableScanner) throws MojoExecutionException {
         Collection<CheckerIssue> modelIssues;
         try {
-            modelIssues = BpmnModelDispatcher.dispatch(new File("src/main/resources/" + processdef),
+            modelIssues = BpmnModelDispatcher.dispatch(new File(ConstantsConfig.BASEPATH + processdef),
                     fileScanner.getDecisionRefToPathMap(), fileScanner.getProcessIdToPathMap(), beanMapping,
                     variableScanner.getMessageIdToVariableMap(), variableScanner.getProcessIdToVariableMap(),
                     fileScanner.getResourcesNewestVersions(), rules, fileScanner.getClassLoader());

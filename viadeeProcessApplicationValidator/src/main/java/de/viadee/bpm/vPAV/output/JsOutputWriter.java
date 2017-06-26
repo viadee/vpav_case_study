@@ -43,8 +43,6 @@ import de.viadee.bpm.vPAV.processing.model.graph.Path;
  */
 public class JsOutputWriter implements IssueOutputWriter {
 
-    private String basePath = "src/main/resources/";
-
     public void write(final Collection<CheckerIssue> issues) throws OutputWriterException {
         final String json = transformToJsonDatastructure(issues);
         final String bpmn = transformToXMLDatastructure();
@@ -63,7 +61,7 @@ public class JsOutputWriter implements IssueOutputWriter {
         try {
             for (final String bpmnFilename : BpmnCheckerMojo.getModelPath()) {
                 output += "{\"name\":\"" + bpmnFilename + "\",\n \"xml\": \"";
-                output += convertBpmnFile(basePath + bpmnFilename);
+                output += convertBpmnFile(ConstantsConfig.BASEPATH + bpmnFilename);
                 output += "\"},\n";
             }
         } catch (IOException e) {
