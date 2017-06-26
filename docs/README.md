@@ -6,7 +6,7 @@ such as a delegate reference to a non-existing java class or a non-existing Spri
 
 Find a list of the consistency checks below.
 
-We recommend to integrate the consistency check in you CI builds - you can't find these inconsistencies early enough.
+We recommend to integrate the consistency check in your CI builds - you can't find these inconsistencies early enough.
 
 # Features
 
@@ -43,6 +43,7 @@ an visual version based on  [BPMN.io](https://bpmn.io/) of all errors and warnin
 There are two ways of installation. We recommend to use the JUnit approach as follows.
 
 1. If you use Maven, add the dependency to your POM:
+
 ```xml
 <dependency>
   <groupId>de.viadee.bpm</groupId>
@@ -50,6 +51,7 @@ There are two ways of installation. We recommend to use the JUnit approach as fo
   <version>...</version>
 </dependency>
 ```
+
 2. Configure a JUnit Test to fire up your usual Spring context, if you use Spring in your application or a simple test case otherwise to call the consistency check.
 
 ## Commitments
