@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 import org.camunda.bpm.engine.IdentityService;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -88,8 +91,14 @@ public class SpringTestConfig {
 
     @Bean
     public VelocityEngineFactoryBean velocityEngine() {
-        return null;
-    }
+        final VelocityEngineFactoryBean velocityEngine = new VelocityEngineFactoryBean();
+        final Map<String, Object> velocityProperties = new HashMap<>();
+        velocityProperties.put("resource.loader", "class");
+        velocityProperties.put("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityEngine.setVelocityPropertiesMap(velocityProperties);
+        return velocityEngine;
+    }    
 
     @Bean
     public JavaMailSender mailSender() {
