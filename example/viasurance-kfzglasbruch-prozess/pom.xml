@@ -40,7 +40,14 @@
     </dependencies>
   </dependencyManagement>
 
-  <dependencies>
+  <dependencies>  
+  
+    <dependency>
+      <groupId>de.viadee.bpm</groupId>
+      <artifactId>viadeeProcessApplicationValidator</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>  
 
     <dependency>
       <groupId>de.viasurance</groupId>
@@ -92,7 +99,6 @@
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -163,12 +169,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>de.viadee.bpm</groupId>
-      <artifactId>viadeeProcessApplicationValidator</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
