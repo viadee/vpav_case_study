@@ -39,6 +39,13 @@ test which will break your build too.
 Further, the consistency check will provide an XML version, a JSON version and
 an visual version based on  [BPMN.io](https://bpmn.io/) of all errors and warnings found.
 
+### Visual output
+The header contains the name of the current model. Below the heading, you can select a different model of the project to be displayed. 
+In the BPMN model, the elements with errors are highlighted. Error categories are indicated by color. 
+An overlay specifies the number of errors found on an element. Details can be seen by clicking on the overlay.
+All errors are laid out in a table below the model. Clicking on the rulename opens the corresponding documentation.
+
+
 ## Installation/Usage
 There are two ways of installation. We recommend to use the JUnit approach as follows.
 
