@@ -49,7 +49,8 @@ All errors are laid out in a table below the model. Clicking on the rulename ope
 ## Installation/Usage
 There are two ways of installation. We recommend to use the JUnit approach as follows.
 
-1. If you use Maven, add the dependency to your POM:
+### Maven
+If you use Maven, add the dependency to your POM:
 
 ```xml
 <dependency>
@@ -59,7 +60,16 @@ There are two ways of installation. We recommend to use the JUnit approach as fo
 </dependency>
 ```
 
-2. Configure a JUnit Test to fire up your usual Spring context, if you use Spring in your application or a simple test case otherwise to call the consistency check.
+Run with maven goal to start the validation  
+```java
+de.viadee.bpm:viadeeProcessApplicationValidator:2.0.0-SNAPSHOT:check
+```
+### Spring
+Configure a JUnit Test to fire up your usual Spring context, if you use Spring in your application or a simple test case otherwise to call the consistency check.
+Use the ModelConsistencyTest class to run a JUnit test. To use the ProcessApplicationValidator simply use the following import:
+```java
+import de.viadee.bpm.vPAV.ProcessApplicationValidator;
+```
 
 ## Commitments
 This library will remain under an open source licence indefinately.
