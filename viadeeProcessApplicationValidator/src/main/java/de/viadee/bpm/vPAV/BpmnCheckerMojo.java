@@ -40,7 +40,9 @@ import de.viadee.bpm.vPAV.beans.BeanMappingXmlParser;
  * Goal which checks bpmn files
  */
 
-@Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
+
+
 public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.plugin.Mojo{ 
     
     public static Logger logger = Logger.getLogger(BpmnCheckerMojo.class.getName());
@@ -49,12 +51,15 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;  
     
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException { 
+        logger.warning("execute");
         // 1b) read bean mappings, if available
         readBeanMapping();
         
         // 2) get MavenProject classloader
-        retrieveClassLoader();
+        retrieveClassLoader();    
+        
+        run_vPAV();
     }
 
     public static Map<String, String> readBeanMapping() {

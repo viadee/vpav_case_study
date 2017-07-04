@@ -77,10 +77,7 @@ public abstract class AbstractRunner {
          */        
           
         // 1
-        final Map<String, Rule> rules = readConfig();
-        
-        // 1b. 
-        beanMapping = BpmnCheckerMojo.readBeanMapping();      
+        final Map<String, Rule> rules = readConfig();   
         
         // 2
         scanClassPath(rules);
@@ -113,7 +110,7 @@ public abstract class AbstractRunner {
             rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
         } catch (final ConfigReaderException e) {
             throw new RuntimeException("Config file couldn`t be read");
-        }
+        }       
         return rules;
     }        
 
@@ -138,7 +135,7 @@ public abstract class AbstractRunner {
 
     // 4 - Check each model
     public static void createIssues(Map<String, Rule> rules) throws RuntimeException {
-        issues = checkModels(rules, beanMapping, fileScanner, variableScanner);
+        issues = checkModels(rules, beanMapping, fileScanner, variableScanner);        
     }
 
     // 5 remove ignored issues

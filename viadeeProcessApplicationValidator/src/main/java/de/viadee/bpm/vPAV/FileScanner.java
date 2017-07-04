@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,11 +70,15 @@ public class FileScanner {
     private Collection<String> resourcesNewestVersions = new ArrayList<String>();
 
     private Map<String, String> processIdToPathMap;
+    
+    public static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
     public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader)
             throws MalformedURLException, DependencyResolutionRequiredException {
         
         this.classLoader = classLoader;
+        
+        logger.warning("classloader: "+ ClassLoader.class.getName());
 
         // initialize scanner for searching files in maven project
         final Reflections reflections = new Reflections(new ConfigurationBuilder()
