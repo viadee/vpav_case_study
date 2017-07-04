@@ -12,7 +12,7 @@ import de.viadee.bpm.vPAV.ProcessApplicationValidator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
-public class JUnitRunner{
+public class ModelConsistencyTest{
         
     @Autowired
     private ApplicationContext ctx;   
