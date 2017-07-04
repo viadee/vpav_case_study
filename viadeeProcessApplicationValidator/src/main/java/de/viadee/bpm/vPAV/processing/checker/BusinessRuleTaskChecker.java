@@ -51,7 +51,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.xml.sax.SAXException;
 
-import de.viadee.bpm.vPAV.BpmnCheckerMojo;
+import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
@@ -75,7 +75,7 @@ public class BusinessRuleTaskChecker extends AbstractElementChecker {
 
         ArrayList<String> errors = new ArrayList<String>();
 
-        for (final String output : BpmnCheckerMojo.getModelPath()) {
+        for (final String output : AbstractRunner.getModelPath()) {
             path = ConstantsConfig.BASEPATH + output;
 
             if (task instanceof BusinessRuleTask) {

@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,6 +50,9 @@ import org.xml.sax.SAXException;
  *
  */
 public class BeanMappingXmlParser {
+    
+    
+  public static Logger logger = Logger.getLogger(BeanMappingXmlParser.class.getName());
 
   public static Map<String, String> parse(final File beanMappingFile) {
 
@@ -57,8 +61,8 @@ public class BeanMappingXmlParser {
     try {
       final Document xmlDoc = readXmlDocumentFile(beanMappingFile);
       beanNamesCorrespondingClasses.putAll(readBeanNamesAndCorrespondingClasses(xmlDoc));
-    } catch (final ParserConfigurationException | SAXException | IOException ex) {
-      throw new RuntimeException("bean mapping couldn't be loaded from beanMapping.xml", ex);
+    } catch (final ParserConfigurationException | SAXException | IOException ex) {      
+      logger.warning("bean mapping couldn't be loaded from beanMapping.xml");
     }
 
     return beanNamesCorrespondingClasses;

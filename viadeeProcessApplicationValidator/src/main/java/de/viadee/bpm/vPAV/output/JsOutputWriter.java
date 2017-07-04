@@ -31,7 +31,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import de.viadee.bpm.vPAV.BpmnCheckerMojo;
+import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
@@ -59,7 +59,7 @@ public class JsOutputWriter implements IssueOutputWriter {
     private String transformToXMLDatastructure() throws OutputWriterException {
         String output = "var diagramXMLSource = [\n";
         try {
-            for (final String bpmnFilename : BpmnCheckerMojo.getModelPath()) {
+            for (final String bpmnFilename : AbstractRunner.getModelPath()) {
                 output += "{\"name\":\"" + bpmnFilename + "\",\n \"xml\": \"";
                 output += convertBpmnFile(ConstantsConfig.BASEPATH + bpmnFilename);
                 output += "\"},\n";

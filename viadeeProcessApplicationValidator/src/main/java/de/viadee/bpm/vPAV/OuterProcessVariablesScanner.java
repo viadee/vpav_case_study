@@ -134,7 +134,8 @@ public class OuterProcessVariablesScanner {
    * @param fileName
    * @return
    */
-  private String readResourceFile(final String fileName) {
+  @SuppressWarnings("deprecation")
+private String readResourceFile(final String fileName) {
     String methodBody = "";
     if (fileName != null && fileName.trim().length() > 0) {
       final InputStream resource = classLoader.getResourceAsStream(fileName);

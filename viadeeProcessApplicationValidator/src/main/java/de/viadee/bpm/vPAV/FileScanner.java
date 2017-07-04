@@ -70,11 +70,10 @@ public class FileScanner {
 
     private Map<String, String> processIdToPathMap;
 
-    public FileScanner(final MavenProject project, final Map<String, Rule> rules)
+    public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader)
             throws MalformedURLException, DependencyResolutionRequiredException {
-
-        // determine class loader
-        classLoader = getClassLoader(project);
+        
+        this.classLoader = classLoader;
 
         // initialize scanner for searching files in maven project
         final Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -165,7 +164,7 @@ public class FileScanner {
      * @throws DependencyResolutionRequiredException
      * @throws MalformedURLException
      */
-    private static ClassLoader getClassLoader(final MavenProject project)
+    static ClassLoader getClassLoader(final MavenProject project)
             throws DependencyResolutionRequiredException, MalformedURLException {
         final List<String> classPathElements = project.getRuntimeClasspathElements();
         final List<URL> classpathElementUrls = new ArrayList<URL>(classPathElements.size());
