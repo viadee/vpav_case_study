@@ -45,12 +45,11 @@ In the BPMN model, the elements with errors are highlighted. Error categories ar
 An overlay specifies the number of errors found on an element. Details can be seen by clicking on the overlay.
 All errors are laid out in a table below the model. Clicking on the rulename opens the corresponding documentation.
 
-
 ## Installation/Usage
 There are two ways of installation. We recommend to use the JUnit approach as follows.
 
 ### Maven
-If you use Maven, add the dependency to your POM:
+You can start the validation as a Maven plugin. Therefore, add the dependency to your POM:
 
 ```xml
 <dependency>
@@ -60,16 +59,39 @@ If you use Maven, add the dependency to your POM:
 </dependency>
 ```
 
-Run with maven goal to start the validation  
+Then, use the following maven goal to start the validation.  
 ```java
 de.viadee.bpm:viadeeProcessApplicationValidator:2.0.0-SNAPSHOT:check
 ```
-### Spring
-Configure a JUnit Test to fire up your usual Spring context, if you use Spring in your application or a simple test case otherwise to call the consistency check.
-Use the ModelConsistencyTest class to run a JUnit test. To use the ProcessApplicationValidator simply use the following import:
+Please note: This approach is not useful, if you use Spring managed java delegates in your processes.
+
+### JUnit
+Configure a JUnit Test to fire up your usual Spring context - esp. delegates referenced in the process, 
+if you use Spring in your application or a simple test case otherwise to call the consistency check.
+
+The recommended name for this class is ModelConsistencyTest, where you 
+call the ProcessApplicationValidator by simply using code like the following:
+
 ```java
 import de.viadee.bpm.vPAV.ProcessApplicationValidator;
+...
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+public class ModelConsistencyTest{
+        
+    @Autowired
+    private ApplicationContext ctx;   
+    
+    @Test
+    public void validateModel() {        
+        assertTrue("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.assertBPMModelConsistency(ctx));        
+    }
+}
+
 ```
+Note, that the Validator receives the Spring context. Thereby, the validation can
+check delegate Beans and their names.
 
 ## Commitments
 This library will remain under an open source licence indefinately.
