@@ -76,9 +76,7 @@ public class FileScanner {
     public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader)
             throws MalformedURLException, DependencyResolutionRequiredException {
         
-        this.classLoader = classLoader;
-        
-        logger.warning("classloader: "+ ClassLoader.class.getName());
+        this.classLoader = classLoader; 
 
         // initialize scanner for searching files in maven project
         final Reflections reflections = new Reflections(new ConfigurationBuilder()

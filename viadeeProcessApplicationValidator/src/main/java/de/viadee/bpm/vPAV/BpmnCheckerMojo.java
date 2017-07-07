@@ -52,7 +52,6 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
     private MavenProject project;  
     
     public void execute() throws MojoExecutionException { 
-        logger.warning("execute");
         // 1b) read bean mappings, if available
         readBeanMapping();
         

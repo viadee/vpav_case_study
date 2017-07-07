@@ -89,8 +89,7 @@ public abstract class AbstractRunner {
         createIssues(rules);
 
         // 5
-        filteredIssues = filterIssues(issues);
-        removeIgnoredIssues();
+        filteredIssues = filterIssues(issues);        
 
         // 6
         writeOutput(filteredIssues);
