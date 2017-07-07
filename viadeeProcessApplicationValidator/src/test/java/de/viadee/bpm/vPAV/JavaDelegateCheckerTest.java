@@ -30,12 +30,14 @@ import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.viadee.bpm.vPAV.config.model.Rule;
+import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.checker.ElementChecker;
 import de.viadee.bpm.vPAV.processing.checker.JavaDelegateChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -51,7 +53,7 @@ public class JavaDelegateCheckerTest {
 
     private static ElementChecker checker;
 
-    private static ClassLoader cl;
+    private static ClassLoader cl;  
 
     @BeforeClass
     public static void setup() throws MalformedURLException {
@@ -105,13 +107,14 @@ public class JavaDelegateCheckerTest {
                 .getModelElementsByType(ServiceTask.class);
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        final BaseElement baseElement = element.getBaseElement();
 
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
-        } else {
-            Assert.assertEquals("task 'Service Task 1' with no code reference yet",
+        } else {       
+            Assert.assertEquals("task " + CheckName.checkName(baseElement)+ " with no code reference yet",
                     issues.iterator().next().getMessage());
         }
     }
@@ -130,13 +133,14 @@ public class JavaDelegateCheckerTest {
                 .getModelElementsByType(ServiceTask.class);
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        final BaseElement baseElement = element.getBaseElement();
 
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
-        } else {
-            Assert.assertEquals("task 'Service Task 1' with no class name",
+        } else {         
+            Assert.assertEquals("task " + CheckName.checkName(baseElement) + " with no class name",
                     issues.iterator().next().getMessage());
         }
     }
@@ -156,12 +160,14 @@ public class JavaDelegateCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
+        final BaseElement baseElement = element.getBaseElement();
+        
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
-        } else {
-            Assert.assertEquals("class for task 'Service Task 1' not found",
+        } else {           
+            Assert.assertEquals("class for task " + CheckName.checkName(baseElement)+ " not found",
                     issues.iterator().next().getMessage());
         }
     }
@@ -180,13 +186,15 @@ public class JavaDelegateCheckerTest {
                 .getModelElementsByType(ServiceTask.class);
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        
+        final BaseElement baseElement = element.getBaseElement();
 
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
-        } else {
-            Assert.assertEquals("class for task 'Service Task 1' does not implement interface JavaDelegate",
+        } else {            
+            Assert.assertEquals("class for task " + CheckName.checkName(baseElement)+ " does not implement interface JavaDelegate",
                     issues.iterator().next().getMessage());
         }
     }
@@ -205,13 +213,15 @@ public class JavaDelegateCheckerTest {
                 .getModelElementsByType(ServiceTask.class);
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        
+        final BaseElement baseElement = element.getBaseElement();
 
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
         } else {
-            Assert.assertEquals("Couldn't find correct beanmapping for delegate expression in task 'Service Task 1'",
+            Assert.assertEquals("Couldn't find correct beanmapping for delegate expression in task " + CheckName.checkName(baseElement),
                     issues.iterator().next().getMessage());
         }
     }
@@ -231,12 +241,14 @@ public class JavaDelegateCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
+        final BaseElement baseElement = element.getBaseElement();
+        
         final Collection<CheckerIssue> issues = checker.check(element, cl);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
-        } else {
-            Assert.assertEquals("class for task 'Service Task 1' not found",
+        } else {            
+            Assert.assertEquals("class for task " + CheckName.checkName(baseElement)+ " not found",
                     issues.iterator().next().getMessage());
         }
     }
