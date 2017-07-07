@@ -178,13 +178,7 @@
 					<reuseForks>false</reuseForks>
 					<forkCount>1</forkCount>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>1.0.0-M4</version>
-					</dependency>
-				</dependencies>
+				
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
