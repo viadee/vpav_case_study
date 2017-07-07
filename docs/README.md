@@ -66,7 +66,7 @@ de.viadee.bpm:viadeeProcessApplicationValidator:2.0.0-SNAPSHOT:check
 Please note: This approach is not useful, if you use Spring managed java delegates in your processes.
 
 ### JUnit
-Configure a JUnit Test to fire up your usual Spring context - esp. delegates referenced in the process, 
+Configure a JUnit-4 Test to fire up your usual Spring context - esp. delegates referenced in the process, 
 if you use Spring in your application or a simple test case otherwise to call the consistency check.
 
 The recommended name for this class is ModelConsistencyTest, where you 
