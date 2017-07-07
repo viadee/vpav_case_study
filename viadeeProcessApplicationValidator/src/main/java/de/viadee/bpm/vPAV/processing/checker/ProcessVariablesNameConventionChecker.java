@@ -94,8 +94,8 @@ public class ProcessVariablesNameConventionChecker extends AbstractElementChecke
                                             baseElement.getId(), baseElement.getAttributeValue("name"),
                                             variable.getName(), null, null,
                                             "process variable (" + variable.getName()
-                                                    + ") is against the naming convention '" + convention.getName()
-                                                    + "'" + " (compare " + variable.getChapter() + ", "
+                                                    + ") is against the naming convention " + convention.getName()
+                                                    + " (compare " + variable.getChapter() + ", "
                                                     + variable.getFieldType().getDescription() + ")"));
                                 }
                             }

@@ -77,6 +77,7 @@ public class JsOutputWriter implements IssueOutputWriter {
         s = s.replace('\n', ' '); // umbrueche entfernen
         s = s.replace('\r', ' '); // umbrueche entfernen
         s = s.replaceAll(">\\u0020*<", "><");
+        s = s.replaceAll(">\\u0027*<", "><");
         return s;
     }
 

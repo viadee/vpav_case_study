@@ -359,7 +359,7 @@ public class VersioningChecker extends AbstractElementChecker {
         issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
             element.getProcessdefinition(), javaReference, element.getBaseElement().getId(),
             element.getBaseElement().getAttributeValue("name"), null, null, null,
-            "class reference is deprecated or file with version doesn't exist"));
+            "class reference is deprecated or file with version does not exist"));
       }
     }
   }

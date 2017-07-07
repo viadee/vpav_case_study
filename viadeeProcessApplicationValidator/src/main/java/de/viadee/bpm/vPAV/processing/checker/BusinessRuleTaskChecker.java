@@ -58,6 +58,7 @@ import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
+import de.viadee.bpm.vPAV.processing.CheckName;
 
 public class BusinessRuleTaskChecker extends AbstractElementChecker {
 
@@ -93,8 +94,8 @@ public class BusinessRuleTaskChecker extends AbstractElementChecker {
                         issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
                                 element.getProcessdefinition(), null, baseElement.getAttributeValue("id"),
                                 baseElement.getAttributeValue("name"), null, null, null,
-                                "no implementation or reference has been specified for '"
-                                        + baseElement.getAttributeValue("name")));
+                                "no implementation or reference has been specified for "
+                                        + CheckName.checkName(baseElement)));
                     }
                 }
             }
