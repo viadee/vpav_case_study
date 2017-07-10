@@ -50,35 +50,33 @@ import de.viadee.bpm.vPAV.processing.BpmnModelDispatcher;
 import de.viadee.bpm.vPAV.processing.ConfigItemNotFoundException;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
-public abstract class AbstractRunner {      
-    
+public abstract class AbstractRunner {
+
     private static Logger logger = Logger.getLogger(AbstractRunner.class.getName());
 
     private static FileScanner fileScanner;
+
     private static Map<String, String> beanMapping;
+
     private static OuterProcessVariablesScanner variableScanner;
+
     private static Collection<CheckerIssue> issues;
+
     private static Collection<CheckerIssue> filteredIssues;
+
     protected static ClassLoader classLoader;
 
     public static void run_vPAV() {
 
         /*
-         * 1. Read Config
-         *      1b. Read Bean Mapping (Mojo)
-         *      1c. Create Bean Mapping (JUnit)  
-         * 2. Retrieve Class Path for JUnit/Maven
-         *      2b. Scan Class Path for Models
-         * 3. Get Process Variables
-         * 4. Check Each Model
-         * 5. Remove Ignored Issues
-         * 6. Write Check Results
-         * 7. Copy Files
-         */        
-          
+         * 1. Read Config 1b. Read Bean Mapping (Mojo) 1c. Create Bean Mapping (JUnit) 2. Retrieve Class Path for
+         * JUnit/Maven 2b. Scan Class Path for Models 3. Get Process Variables 4. Check Each Model 5. Remove Ignored
+         * Issues 6. Write Check Results 7. Copy Files
+         */
+
         // 1
-        final Map<String, Rule> rules = readConfig();   
-        
+        final Map<String, Rule> rules = readConfig();
+
         // 2
         scanClassPath(rules);
 
@@ -89,14 +87,14 @@ public abstract class AbstractRunner {
         createIssues(rules);
 
         // 5
-        filteredIssues = filterIssues(issues);        
+        filteredIssues = filterIssues(issues);
 
         // 6
         writeOutput(filteredIssues);
 
         // 7
         copyFiles();
-        
+
         logger.info("BPMN validation successful completed");
 
     }
@@ -109,9 +107,9 @@ public abstract class AbstractRunner {
             rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
         } catch (final ConfigReaderException e) {
             throw new RuntimeException("Config file couldn`t be read");
-        }       
+        }
         return rules;
-    }        
+    }
 
     // 2b - Scan classpath for models
     public static void scanClassPath(Map<String, Rule> rules)
@@ -134,7 +132,7 @@ public abstract class AbstractRunner {
 
     // 4 - Check each model
     public static void createIssues(Map<String, Rule> rules) throws RuntimeException {
-        issues = checkModels(rules, beanMapping, fileScanner, variableScanner);        
+        issues = checkModels(rules, beanMapping, fileScanner, variableScanner);
     }
 
     // 5 remove ignored issues
@@ -165,13 +163,16 @@ public abstract class AbstractRunner {
 
     // 7 copy html-files to target
     public static void copyFiles() throws RuntimeException {
-        copyFileToTarget("bpmn-viewer.js");
-        copyFileToTarget("bpmn.io.viewer.app.js");
-        copyFileToTarget("bpmn.io.viewer.html");
-        copyFileToTarget("jquery-3.2.1.js");
-        copyFileToTarget("logo.png");
+        if (filteredIssues.size() > 0) {
+            copyFileToTarget("bpmn-viewer.js");
+            copyFileToTarget("bpmn.io.viewer.app.js");
+            copyFileToTarget("bpmn.io.viewer.html");
+            copyFileToTarget("logo.png");
+        } else {
+            copyFileToTarget("noIssues.html");
+            copyFileToTarget("logo.png");
+        }
     }
-
 
     /**
      * filter issues based on black list
@@ -180,7 +181,8 @@ public abstract class AbstractRunner {
      * @return
      * @throws IOException
      */
-    private static Collection<CheckerIssue> filterIssues(final Collection<CheckerIssue> issues) throws RuntimeException {
+    private static Collection<CheckerIssue> filterIssues(final Collection<CheckerIssue> issues)
+            throws RuntimeException {
         Collection<CheckerIssue> filteredIssues;
         try {
             filteredIssues = getFilteredIssues(issues);
@@ -265,7 +267,7 @@ public abstract class AbstractRunner {
      * @param fileScanner
      * @param variableScanner
      * @return
-     * @throws ConfigItemNotFoundException 
+     * @throws ConfigItemNotFoundException
      */
     private static Collection<CheckerIssue> checkModels(final Map<String, Rule> rules,
             final Map<String, String> beanMapping, final FileScanner fileScanner,
@@ -277,7 +279,7 @@ public abstract class AbstractRunner {
         }
         return issues;
     }
-    
+
     /**
      * check consistency of a model
      * 
@@ -286,8 +288,8 @@ public abstract class AbstractRunner {
      * @param processdef
      * @param fileScanner
      * @param variableScanner
-     * @return      
-     * @throws ConfigItemNotFoundException 
+     * @return
+     * @throws ConfigItemNotFoundException
      */
     private static Collection<CheckerIssue> checkModel(final Map<String, Rule> rules,
             final Map<String, String> beanMapping, final String processdef, final FileScanner fileScanner,
@@ -329,16 +331,13 @@ public abstract class AbstractRunner {
         if (zeile != null && !zeile.isEmpty() && !zeile.trim().startsWith("#"))
             issues.add(zeile);
     }
-    
 
     public static Set<String> getModelPath() {
         return fileScanner.getProcessdefinitions();
     }
-    
-    public static Collection<CheckerIssue> getfilteredIssues(){
+
+    public static Collection<CheckerIssue> getfilteredIssues() {
         return filteredIssues;
     }
-    
-    
 
 }

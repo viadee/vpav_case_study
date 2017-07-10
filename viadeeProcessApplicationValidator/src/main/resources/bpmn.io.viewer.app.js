@@ -94,9 +94,12 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
     //Add Overlays
     var overlays = bpmnViewer.get('overlays');
     for (id in issues) {
-        var overlayHtml = $('<div class="diagram-zahl">' + issues[id].anz + '</div>');
+        var overlayHtml = document.createElement("div");
+        overlayHtml.setAttribute("class", "diagram-zahl");
+        overlayHtml.appendChild(document.createTextNode(issues[id].anz));
+
         // add DialogMessage
-        function clickOverlay(event) {
+        function clickOverlay(id) {
             //clear dialog
             var dp = document.querySelectorAll('.d');
             for (var i = 0; i < dp.length; i++) {
@@ -105,8 +108,7 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
                 }
             }
 
-
-            var eId = issues[event.data.id].i.elementId;
+            var eId = issues[id].i.elementId;
             for (y in issues) {
                 if (issues[y].i.elementId == eId) {
                     var issue = issues[y].i;
@@ -132,8 +134,14 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
             }
             toggleDialog('show');
         }
-        overlayHtml.click({ id: id }, clickOverlay);
-        // attach the overlayHtml to a node
+
+        overlayHtml.onclick = (function () {
+            var currentId = id;
+            return function () {
+                clickOverlay(currentId);
+            };
+
+        })();
         attachOverlay();
     }
 
@@ -163,41 +171,6 @@ function deleteTable() {
     while (myTable.rows.length > 1) {
         myTable.deleteRow(myTable.rows.length - 1);
     }
-}
-
-function markNodesIssue(bpmnViewer, paths, bpmnFile) {
-    var canvas = bpmnViewer.get('canvas');
-
-    for (id in paths[0]) {
-        //console.log(paths[0][id].elementId);
-        //canvas.addMarker(paths[0][id].elementId, 'VersioningChecker');
-    }
-
-
-    /*
-        for (id in elementsToMark)
-            if (elementsToMark[id].bpmnFile == ("src\\main\\resources\\" + bpmnFile))
-                for (i in paths)
-                    if (elementsToMark[id].elementId == paths[i].elementId) {
-                        if (elementsToMark[id].ruleName == "VersioningChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'VersioningChecker');
-                        } else if (elementsToMark[id].ruleName == "ProcessVariablesNameConventionChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesNameConventionChecker');
-                        } else if (elementsToMark[id].ruleName == "JavaDelegateChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'JavaDelegateChecker');
-                        } else if (elementsToMark[id].ruleName == "EmbeddedGroovyScriptChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'EmbeddedGroovyScriptChecker');
-                        } else if (elementsToMark[id].ruleName == "DmnTaskChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'DmnTaskChecker');
-                        } else if (elementsToMark[id].ruleName == "ProcessVariablesModelChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesModelChecker');
-                        } else if (elementsToMark[id].ruleName == "TaskNamingConventionChecker") {
-                            canvas.addMarker(elementsToMark[id].elementId, 'TaskNamingConventionChecker');
-                        } else {
-                            canvas.addMarker(elementsToMark[id].elementId, 'new');
-                        }
-                    }
-                    */
 }
 
 //create issue table
@@ -281,16 +254,6 @@ function createTable(elementsToMark, bpmnFile) {
             myParent.appendChild(myTable);
         }
     }
-
-    //path markieren
-    /*           
-    var array = [];
-    for (a in issue.paths[0])
-        array[a] = issue.paths[0][a].elementId;
-    a.setAttribute("onclick", "selectModel('" + bpmnFile + "'," + array + ")");
-    a.setAttribute("href", "#");
-     */
-
 }
 
 /**
@@ -320,28 +283,34 @@ function initDiagram(diagramXML, r, paths) {
 
             // zoom to fit full viewport
             canvas.zoom('fit-viewport');
-
             setUeberschrift(diagramXML.name);
-            if (r == 0) {
-                markNodes(bpmnViewer, elementsToMark, diagramXML.name);
-                addCountOverlay(bpmnViewer, elementsToMark, diagramXML.name);
+            if (countIssues(diagramXML.name) > 0) {
+                if (r == 0) {
+                    markNodes(bpmnViewer, elementsToMark, diagramXML.name);
+                    addCountOverlay(bpmnViewer, elementsToMark, diagramXML.name);
+                } else {
+                    markNodesIssue(bpmnViewer, paths, diagramXML.name);
+                }
+                createTable(elementsToMark, diagramXML.name);
+                tableVisible(true);
             } else {
-                markNodesIssue(bpmnViewer, paths, diagramXML.name);
+                document.getElementById("noIssues").setAttribute("style", "display: initial");
+                tableVisible(false);
             }
-            createTable(elementsToMark, diagramXML.name);
         });
     };
 
     bpmnViewer.xml = diagramXML.xml;
 
     bpmnViewer.reload = function (model) {
-        $("#canvas").empty();
+        document.querySelector("#canvas").innerHTML = "";
+       
         deleteTable();
         initDiagram(model, 0, null);
     };
 
     bpmnViewer.reloadMark = function (model, paths) {
-        $("#canvas").empty();
+        document.querySelector("#canvas").innerHTML = "";
         deleteTable();
         initDiagram(model, 1, paths);
     };
@@ -354,7 +323,30 @@ function initDiagram(diagramXML, r, paths) {
 
 //set Filename as Header
 function setUeberschrift(name) {
-    $("#modell").html("Consistency check: " + name);
+     document.querySelector("#modell").innerHTML = "Consistency check: " + name;
+    document.getElementById("noIssues").setAttribute("style", "display: none");
+}
+
+//hideTable
+function tableVisible(show) {
+    if (show) {
+        document.getElementById("h1_table").setAttribute("style", "display: block");
+        document.getElementById("table_issues").setAttribute("style", "display: table");
+    } else {
+        document.getElementById("h1_table").setAttribute("style", "display: none");
+        document.getElementById("table_issues").setAttribute("style", "display: none");
+    }
+}
+
+//get issue count from specific bpmnFile
+function countIssues(bpmnFile) {
+    count = 0;
+    for (id in elementsToMark) {
+        if (elementsToMark[id].bpmnFile == ("src\\main\\resources\\" + bpmnFile)) {
+            count++;
+        }
+    }
+    return count;
 }
 
 //dialog

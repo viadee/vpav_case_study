@@ -234,6 +234,12 @@
 			float: right;
 		}
 
+		#noIssues{
+			background-color: green;
+			color: white;			
+			display: none;
+		}
+
 	</style>
 
 	<title>Process Model Validation Report</title>
@@ -241,8 +247,9 @@
 
 <body>
 	<div class="header">
-  		<a href="https://github.com/viadee/vPAV"><img src="logo.png" alt="viadee gitlab" /></a>
+  		<a href="https://www.viadee.de/"><img src="logo.png" alt="viadee Homepage" /></a>
 		<h1 id=modell></h1>
+		<h2 id=noIssues> no issues were found</h2>
 	</div>		
 	<div id="model">
 		<ul id="linkList">
@@ -282,8 +289,6 @@
 	<script src="bpmn-viewer.js"></script>
 	<!-- bpmn-files and issues -->
 	<script src="bpmn_validation.js"></script>
-	<!-- jQuery -->
-	<script type="text/javascript" src="jquery-3.2.1.js"></script>
 	<!-- application -->
 	<script src="bpmn.io.viewer.app.js"></script>
 </body>
