@@ -304,7 +304,7 @@ function initDiagram(diagramXML, r, paths) {
 
     bpmnViewer.reload = function (model) {
         document.querySelector("#canvas").innerHTML = "";
-       
+
         deleteTable();
         initDiagram(model, 0, null);
     };
@@ -323,7 +323,7 @@ function initDiagram(diagramXML, r, paths) {
 
 //set Filename as Header
 function setUeberschrift(name) {
-     document.querySelector("#modell").innerHTML = "Consistency check: " + name;
+    document.querySelector("#modell").innerHTML = "Consistency check: " + name;
     document.getElementById("noIssues").setAttribute("style", "display: none");
 }
 
@@ -372,10 +372,15 @@ function toggleDialog(sh) {
         var ul = document.getElementById("linkList");
         var li = document.createElement("li");
         var a = document.createElement("a");
+
         li.appendChild(a);
-        a.appendChild(document.createTextNode(model.name));
+        a.appendChild(document.createTextNode(model.name + " (" + countIssues(model.name)+" issues)"));
         a.setAttribute("onclick", "selectModel('" + model.name + "', null )");
         a.setAttribute("href", "#");
+        if (countIssues(model.name) > 0)
+            a.setAttribute("style", "color: red;");
+            else
+            a.setAttribute("style", "color: green;");
         ul.appendChild(li);
     }
 })();
