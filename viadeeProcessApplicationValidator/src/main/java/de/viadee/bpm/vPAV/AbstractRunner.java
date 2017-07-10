@@ -163,6 +163,7 @@ public abstract class AbstractRunner {
 
     // 7 copy html-files to target
     public static void copyFiles() throws RuntimeException {
+        deleteFiles();
         if (filteredIssues.size() > 0) {
             copyFileToTarget("bpmn-viewer.js");
             copyFileToTarget("bpmn.io.viewer.app.js");
@@ -246,11 +247,23 @@ public abstract class AbstractRunner {
         return ignoredIssues;
     }
 
+    private static void deleteFiles() {
+        ArrayList<Path> destinations = new ArrayList<Path>();
+        destinations.add(Paths.get("target/bpmn-viewer.js"));
+        destinations.add(Paths.get("target/bpmn.io.viewer.app.js"));
+        destinations.add(Paths.get("target/bpmn.io.viewer.html"));
+        destinations.add(Paths.get("target/logo.png"));
+        destinations.add(Paths.get("target/noIssues.html"));
+
+        for (Path destination : destinations) {
+            if (destination.toFile().exists()) // if file exist, delete
+                destination.toFile().delete();
+        }
+    }
+
     private static void copyFileToTarget(String File) throws RuntimeException {
         InputStream source = AbstractRunner.class.getClassLoader().getResourceAsStream(File);
         Path destination = Paths.get("target/" + File);
-        if (destination.toFile().exists()) // if file exist, delete
-            destination.toFile().delete();
         try {
             Files.copy(source, destination);
         } catch (IOException e) {
