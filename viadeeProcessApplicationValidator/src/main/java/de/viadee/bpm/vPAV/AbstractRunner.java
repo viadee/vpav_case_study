@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,7 +100,7 @@ public abstract class AbstractRunner {
 
     // 1a - Read config file
 
-    public static Map<String, Rule> readConfig() throws RuntimeException {
+    public static Map<String, Rule> readConfig() {
         final Map<String, Rule> rules;
         try {
             rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
@@ -112,12 +111,9 @@ public abstract class AbstractRunner {
     }
 
     // 2b - Scan classpath for models
-    public static void scanClassPath(Map<String, Rule> rules)
-            throws RuntimeException {
+    public static void scanClassPath(Map<String, Rule> rules) {
         try {
             fileScanner = new FileScanner(rules, classLoader);
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException("Cannot resolve URL format");
         } catch (final DependencyResolutionRequiredException e) {
             throw new RuntimeException("Classpath couldn't be resolved");
         }
@@ -142,7 +138,7 @@ public abstract class AbstractRunner {
 
     /**
      * write output files (xml / json/ js)
-     * 
+     *
      * @param filteredIssue
      * @throws OutputWriterException
      */
@@ -177,7 +173,7 @@ public abstract class AbstractRunner {
 
     /**
      * filter issues based on black list
-     * 
+     *
      * @param issues
      * @return
      * @throws IOException
@@ -195,7 +191,7 @@ public abstract class AbstractRunner {
 
     /**
      * remove false positives from issue collection
-     * 
+     *
      * @param issues
      * @return filteredIssues
      * @throws IOException
@@ -216,9 +212,9 @@ public abstract class AbstractRunner {
 
     /**
      * Read issue ids, that should be ignored
-     * 
+     *
      * Assumption: Each row is an issue id
-     * 
+     *
      * @param filePath
      * @return issue ids
      * @throws IOException
@@ -274,7 +270,7 @@ public abstract class AbstractRunner {
 
     /**
      * check consistency of all models
-     * 
+     *
      * @param rules
      * @param beanMapping
      * @param fileScanner
@@ -295,7 +291,7 @@ public abstract class AbstractRunner {
 
     /**
      * check consistency of a model
-     * 
+     *
      * @param rules
      * @param beanMapping
      * @param processdef

@@ -25,8 +25,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +38,7 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tools.ant.DirectoryScanner;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelException;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -65,26 +68,30 @@ public class FileScanner {
 
     private final Set<String> javaResources;
 
-    private final Map<String, String> decisionRefToPathMap;
+    private Map<String, String> decisionRefToPathMap;
 
     private Collection<String> resourcesNewestVersions = new ArrayList<String>();
 
     private Map<String, String> processIdToPathMap;
-    
+
     public static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
     public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader)
-            throws MalformedURLException, DependencyResolutionRequiredException {
-        
-        this.classLoader = classLoader; 
+            throws DependencyResolutionRequiredException {
+
+        this.classLoader = classLoader;
+
+        final DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setBasedir(ConstantsConfig.BASEPATH);
 
         // initialize scanner for searching files in maven project
         final Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setScanners(new ResourcesScanner()).setUrls(ClasspathHelper.forClassLoader(classLoader)));
 
         // get file paths of process definitions
-        processdefinitions = reflections
-                .getResources(Pattern.compile(ConstantsConfig.BPMN_FILE_PATTERN));
+        scanner.setIncludes(new String[] { ConstantsConfig.BPMN_FILE_PATTERN2 });
+        scanner.scan();
+        processdefinitions = new HashSet<String>(Arrays.asList(scanner.getIncludedFiles()));
 
         // get mapping from process id to file path
         processIdToPathMap = createProcessIdToPathMap(processdefinitions);
@@ -93,21 +100,25 @@ public class FileScanner {
         javaResources = reflections.getResources(Pattern.compile(ConstantsConfig.JAVA_FILE_PATTERN));
 
         // get mapping from decision reference to file path
+        scanner.setIncludes(new String[] { ConstantsConfig.DMN_FILE_PATTERN2 });
+        scanner.scan();
         decisionRefToPathMap = createDmnKeyToPathMap(
-                reflections.getResources(Pattern.compile(ConstantsConfig.DMN_FILE_PATTERN)));
+                new HashSet<String>(Arrays.asList(scanner.getIncludedFiles())));
 
         // determine version name schema for resources
         final String versioningSchema = loadVersioningSchemaClass(rules);
+        scanner.setIncludes(new String[] { versioningSchema });
+        scanner.scan();
         if (versioningSchema != null) {
             // get current versions for resources, that match the name schema
             resourcesNewestVersions = createResourcesToNewestVersions(
-                    reflections.getResources(Pattern.compile(versioningSchema)), versioningSchema);
+                    new HashSet<String>(Arrays.asList(scanner.getIncludedFiles())), versioningSchema);
         }
     }
 
     /**
      * get class loader
-     * 
+     *
      * @return
      */
     public ClassLoader getClassLoader() {
@@ -116,7 +127,7 @@ public class FileScanner {
 
     /**
      * get file paths for process definitions
-     * 
+     *
      * @return
      */
     public Set<String> getProcessdefinitions() {
@@ -125,7 +136,7 @@ public class FileScanner {
 
     /**
      * get file paths of java resources
-     * 
+     *
      * @return
      */
     public Set<String> getJavaResources() {
@@ -134,7 +145,7 @@ public class FileScanner {
 
     /**
      * get mapping from process id to file path of bpmn models
-     * 
+     *
      * @return
      */
     public Map<String, String> getProcessIdToPathMap() {
@@ -143,7 +154,7 @@ public class FileScanner {
 
     /**
      * get mapping from decisionRef to file path of dmn models
-     * 
+     *
      * @return
      */
     public Map<String, String> getDecisionRefToPathMap() {
@@ -152,7 +163,7 @@ public class FileScanner {
 
     /**
      * get a list of versioned resources (only with current versions)
-     * 
+     *
      * @return
      */
     public Collection<String> getResourcesNewestVersions() {
@@ -161,7 +172,7 @@ public class FileScanner {
 
     /**
      * Get class loader for the maven project, which uses this plugin
-     * 
+     *
      * @param project
      * @return
      * @throws DependencyResolutionRequiredException
@@ -181,7 +192,7 @@ public class FileScanner {
 
     /**
      * Map for getting bpmn reference by process id
-     * 
+     *
      * @param paths
      * @return
      */
@@ -214,7 +225,7 @@ public class FileScanner {
 
     /**
      * Map for getting dmn reference by key
-     * 
+     *
      * @param paths
      * @return
      */
@@ -248,7 +259,7 @@ public class FileScanner {
 
     /**
      * reads versioned classes and scripts and generates a map with newest versions
-     * 
+     *
      * @return Map
      */
     private static Collection<String> createResourcesToNewestVersions(
@@ -278,7 +289,7 @@ public class FileScanner {
 
     /**
      * determine versioning schema for an active versioning checker
-     * 
+     *
      * @param rules
      * @return schema (regex), if null the checker is inactive
      */
