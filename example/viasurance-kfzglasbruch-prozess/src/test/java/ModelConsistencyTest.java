@@ -1,5 +1,5 @@
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,20 +12,15 @@ import de.viadee.bpm.vPAV.ProcessApplicationValidator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
-public class ModelConsistencyTest{
-        
+public class ModelConsistencyTest {
+
     @Autowired
-    private ApplicationContext ctx;   
-    
+    private ApplicationContext ctx;
+
     @Test
-    public void validateModel() {        
-        assertTrue("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.assertBPMModelConsistency(ctx));        
+    public void errorsInModelMustBeFound() {
+        assertFalse("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.assertBPMModelConsistency(ctx));
     }
-    
 
-    
 }
-
-
-
