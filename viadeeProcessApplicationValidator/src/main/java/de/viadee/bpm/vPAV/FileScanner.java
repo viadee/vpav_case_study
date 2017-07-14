@@ -21,17 +21,21 @@
 package de.viadee.bpm.vPAV;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,10 +51,6 @@ import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelException;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.Decision;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.config.model.Setting;
@@ -66,7 +66,7 @@ public class FileScanner {
 
     private final Set<String> processdefinitions;
 
-    private final Set<String> javaResources;
+    private Set<String> javaResources = new HashSet<String>();
 
     private Map<String, String> decisionRefToPathMap;
 
@@ -84,12 +84,8 @@ public class FileScanner {
         final DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(ConstantsConfig.BASEPATH);
 
-        // initialize scanner for searching files in maven project
-        final Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setScanners(new ResourcesScanner()).setUrls(ClasspathHelper.forClassLoader(classLoader)));
-
         // get file paths of process definitions
-        scanner.setIncludes(new String[] { ConstantsConfig.BPMN_FILE_PATTERN2 });
+        scanner.setIncludes(new String[] { ConstantsConfig.BPMN_FILE_PATTERN });
         scanner.scan();
         processdefinitions = new HashSet<String>(Arrays.asList(scanner.getIncludedFiles()));
 
@@ -97,10 +93,21 @@ public class FileScanner {
         processIdToPathMap = createProcessIdToPathMap(processdefinitions);
 
         // get file paths of java files
-        javaResources = reflections.getResources(Pattern.compile(ConstantsConfig.JAVA_FILE_PATTERN));
+        URL[] urls = ((URLClassLoader) classLoader).getURLs();
+
+        // retrieve all jars during runtime and pass them to get class files
+        for (URL url : urls) {
+            if (url.getFile().endsWith(ConstantsConfig.JAR_FILE_PATTERN)) {
+                try {
+                    passURL(url.getFile().substring(1));
+                } catch (IOException e) {
+                    logger.warning("could not resolve java resources");
+                }
+            }
+        }
 
         // get mapping from decision reference to file path
-        scanner.setIncludes(new String[] { ConstantsConfig.DMN_FILE_PATTERN2 });
+        scanner.setIncludes(new String[] { ConstantsConfig.DMN_FILE_PATTERN });
         scanner.scan();
         decisionRefToPathMap = createDmnKeyToPathMap(
                 new HashSet<String>(Arrays.asList(scanner.getIncludedFiles())));
@@ -113,6 +120,30 @@ public class FileScanner {
             // get current versions for resources, that match the name schema
             resourcesNewestVersions = createResourcesToNewestVersions(
                     new HashSet<String>(Arrays.asList(scanner.getIncludedFiles())), versioningSchema);
+        }
+    }
+
+    /**
+     * process each jar file and retrieve classes
+     *
+     */
+    private void process(Object obj) {
+        JarEntry entry = (JarEntry) obj;
+        String name = entry.getName();
+        if (name.endsWith(".class")) {
+            javaResources.add(name);
+        }
+    }
+
+    /**
+     * find all jar files and process each of them
+     *
+     */
+    public void passURL(String url) throws IOException {
+        JarFile jarFile = new JarFile(url);
+        Enumeration<JarEntry> enumeration = jarFile.entries();
+        while (enumeration.hasMoreElements()) {
+            process(enumeration.nextElement());
         }
     }
 
