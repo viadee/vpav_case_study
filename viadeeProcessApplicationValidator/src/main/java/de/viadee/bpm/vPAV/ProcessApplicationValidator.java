@@ -13,7 +13,7 @@ public class ProcessApplicationValidator extends AbstractRunner {
      */
     public static boolean assertBPMModelConsistency(ApplicationContext ctx) {
 
-        BeanMappingGenerator.generateBeanMappingFile(ctx);
+        beanMapping = BeanMappingGenerator.generateBeanMappingFile(ctx);
         retrieveClassLoader();
         run_vPAV();
 

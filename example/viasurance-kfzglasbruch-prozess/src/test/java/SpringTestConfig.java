@@ -98,7 +98,7 @@ public class SpringTestConfig {
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         velocityEngine.setVelocityPropertiesMap(velocityProperties);
         return velocityEngine;
-    }    
+    }
 
     @Bean
     public JavaMailSender mailSender() {
