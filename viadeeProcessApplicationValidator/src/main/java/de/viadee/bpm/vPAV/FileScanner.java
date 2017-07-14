@@ -114,12 +114,14 @@ public class FileScanner {
 
         // determine version name schema for resources
         final String versioningSchema = loadVersioningSchemaClass(rules);
-        scanner.setIncludes(new String[] { versioningSchema });
-        scanner.scan();
         if (versioningSchema != null) {
+            scanner.setIncludes(new String[] { versioningSchema });
+            scanner.scan();
+
             // get current versions for resources, that match the name schema
             resourcesNewestVersions = createResourcesToNewestVersions(
                     new HashSet<String>(Arrays.asList(scanner.getIncludedFiles())), versioningSchema);
+
         }
     }
 
