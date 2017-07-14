@@ -42,22 +42,23 @@ import de.viadee.bpm.vPAV.beans.BeanMappingXmlParser;
 
 @Mojo(name = "check", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 
+public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.plugin.Mojo {
 
-public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.plugin.Mojo{ 
-    
     public static Logger logger = Logger.getLogger(BpmnCheckerMojo.class.getName());
+
     private Log log;
-    
+
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    private MavenProject project;  
-    
-    public void execute() throws MojoExecutionException { 
+    private MavenProject project;
+
+    @Override
+    public void execute() throws MojoExecutionException {
         // 1b) read bean mappings, if available
-        readBeanMapping();
-        
+        beanMapping = readBeanMapping();
+
         // 2) get MavenProject classloader
-        retrieveClassLoader();    
-        
+        retrieveClassLoader();
+
         run_vPAV();
     }
 
@@ -65,26 +66,22 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
         return BeanMappingXmlParser.parse(new File(ConstantsConfig.BEAN_MAPPING));
     }
 
-    
     public void retrieveClassLoader() {
-        try{
+        try {
             classLoader = FileScanner.getClassLoader(project);
-        } catch (MalformedURLException | DependencyResolutionRequiredException e){
-            
-        }       
+        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+
+        }
     }
 
     @Override
-    public void setLog( Log log )
-    {
+    public void setLog(Log log) {
         this.log = log;
     }
 
     @Override
-    public Log getLog()
-    {
-        if ( log == null )
-        {
+    public Log getLog() {
+        if (log == null) {
             log = new SystemStreamLog();
         }
 

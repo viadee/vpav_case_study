@@ -7,12 +7,12 @@ import de.viadee.bpm.vPAV.beans.BeanMappingGenerator;
 public class ProcessApplicationValidator extends AbstractRunner {
 
     public static boolean assertBPMModelConsistency(ApplicationContext ctx) {
-        
-        BeanMappingGenerator.generateBeanMappingFile(ctx);
+
+        beanMapping = BeanMappingGenerator.generateBeanMappingFile(ctx);
         retrieveClassLoader();
         run_vPAV();
-        
-        if(AbstractRunner.getfilteredIssues().isEmpty()){
+
+        if (AbstractRunner.getfilteredIssues().isEmpty()) {
             return true;
         }
         return false;

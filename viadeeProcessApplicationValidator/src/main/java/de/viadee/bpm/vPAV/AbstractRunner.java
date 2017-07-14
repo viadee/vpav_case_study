@@ -55,7 +55,7 @@ public abstract class AbstractRunner {
 
     private static FileScanner fileScanner;
 
-    private static Map<String, String> beanMapping;
+    protected static Map<String, String> beanMapping;
 
     private static OuterProcessVariablesScanner variableScanner;
 
