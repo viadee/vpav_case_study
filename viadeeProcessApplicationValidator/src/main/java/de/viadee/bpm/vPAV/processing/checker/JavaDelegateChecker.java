@@ -106,6 +106,9 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                 } else {
                     issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
                 }
+            } else {
+                // check if class exists
+                issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
             }
         }
         if (classAttr == null && delegateExprAttr == null && exprAttr == null && typeAttr == null) {
