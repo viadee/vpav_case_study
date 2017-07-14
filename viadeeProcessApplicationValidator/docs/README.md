@@ -96,6 +96,13 @@ public class ModelConsistencyTest{
 Note, that the Validator receives the Spring context. Thereby, the validation can
 check delegate Beans and their names.
 
+
+If __no__ Spring context is used, jUnit can also be started without the context parameter:
+```java
+assertTrue("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.assertBPMModelConsistency());
+````
+
 ## Commitments
 This library will remain under an open source licence indefinately.
 
