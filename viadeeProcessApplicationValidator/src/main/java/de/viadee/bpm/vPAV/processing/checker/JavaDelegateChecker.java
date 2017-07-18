@@ -20,17 +20,25 @@
  */
 package de.viadee.bpm.vPAV.processing.checker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.camunda.bpm.model.bpmn.impl.BpmnModelConstants;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.xml.sax.SAXException;
 
 import de.odysseus.el.tree.IdentifierNode;
 import de.odysseus.el.tree.Tree;
 import de.odysseus.el.tree.TreeBuilder;
 import de.odysseus.el.tree.impl.Builder;
+import de.viadee.bpm.vPAV.AbstractRunner;
+import de.viadee.bpm.vPAV.ConstantsConfig;
+import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -53,12 +61,31 @@ public class JavaDelegateChecker extends AbstractElementChecker {
     }
 
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader classLoader) {
+        final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
+        String path;
+        for (final String output : AbstractRunner.getModelPath()) {
+            path = ConstantsConfig.BASEPATH + output;
+            try {
+                issues.addAll(checkSingleModel(element, classLoader, path));
+            } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return issues;
+    }
+
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader classLoader,
+            String path) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
         final BaseElement bpmnElement = element.getBaseElement();
 
+        XmlScanner scan = new XmlScanner();
+
         // read attributes from task
+        final String implementationAttr = scan.getImplementation(path, bpmnElement.getId());
+
         final String classAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
                 "class");
         final String delegateExprAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
@@ -66,58 +93,109 @@ public class JavaDelegateChecker extends AbstractElementChecker {
         final String exprAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
                 "expression");
         final String typeAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS, "type");
+        final String dmnAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
+                "decisionRef");
 
-        if (classAttr != null) {
-            if (classAttr.trim().length() == 0 && delegateExprAttr == null && exprAttr == null
-                    && typeAttr == null) {
+        // check if class is correct
+        if (implementationAttr.equals("camunda:class")) {
+            if (classAttr == null || classAttr.trim().length() == 0) {
                 // Error, because no class has been configured
                 issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
                         element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
                         bpmnElement.getAttributeValue("name"), null, null, null,
                         "task " + CheckName.checkName(bpmnElement) + " with no class name"));
-            }
-            if (classAttr.trim().length() > 0) {
+            } else {
                 issues.addAll(checkClassFile(element, classLoader, classAttr));
             }
         }
-        if (delegateExprAttr != null) {
-            // check validity of a bean
-            if (beanMapping != null) {
-                final String filteredExpression = delegateExprAttr.replaceAll("[\\w]+\\.", "");
-                final TreeBuilder treeBuilder = new Builder();
-                final Tree tree = treeBuilder.build(filteredExpression);
-                final Iterable<IdentifierNode> identifierNodes = tree.getIdentifierNodes();
-                // if beanMapping ${...} reference
-                if (identifierNodes.iterator().hasNext()) {
-                    for (final IdentifierNode node : identifierNodes) {
-                        final String classFile = beanMapping.get(node.getName());
-                        // correct beanmapping was found -> check if class exists
-                        if (classFile != null && classFile.trim().length() > 0) {
-                            issues.addAll(checkClassFile(element, classLoader, classFile));
-                        } else {
-                            // incorrect beanmapping
-                            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-                                    element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                                    bpmnElement.getAttributeValue("name"), null, null, null,
-                                    "Couldn't find correct beanmapping for delegate expression in task "
-                                            + CheckName.checkName(bpmnElement)));
+
+        // check if delegateExpression is correct
+        if (implementationAttr.equals("camunda:delegateExpression")) {
+            if (delegateExprAttr == null || delegateExprAttr.trim().length() == 0) {
+                // Error, because no delegateExpression has been configured
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no delegate expression"));
+            } else {
+                // check validity of a bean
+                if (beanMapping != null) {
+                    final String filteredExpression = delegateExprAttr.replaceAll("[\\w]+\\.", "");
+                    final TreeBuilder treeBuilder = new Builder();
+                    final Tree tree = treeBuilder.build(filteredExpression);
+                    final Iterable<IdentifierNode> identifierNodes = tree.getIdentifierNodes();
+                    // if beanMapping ${...} reference
+                    if (identifierNodes.iterator().hasNext()) {
+                        for (final IdentifierNode node : identifierNodes) {
+                            final String classFile = beanMapping.get(node.getName());
+                            // correct beanmapping was found -> check if class exists
+                            if (classFile != null && classFile.trim().length() > 0) {
+                                issues.addAll(checkClassFile(element, classLoader, classFile));
+                            } else {
+                                // incorrect beanmapping
+                                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
+                                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                                        bpmnElement.getAttributeValue("name"), null, null, null,
+                                        "Couldn't find correct beanmapping for delegate expression in task "
+                                                + CheckName.checkName(bpmnElement)));
+                            }
                         }
+                    } else {
+                        issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
                     }
                 } else {
+                    // check if class exists
                     issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
                 }
-            } else {
-                // check if class exists
-                issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
             }
         }
-        if (classAttr == null && delegateExprAttr == null && exprAttr == null && typeAttr == null) {
-            // No technical attributes have been added
-            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-                    element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                    bpmnElement.getAttributeValue("name"), null, null, null,
-                    "task " + CheckName.checkName(bpmnElement) + " with no code reference yet"));
+
+        // check if expression is correct
+        if (implementationAttr.equals("camunda:expression")) {
+            if (exprAttr == null || exprAttr.trim().length() == 0) {
+                // Error, because no delegateExpression has been configured
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no expression"));
+            }
+            // expression überprüfbar?
         }
+
+        // check if DMN reference is not empty
+        if (implementationAttr.equals("camunda:decisionRef")) {
+            if (dmnAttr == null || dmnAttr.trim().length() == 0) {
+                // Error, because no delegateExpression has been configured
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
+            }
+            // toDo auf DMN datei prüfen (hier Sinnvoll oder nur im BRTChecker?)
+        }
+
+        // check if external is correct
+        if (implementationAttr.equals("camunda:type")) {
+            if (typeAttr == null || typeAttr.trim().length() == 0) {
+                // Error, because no delegateExpression has been configured
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no external topic"));
+            }
+            // external topic prüfbar?
+        }
+
+        if (implementationAttr.equals("implementation") || implementationAttr == null)
+            if (dmnAttr == null && classAttr == null && delegateExprAttr == null
+                    && exprAttr == null && typeAttr == null) {
+                // No technical attributes have been added
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no code reference yet"));
+            }
+
         return issues;
     }
 

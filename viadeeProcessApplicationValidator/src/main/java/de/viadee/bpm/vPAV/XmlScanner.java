@@ -38,86 +38,110 @@ import org.xml.sax.SAXException;
 public class XmlScanner {
 
     private final String businessRuleTask_new = "bpmn:businessRuleTask";
+
+    private final String serviceTask_new = "bpmn:serviceTask";
+
+    private final String sendTask_new = "bpmn:sendTask";
+
     private final String businessRuleTask_old = "businessRuleTask";
+
+    private final String serviceTask_old = "serviceTask";
+
+    private final String sendTask_old = "sendTask";
+
     private final String c_class = "camunda:class";
+
     private final String c_exp = "camunda:expression";
+
     private final String c_dexp = "camunda:delegateExpression";
+
     private final String c_dmn = "camunda:decisionRef";
+
+    private final String c_ext = "camunda:type";
+
     private final String imp = "implementation";
-    
-    private String node_value;
+
     private String node_name;
 
     private DocumentBuilderFactory factory;
+
     private DocumentBuilder builder;
+
     private Document doc;
 
+    private boolean new_model = true;
 
+    /*
+     * The Camunda API's method "getimplementation" doesn't return the correct Implementation, so the we have to scan
+     * the xml of the model for the implementation
+     */
     public XmlScanner() throws ParserConfigurationException {
         factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         builder = factory.newDocumentBuilder();
     }
 
-    public ArrayList<String> getImplementation(String path, String id)
+    /*
+     * Return the Implementation of an specific element (sendTask, ServiceTask or BusinessRuleTask)
+     * 
+     * @param path from model
+     * 
+     * @id from specific element
+     */
+    public String getImplementation(String path, String id)
             throws SAXException, IOException, XPathExpressionException {
-        // List to hold return values               
-        ArrayList<String> return_values = new ArrayList<String>();
-  
+        // List to hold return values
+        String return_implementation = null;
+
+        // List for all Task elements
+        ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
+
         // parse the given bpmn model
         doc = builder.parse(path);
 
-        // create nodelist that contains all BusinessRuleTasks with the namespace
-        NodeList list = doc.getElementsByTagName(businessRuleTask_new);
+        // check if its new model
+        if (doc.getElementsByTagName("bpmn:definitions").getLength() == 0)
+            new_model = false;
 
-        // if list is empty check for BusinessRuleTask without namespace (older models)
-        if (list.getLength() == 0) {
-            list = doc.getElementsByTagName(businessRuleTask_old);
+        if (new_model) {
+            // create nodelist that contains all Tasks with the namespace
+            listNodeList.add(doc.getElementsByTagName(businessRuleTask_new));
+            listNodeList.add(doc.getElementsByTagName(serviceTask_new));
+            listNodeList.add(doc.getElementsByTagName(sendTask_new));
+        } else {
+            listNodeList.add(doc.getElementsByTagName(businessRuleTask_old));
+            listNodeList.add(doc.getElementsByTagName(serviceTask_old));
+            listNodeList.add(doc.getElementsByTagName(sendTask_old));
         }
 
-        // iterate over list and check child of each node
-        for (int i = 0; i < list.getLength(); i++) {
+        // iterate over list<NodeList> and check each NodeList (BRTask, ServiceTask and SendTask)
+        for (final NodeList list : listNodeList) {
+            // iterate over list and check child of each node
+            for (int i = 0; i < list.getLength(); i++) {
+                Element Task_Element = (Element) list.item(i);
+                NamedNodeMap Task_Element_Attr = Task_Element.getAttributes();
 
-            Element businessRuleTask_Element = (Element) list.item(i);
-            NamedNodeMap businessRuleTask_Element_Attr = businessRuleTask_Element.getAttributes();
-
-            // check if the ids are corresponding            
-            if (id.equals(businessRuleTask_Element.getAttribute("id"))) {
-                
-                // check if more than 1 inner attribute exists
-                // first attribute is id, second is the camunda implementation               
-                if (businessRuleTask_Element_Attr.getLength() > 1) {
-
-                    // node_name equals an implementation
-                    // node_value equals the reference for the respective implementation
-                    Node attr = businessRuleTask_Element_Attr.item(0);
-                    node_name = attr.getNodeName();
-                    node_value = attr.getNodeValue();
-
-                    // no references for an implementation specified
-                    if (!node_name.isEmpty() && node_value.isEmpty()) {
-                        switch (node_name) {
-                            case c_class:                                
-                                return_values.add(c_class);
-                                break;
-                            case c_exp:                               
-                                return_values.add(c_exp);
-                                break;
-                            case c_dexp:                               
-                                return_values.add(c_dexp);
-                                break;
-                            case c_dmn:                                
-                                return_values.add(c_dmn);
-                                break;
+                // check if the ids are corresponding
+                if (id.equals(Task_Element.getAttribute("id"))) {
+                    // check if more than 1 inner attribute exists
+                    if (Task_Element_Attr.getLength() > 1) {
+                        // check all attributes, whether they fit an implementation
+                        for (int x = 0; x < Task_Element_Attr.getLength(); x++) {
+                            Node attr = Task_Element_Attr.item(x);
+                            // node_name equals an implementation
+                            node_name = attr.getNodeName();
+                            if (node_name.equals(c_class) || node_name.equals(c_exp)
+                                    || node_name.equals(c_dexp) || node_name.equals(c_dmn) || node_name.equals(c_ext)) {
+                                return_implementation = node_name;
+                            }
                         }
+                        // if inner attributes only consist of id, then return
+                    } else if (Task_Element_Attr.getLength() == 1) {
+                        return_implementation = imp;
                     }
-                    
-                    // if inner attributes only consist of id, then return
-                } else if (businessRuleTask_Element_Attr.getLength() == 1) {                    
-                    return_values.add(imp);
                 }
             }
-        }     
-        return return_values;
+        }
+        return return_implementation;
     }
 }

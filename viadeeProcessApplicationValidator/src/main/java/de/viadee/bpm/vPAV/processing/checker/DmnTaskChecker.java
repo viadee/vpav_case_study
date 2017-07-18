@@ -21,12 +21,14 @@
 package de.viadee.bpm.vPAV.processing.checker;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.camunda.bpm.model.bpmn.impl.BpmnModelConstants;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.xml.sax.SAXException;
@@ -35,6 +37,7 @@ import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
 import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
+import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
@@ -52,40 +55,66 @@ public class DmnTaskChecker extends AbstractElementChecker {
     @Override
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
-        String path;
-
-        for (final String output : AbstractRunner.getModelPath()) {
-            path = ConstantsConfig.BASEPATH + output;
-            issues.addAll(checkSingleModel(element, path));
+        if (element instanceof BusinessRuleTask) {
+            String path;
+            for (final String output : AbstractRunner.getModelPath()) {
+                path = ConstantsConfig.BASEPATH + output;
+                try {
+                    issues.addAll(checkSingleModel(element, cl, path));
+                } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return issues;
     }
 
-    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, String path) {
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader cl, String path)
+            throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
-        final BaseElement baseElement = element.getBaseElement();
-        ArrayList<String> errors = new ArrayList<String>();
+        final BaseElement bpmnElement = element.getBaseElement();
+        XmlScanner scan = new XmlScanner();
 
-        if (baseElement instanceof BusinessRuleTask) {
-            final BusinessRuleTask task = (BusinessRuleTask) baseElement;
-            final String id = baseElement.getId();
-            try {
-                XmlScanner scan = new XmlScanner();
-                errors = scan.getImplementation(path, id);
-            } catch (ParserConfigurationException | XPathExpressionException | SAXException | IOException e) {
-                e.printStackTrace();
-            }
+        // read attributes from task
+        final String implementationAttr = scan.getImplementation(path, bpmnElement.getId());
 
-            // no references to business rules
-            for (String error : errors) {
-                if (!error.isEmpty() && error.equals("camunda:decisionRef")) {
-                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-                            element.getProcessdefinition(), null, task.getId(), task.getName(), null, null,
-                            null,
-                            "business rule task with dmn implementation without a decision ref"));
-                }
+        final String dmnAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
+                "decisionRef");
+
+        // check if DMN reference is not empty
+        if (implementationAttr.equals("camunda:decisionRef")) {
+            if (dmnAttr == null || dmnAttr.trim().length() == 0) {
+                // Error, because no delegateExpression has been configured
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
+            } else {
+                issues.addAll(checkDMNFile(element, cl, dmnAttr));
             }
         }
+
+        return issues;
+    }
+
+    private Collection<CheckerIssue> checkDMNFile(final BpmnElement element,
+            final ClassLoader classLoader, final String dmnName) {
+
+        final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
+        final BaseElement bpmnElement = element.getBaseElement();
+        final String dmnPath = dmnName.replaceAll("\\.", "/") + ".dmn";
+
+        // If a dmn path has been found, check the correctness
+        URL urlDMN = classLoader.getResource(dmnPath);
+
+        if (urlDMN == null) {
+            // Throws an error, if the class was not found
+            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                    element.getProcessdefinition(), dmnPath, bpmnElement.getAttributeValue("id"),
+                    bpmnElement.getAttributeValue("name"), null, null, null,
+                    "dmn File for task " + CheckName.checkName(bpmnElement) + " not found"));
+        }
+
         return issues;
     }
 }
