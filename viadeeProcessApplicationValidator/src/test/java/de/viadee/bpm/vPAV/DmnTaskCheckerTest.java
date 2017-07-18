@@ -21,19 +21,26 @@
 package de.viadee.bpm.vPAV;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.config.model.Rule;
+import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.checker.DmnTaskChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
@@ -62,10 +69,46 @@ public class DmnTaskCheckerTest {
     }
 
     /**
-     * Case: DMN task without a reference should produce an error
+     * Case: DMN task with correct DMN-File
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * 
      */
     @Test
-    public void testWrongDmnTask() {
+    public void testCorrectDMN()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "BusinessRuleTaskTest_CorrectDMN.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<BusinessRuleTask> baseElements = modelInstance
+                .getModelElementsByType(BusinessRuleTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() > 0) {
+            Assert.fail("correct DMN-File generates an issue");
+        }
+    }
+
+    /**
+     * Case: DMN task without a reference should produce an error
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * 
+     */
+    @Test
+    public void testDMNTaskWithoutReference()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
         final String PATH = BASE_PATH + "DmnTaskCheckerTest_WrongDmnTask.bpmn";
 
         // parse bpmn model
@@ -75,7 +118,48 @@ public class DmnTaskCheckerTest {
                 .getModelElementsByType(BusinessRuleTask.class);
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
-        Assert.assertEquals(1, issues.size());
+        final BaseElement baseElement = element.getBaseElement();
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() != 1) {
+            Assert.fail("collection with the issues is bigger or smaller as expected");
+        } else {
+            Assert.assertEquals("task " + CheckName.checkName(baseElement) + " with no dmn reference",
+                    issues.iterator().next().getMessage());
+        }
+    }
+
+    /**
+     * Case: DMN task with wrong DMN-File
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * 
+     */
+    @Test
+    public void testDMNTaskWithWrongDMN()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "BusinessRuleTaskTest_wrongDMNReference.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<BusinessRuleTask> baseElements = modelInstance
+                .getModelElementsByType(BusinessRuleTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        final BaseElement baseElement = element.getBaseElement();
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() != 1) {
+            Assert.fail("collection with the issues is bigger or smaller as expected");
+        } else {
+            Assert.assertEquals("dmn File for task " + CheckName.checkName(baseElement) + " not found",
+                    issues.iterator().next().getMessage());
+        }
     }
 }
