@@ -20,9 +20,7 @@
  */
 package de.viadee.bpm.vPAV;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -33,8 +31,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
-import de.viadee.bpm.vPAV.beans.BeanMappingXmlParser;
 
 /**
  * Goal which checks bpmn files
@@ -53,17 +49,18 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
 
     @Override
     public void execute() throws MojoExecutionException {
-        // 1b) read bean mappings, if available
-        beanMapping = readBeanMapping();
 
         // 2) get MavenProject classloader
         retrieveClassLoader();
 
         run_vPAV();
-    }
 
-    public static Map<String, String> readBeanMapping() {
-        return BeanMappingXmlParser.parse(new File(ConstantsConfig.BEAN_MAPPING));
+        if (AbstractRunner.getfilteredIssues().isEmpty()) {
+            logger.info("No issues were found");
+        } else {
+            throw new MojoExecutionException(
+                    "Model inconsistency found. Please check target folder for validation output");
+        }
     }
 
     public void retrieveClassLoader() {
