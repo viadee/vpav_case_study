@@ -66,6 +66,7 @@ public class JavaDelegateCheckerTest {
         // Bean-Mapping
         final Map<String, String> beanMapping = new HashMap<String, String>();
         beanMapping.put("FalschesDelegate_bla", "de.test.Test");
+        beanMapping.put("testDelegate", "de.viadee.bpm.vPAV.delegates.TestDelegate");
 
         checker = new JavaDelegateChecker(rule, beanMapping);
         final File file = new File(".");
@@ -280,6 +281,39 @@ public class JavaDelegateCheckerTest {
     public void testWrongJavaDelegateExpression()
             throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
         final String PATH = BASE_PATH + "JavaDelegateCheckerTest_WrongJavaDelegateExpression.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<ServiceTask> baseElements = modelInstance
+                .getModelElementsByType(ServiceTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+
+        final BaseElement baseElement = element.getBaseElement();
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() != 1) {
+            Assert.fail("collection with the issues is bigger or smaller as expected");
+        } else {
+            Assert.assertEquals("class for task " + CheckName.checkName(baseElement) + " not found",
+                    issues.iterator().next().getMessage());
+        }
+    }
+
+    /**
+     * Case: incorrect JavaDelegateExpression reference
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     */
+    @Test
+    public void testWrongClassReference()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "JavaDelegateCheckerTest_WrongClassReference.bpmn";
 
         // parse bpmn model
         final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
