@@ -80,20 +80,20 @@ public class DmnTaskChecker extends AbstractElementChecker {
 
         final String dmnAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
                 "decisionRef");
-
-        // check if DMN reference is not empty
-        if (implementationAttr.equals("camunda:decisionRef")) {
-            if (dmnAttr == null || dmnAttr.trim().length() == 0) {
-                // Error, because no delegateExpression has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
-            } else {
-                issues.addAll(checkDMNFile(element, cl, dmnAttr));
+        if (implementationAttr != null) {
+            // check if DMN reference is not empty
+            if (implementationAttr.equals("camunda:decisionRef")) {
+                if (dmnAttr == null || dmnAttr.trim().length() == 0) {
+                    // Error, because no delegateExpression has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
+                } else {
+                    issues.addAll(checkDMNFile(element, cl, dmnAttr));
+                }
             }
         }
-
         return issues;
     }
 

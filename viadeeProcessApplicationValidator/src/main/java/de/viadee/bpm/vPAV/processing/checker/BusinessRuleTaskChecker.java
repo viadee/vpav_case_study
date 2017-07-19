@@ -105,76 +105,77 @@ public class BusinessRuleTaskChecker extends AbstractElementChecker {
         final String dmnAttr = bpmnElement.getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS,
                 "decisionRef");
 
-        // check if DMN reference is not empty
-        if (implementationAttr.equals("camunda:decisionRef")) {
-            if (dmnAttr == null || dmnAttr.trim().length() == 0) {
-                // Error, because no delegateExpression has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
-            } else {
-                issues.addAll(checkDMNFile(element, cl, dmnAttr));
+        if (implementationAttr != null) {
+            // check if DMN reference is not empty
+            if (implementationAttr.equals("camunda:decisionRef")) {
+                if (dmnAttr == null || dmnAttr.trim().length() == 0) {
+                    // Error, because no delegateExpression has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
+                } else {
+                    issues.addAll(checkDMNFile(element, cl, dmnAttr));
+                }
             }
+
+            // check if expression is correct
+            else if (implementationAttr.equals("camunda:expression")) {
+                if (exprAttr == null || exprAttr.trim().length() == 0) {
+                    // Error, because no delegateExpression has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no expression"));
+                }
+                // expression überprüfbar?
+            }
+
+            // check if class is correct
+            else if (implementationAttr.equals("camunda:class")) {
+                if (classAttr == null || classAttr.trim().length() == 0) {
+                    // Error, because no class has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no class name"));
+                }
+            }
+
+            // check if delegateExpression is correct
+            else if (implementationAttr.equals("camunda:delegateExpression")) {
+                if (delegateExprAttr == null || delegateExprAttr.trim().length() == 0) {
+                    // Error, because no delegateExpression has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no delegate expression"));
+                }
+                // delegate expression überprüfen notwenig, wenn ja was?
+            }
+
+            // check if external is correct
+            else if (implementationAttr.equals("camunda:type")) {
+                if (typeAttr == null || typeAttr.trim().length() == 0) {
+                    // Error, because no delegateExpression has been configured
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no external topic"));
+                }
+                // external topic prüfbar?
+            }
+
+            else if (implementationAttr.equals("implementation"))
+                if (dmnAttr == null && classAttr == null && delegateExprAttr == null
+                        && exprAttr == null && typeAttr == null) {
+                    // No technical attributes have been added
+                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
+                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                            bpmnElement.getAttributeValue("name"), null, null, null,
+                            "task " + CheckName.checkName(bpmnElement) + " with no code reference yet"));
+                }
         }
-
-        // check if expression is correct
-        if (implementationAttr.equals("camunda:expression")) {
-            if (exprAttr == null || exprAttr.trim().length() == 0) {
-                // Error, because no delegateExpression has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no expression"));
-            }
-            // expression überprüfbar?
-        }
-
-        // check if class is correct
-        if (implementationAttr.equals("camunda:class")) {
-            if (classAttr == null || classAttr.trim().length() == 0) {
-                // Error, because no class has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no class name"));
-            }
-        }
-
-        // check if delegateExpression is correct
-        if (implementationAttr.equals("camunda:delegateExpression")) {
-            if (delegateExprAttr == null || delegateExprAttr.trim().length() == 0) {
-                // Error, because no delegateExpression has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no delegate expression"));
-            }
-            // delegate expression überprüfen notwenig, wenn ja was?
-        }
-
-        // check if external is correct
-        if (implementationAttr.equals("camunda:type")) {
-            if (typeAttr == null || typeAttr.trim().length() == 0) {
-                // Error, because no delegateExpression has been configured
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no external topic"));
-            }
-            // external topic prüfbar?
-        }
-
-        if (implementationAttr.equals("implementation") || implementationAttr == null)
-            if (dmnAttr == null && classAttr == null && delegateExprAttr == null
-                    && exprAttr == null && typeAttr == null) {
-                // No technical attributes have been added
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "task " + CheckName.checkName(bpmnElement) + " with no code reference yet"));
-            }
-
         return issues;
     }
 
