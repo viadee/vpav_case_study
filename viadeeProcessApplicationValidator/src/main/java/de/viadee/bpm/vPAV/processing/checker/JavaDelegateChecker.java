@@ -121,9 +121,8 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                 } else {
                     // check validity of a bean
                     if (beanMapping != null) {
-                        final String filteredExpression = delegateExprAttr.replaceAll("[\\w]+\\.", "");
                         final TreeBuilder treeBuilder = new Builder();
-                        final Tree tree = treeBuilder.build(filteredExpression);
+                        final Tree tree = treeBuilder.build(delegateExprAttr);
                         final Iterable<IdentifierNode> identifierNodes = tree.getIdentifierNodes();
                         // if beanMapping ${...} reference
                         if (identifierNodes.iterator().hasNext()) {
