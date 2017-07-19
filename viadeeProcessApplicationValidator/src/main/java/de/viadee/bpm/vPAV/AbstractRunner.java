@@ -144,16 +144,18 @@ public abstract class AbstractRunner {
      */
     // 6 write check results to xml and json and js file
     public static void writeOutput(final Collection<CheckerIssue> filteredIssues) throws RuntimeException {
-        final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
-        final IssueOutputWriter jsonOutputWriter = new JsonOutputWriter();
-        final IssueOutputWriter jsOutputWriter = new JsOutputWriter();
-        try {
-            xmlOutputWriter.write(filteredIssues);
-            jsonOutputWriter.write(filteredIssues);
-            jsOutputWriter.write(filteredIssues);
+        if (filteredIssues.size() > 0) {
+            final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
+            final IssueOutputWriter jsonOutputWriter = new JsonOutputWriter();
+            final IssueOutputWriter jsOutputWriter = new JsOutputWriter();
+            try {
+                xmlOutputWriter.write(filteredIssues);
+                jsonOutputWriter.write(filteredIssues);
+                jsOutputWriter.write(filteredIssues);
 
-        } catch (final OutputWriterException e) {
-            throw new RuntimeException("Output couldn't be written");
+            } catch (final OutputWriterException e) {
+                throw new RuntimeException("Output couldn't be written");
+            }
         }
     }
 
