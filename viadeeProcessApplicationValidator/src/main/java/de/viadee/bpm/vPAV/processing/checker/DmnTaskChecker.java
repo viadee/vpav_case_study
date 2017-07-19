@@ -55,7 +55,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
     @Override
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
-        if (element instanceof BusinessRuleTask) {
+        if (element.getBaseElement() instanceof BusinessRuleTask) {
             String path;
             for (final String output : AbstractRunner.getModelPath()) {
                 path = ConstantsConfig.BASEPATH + output;
