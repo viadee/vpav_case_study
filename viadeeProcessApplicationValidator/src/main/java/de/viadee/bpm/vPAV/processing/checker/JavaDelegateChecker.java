@@ -37,8 +37,8 @@ import de.odysseus.el.tree.Tree;
 import de.odysseus.el.tree.TreeBuilder;
 import de.odysseus.el.tree.impl.Builder;
 import de.viadee.bpm.vPAV.AbstractRunner;
+import de.viadee.bpm.vPAV.BPMNScanner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
-import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -47,7 +47,7 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 
 /**
  * Class JavaDelegateChecker
- * 
+ *
  * Checks a bpmn model, if code references (java delegates) for tasks have been set correctly.
  *
  */
@@ -60,6 +60,7 @@ public class JavaDelegateChecker extends AbstractElementChecker {
         this.beanMapping = beanMapping;
     }
 
+    @Override
     public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader classLoader) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         String path;
@@ -81,7 +82,7 @@ public class JavaDelegateChecker extends AbstractElementChecker {
 
         final BaseElement bpmnElement = element.getBaseElement();
 
-        XmlScanner scan = new XmlScanner();
+        BPMNScanner scan = new BPMNScanner();
 
         // read attributes from task
         final String implementationAttr = scan.getImplementation(path, bpmnElement.getId());
