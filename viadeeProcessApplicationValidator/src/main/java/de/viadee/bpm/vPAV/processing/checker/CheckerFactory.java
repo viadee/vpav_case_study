@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
-import org.camunda.bpm.model.bpmn.instance.ScriptTask;
 import org.camunda.bpm.model.bpmn.instance.SendTask;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.Task;
@@ -43,16 +42,30 @@ public final class CheckerFactory {
 
     /**
      * create checkers
-     * 
+     *
      * @param ruleConf
      * @param element
      * @return Checkers
      */
 
+    public static String implementation;
+
     public static Collection<ElementChecker> createCheckerInstancesBpmnElement(
             final Map<String, Rule> ruleConf, final Map<String, String> beanMapping,
             final Collection<String> resourcesNewestVersions, final BpmnElement element)
             throws ConfigItemNotFoundException {
+
+        final String c_class = "camunda:class";
+
+        final String c_exp = "camunda:expression";
+
+        final String c_dexp = "camunda:delegateExpression";
+
+        final String c_dmn = "camunda:decisionRef";
+
+        final String c_ext = "camunda:type";
+
+        final String imp = "implementation";
 
         final Collection<ElementChecker> checkers = new ArrayList<ElementChecker>();
         final BaseElement baseElement = element.getBaseElement();
@@ -64,17 +77,32 @@ public final class CheckerFactory {
         if (javaDelegateRule == null)
             throw new ConfigItemNotFoundException(getClassName(JavaDelegateChecker.class) + " not found");
 
-        if ((baseElement instanceof ServiceTask || baseElement instanceof SendTask || baseElement instanceof ScriptTask
-                || baseElement instanceof BusinessRuleTask)
-                && javaDelegateRule.isActive()) {
-            checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
-        }
+        final Rule dmnTaskRule = ruleConf.get(getClassName(DmnTaskChecker.class));
+        if (dmnTaskRule == null)
+            throw new ConfigItemNotFoundException(getClassName(DmnTaskChecker.class) + " not found");     
 
-        final Rule businessRuleTaskRule = ruleConf.get(getClassName(BusinessRuleTaskChecker.class));
-        if (businessRuleTaskRule == null)
-            throw new ConfigItemNotFoundException(getClassName(BusinessRuleTaskChecker.class) + " not found");
-        if (baseElement instanceof BusinessRuleTask) {
-            checkers.add(new BusinessRuleTaskChecker(businessRuleTaskRule));
+        if (baseElement instanceof ServiceTask || baseElement instanceof BusinessRuleTask
+                || baseElement instanceof SendTask) {
+            TaskImplementationChecker.getTaskImplementation(element);
+
+            if (implementation.equals(c_class) && javaDelegateRule.isActive()) {
+                checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
+            }
+            if (implementation.equals(c_exp)) {
+                // do nothing for now
+            }
+            if (implementation.equals(c_dexp)) {
+                checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
+            }
+            if (implementation.equals(c_ext)) {
+                // do nothing for now
+            }
+            if (implementation.equals(c_dmn) && dmnTaskRule.isActive()) {
+                checkers.add(new DmnTaskChecker(dmnTaskRule));
+            }
+            if (implementation.equals(imp)) {
+                // TODO: Write issue
+            }
         }
 
         final Rule processVariablesNameConventionRule = ruleConf
@@ -93,13 +121,6 @@ public final class CheckerFactory {
                     getClassName(TaskNamingConventionChecker.class) + " not found");
         if (baseElement instanceof Task && taskNamingConventionRule.isActive()) {
             checkers.add(new TaskNamingConventionChecker(taskNamingConventionRule));
-        }
-
-        final Rule dmnTaskRule = ruleConf.get(getClassName(DmnTaskChecker.class));
-        if (dmnTaskRule == null)
-            throw new ConfigItemNotFoundException(getClassName(DmnTaskChecker.class) + " not found");
-        if (baseElement instanceof BusinessRuleTask && dmnTaskRule.isActive()) {
-            checkers.add(new DmnTaskChecker(dmnTaskRule));
         }
 
         final Rule versioningRule = ruleConf.get(getClassName(VersioningChecker.class));
