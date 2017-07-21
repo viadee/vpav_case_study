@@ -86,9 +86,9 @@ public class ModelConsistencyTest{
     private ApplicationContext ctx;   
     
     @Test
-    public void validateModel() {        
+    public void errorsInModelMustBeFound() {
         assertTrue("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.assertBPMModelConsistency(ctx));        
+                ProcessApplicationValidator.findModelInconsistencies(ctx).isEmpty());
     }
 }
 
@@ -100,7 +100,7 @@ check delegate Beans and their names.
 If __no__ Spring context is used, jUnit can also be started without the context parameter:
 ```java
 assertTrue("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.assertBPMModelConsistency());
+                ProcessApplicationValidator.findModelInconsistencies().isEmpty());
 ````
 
 ## Commitments
