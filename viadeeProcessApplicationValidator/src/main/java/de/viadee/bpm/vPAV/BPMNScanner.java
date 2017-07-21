@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XmlScanner {
+public class BPMNScanner {
 
     private final String businessRuleTask_new = "bpmn:businessRuleTask";
 
@@ -75,7 +75,7 @@ public class XmlScanner {
      * The Camunda API's method "getimplementation" doesn't return the correct Implementation, so the we have to scan
      * the xml of the model for the implementation
      */
-    public XmlScanner() throws ParserConfigurationException {
+    public BPMNScanner() throws ParserConfigurationException {
         factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         builder = factory.newDocumentBuilder();
@@ -83,9 +83,9 @@ public class XmlScanner {
 
     /*
      * Return the Implementation of an specific element (sendTask, ServiceTask or BusinessRuleTask)
-     * 
+     *
      * @param path from model
-     * 
+     *
      * @id from specific element
      */
     public String getImplementation(String path, String id)
@@ -135,8 +135,13 @@ public class XmlScanner {
                                 return_implementation = node_name;
                             }
                         }
-                        // if inner attributes only consist of id, then return
-                    } else if (Task_Element_Attr.getLength() == 1) {
+                        // if inner attributes dont consist of implementations
+                    }
+                    if (Task_Element_Attr.getNamedItem(c_class) == null
+                            && Task_Element_Attr.getNamedItem(c_exp) == null
+                            && Task_Element_Attr.getNamedItem(c_dexp) == null
+                            && Task_Element_Attr.getNamedItem(c_dmn) == null
+                            && Task_Element_Attr.getNamedItem(c_ext) == null) {
                         return_implementation = imp;
                     }
                 }
