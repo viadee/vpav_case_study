@@ -14,7 +14,7 @@ public class ProcessApplicationValidator extends AbstractRunner {
      *
      * @param ApplicationContext
      */
-    public static Collection<CheckerIssue> assertBPMModelConsistency(ApplicationContext ctx) {
+    public static Collection<CheckerIssue> findModelInconsistencies(ApplicationContext ctx) {
 
         beanMapping = BeanMappingGenerator.generateBeanMappingFile(ctx);
         retrieveClassLoader();
@@ -26,15 +26,12 @@ public class ProcessApplicationValidator extends AbstractRunner {
     /*
      * run vPAV (no Spring)
      */
-    public static boolean assertBPMModelConsistency() {
+    public static Collection<CheckerIssue> findModelInconsistencies() {
 
         retrieveClassLoader();
         run_vPAV();
 
-        if (AbstractRunner.getfilteredIssues().isEmpty()) {
-            return true;
-        }
-        return false;
+        return AbstractRunner.getfilteredIssues();
     }
 
     public static void retrieveClassLoader() {

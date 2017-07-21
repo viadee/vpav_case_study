@@ -20,7 +20,7 @@ public class ModelConsistencyTest {
     @Test
     public void errorsInModelMustBeFound() {
         assertTrue("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.assertBPMModelConsistency(ctx).isEmpty());
+                ProcessApplicationValidator.findModelInconsistencies(ctx).isEmpty());
     }
 
 }
