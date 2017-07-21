@@ -34,8 +34,8 @@ import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.AbstractRunner;
+import de.viadee.bpm.vPAV.BPMNScanner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
-import de.viadee.bpm.vPAV.XmlScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -44,7 +44,7 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
 
 /**
  * Checks, whether a business rule task with dmn implementation is valid
- * 
+ *
  */
 public class DmnTaskChecker extends AbstractElementChecker {
 
@@ -73,7 +73,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
             throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
-        XmlScanner scan = new XmlScanner();
+        BPMNScanner scan = new BPMNScanner();
 
         // read attributes from task
         final String implementationAttr = scan.getImplementation(path, bpmnElement.getId());
@@ -90,7 +90,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
                             bpmnElement.getAttributeValue("name"), null, null, null,
                             "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
                 } else {
-                    issues.addAll(checkDMNFile(element, cl, dmnAttr));
+                    issues.addAll(checkDMNFile(element, cl, dmnAttr, path));
                 }
             }
         }
@@ -98,7 +98,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
     }
 
     private Collection<CheckerIssue> checkDMNFile(final BpmnElement element,
-            final ClassLoader classLoader, final String dmnName) {
+            final ClassLoader classLoader, final String dmnName, final String path) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
@@ -109,12 +109,11 @@ public class DmnTaskChecker extends AbstractElementChecker {
 
         if (urlDMN == null) {
             // Throws an error, if the class was not found
-            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
                     element.getProcessdefinition(), dmnPath, bpmnElement.getAttributeValue("id"),
                     bpmnElement.getAttributeValue("name"), null, null, null,
-                    "dmn File for task " + CheckName.checkName(bpmnElement) + " not found"));
+                    "dmn file for task " + CheckName.checkName(bpmnElement) + " not found"));
         }
-
         return issues;
     }
 }
