@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
-import de.viadee.bpm.vPAV.XmlScanner;
+import de.viadee.bpm.vPAV.BPMNScanner;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -88,7 +88,7 @@ public class BusinessRuleTaskChecker extends AbstractElementChecker {
             throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
-        XmlScanner scan = new XmlScanner();
+        BPMNScanner scan = new BPMNScanner();
 
         // read attributes from task
         final String implementationAttr = scan.getImplementation(path, bpmnElement.getId());

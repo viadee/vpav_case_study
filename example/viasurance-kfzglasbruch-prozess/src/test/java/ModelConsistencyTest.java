@@ -1,5 +1,5 @@
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,8 @@ public class ModelConsistencyTest {
 
     @Test
     public void errorsInModelMustBeFound() {
-        assertFalse("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.assertBPMModelConsistency(ctx));
+        assertTrue("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.findModelInconsistencies(ctx).isEmpty());
     }
 
 }

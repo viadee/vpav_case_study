@@ -17,11 +17,11 @@
 	</rule>
 	<rule>
 		<name>DmnTaskChecker</name>
-		<state>false</state>
+		<state>true</state>
 	</rule>
 	<rule>
 		<name>BusinessRuleTaskChecker</name>
-		<state>true</state>
+		<state>false</state>
 	</rule>
 	<rule>
 		<name>ProcessVariablesModelChecker</name>
