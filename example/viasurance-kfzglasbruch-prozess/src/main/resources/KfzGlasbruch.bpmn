@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" id="sid-984e85ec-b9d5-4374-b826-71ebfb17bd88" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="8.6.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" id="sid-984e85ec-b9d5-4374-b826-71ebfb17bd88" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="1.8.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <collaboration id="sid-812a3b0a-d033-4110-a225-a103f0cb257c">
     <extensionElements>
       <signavio:signavioDiagramMetaData metaKey="revisionid" metaValue="b79cf283a00f4812893d6d44e7d1cdd9" />
@@ -39,7 +39,7 @@
         <flowNodeRef>sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F</flowNodeRef>
       </lane>
     </laneSet>
-    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;prüfen" implementation="##WebService" camunda:delegateExpression="${leistungsanspruchPruefenDelegate}">
+    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;prüfen" implementation="##WebService" camunda:delegateExpression="">
       <documentation id="sid-18c5d645-ace8-4407-be28-b9a6e039f231"><![CDATA[Schaden ist gedeckt UND
 Vertrag ist nicht im Zahlungsrückstand UND
 ...]]></documentation>
