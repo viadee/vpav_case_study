@@ -77,7 +77,7 @@ public class JavaDelegateCheckerTest {
     }
 
     /**
-     * Case: JavaDelegate has been correct set
+     * Case: JavaDelegate has been correct set with interface javaDelegate
      * 
      * @throws IOException
      * @throws SAXException
@@ -88,6 +88,62 @@ public class JavaDelegateCheckerTest {
     public void testCorrectJavaDelegateReference()
             throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
         final String PATH = BASE_PATH + "JavaDelegateCheckerTest_CorrectJavaDelegateReference.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<ServiceTask> baseElements = modelInstance
+                .getModelElementsByType(ServiceTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() > 0) {
+            Assert.fail("correct java delegate generates an issue");
+        }
+    }
+
+    /**
+     * Case: JavaDelegate has been correct set with interface SignallableActivityBehavior
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     */
+    @Test
+    public void testCorrectJavaDelegateReferenceSignal()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "JavaDelegateCheckerTest_CorrectJavaDelegateReferenceSignal.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<ServiceTask> baseElements = modelInstance
+                .getModelElementsByType(ServiceTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() > 0) {
+            Assert.fail("correct java delegate generates an issue");
+        }
+    }
+
+    /**
+     * Case: JavaDelegate has been correct set with superclass AbstractBpmnActivityBehavior
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     */
+    @Test
+    public void testCorrectJavaDelegateReferenceAbstract()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "JavaDelegateCheckerTest_CorrectJavaDelegateReferenceAbstract.bpmn";
 
         // parse bpmn model
         final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -230,7 +286,8 @@ public class JavaDelegateCheckerTest {
             Assert.fail("collection with the issues is bigger or smaller as expected");
         } else {
             Assert.assertEquals(
-                    "class for task " + CheckName.checkName(baseElement) + " does not implement interface JavaDelegate",
+                    "class for task " + CheckName.checkName(baseElement)
+                            + " does not implement/extends the correct interface/class",
                     issues.iterator().next().getMessage());
         }
     }

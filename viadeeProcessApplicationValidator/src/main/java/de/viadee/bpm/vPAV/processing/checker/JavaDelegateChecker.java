@@ -212,20 +212,28 @@ public class JavaDelegateChecker extends AbstractElementChecker {
             Class<?> clazz = classLoader.loadClass(className);
 
             // Checks, whether the correct interface was implemented
+            Class<?> sClass = clazz.getSuperclass();
+            boolean extendsSuperClass = false;
+            if (sClass.getName().contains("AbstractBpmnActivityBehavior")) {
+                extendsSuperClass = true;
+            }
+
+            // Checks, whether the correct interface was implemented
             Class<?>[] interfaces = clazz.getInterfaces();
-            boolean javaDelegateImplemented = false;
+            boolean interfaceImplemented = false;
             for (final Class<?> _interface : interfaces) {
-                if (_interface.getName().contains("JavaDelegate")) {
-                    javaDelegateImplemented = true;
+                if (_interface.getName().contains("JavaDelegate")
+                        || _interface.getName().contains("SignallableActivityBehavior")) {
+                    interfaceImplemented = true;
                 }
             }
-            if (javaDelegateImplemented == false) {
+            if (interfaceImplemented == false && extendsSuperClass == false) {
                 // class implements not the interface "JavaDelegate"
                 issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
                         element.getProcessdefinition(), classPath, bpmnElement.getAttributeValue("id"),
                         bpmnElement.getAttributeValue("name"), null, null, null,
                         "class for task " + CheckName.checkName(bpmnElement)
-                                + " does not implement interface JavaDelegate"));
+                                + " does not implement/extends the correct interface/class"));
             }
 
         } catch (final ClassNotFoundException e) {
