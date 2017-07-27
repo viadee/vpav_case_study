@@ -52,4 +52,6 @@ public final class ConstantsConfig {
 
     public static final String TEST_BASEPATH = "src/test/resources/";
 
+    public static final String PROCESS_VARIABLES_LOCATION = "ProcessVariablesLocation";
+
 }

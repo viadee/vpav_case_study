@@ -1,5 +1,12 @@
 <ruleSet>
 	<rule>
+		<name>ProcessVariablesLocation</name>
+		<state>false</state>
+		<settings>
+			<setting name="location">de/viasurance/kfzglasbruch</setting>
+		</settings>
+	</rule>
+	<rule>
 		<name>JavaDelegateChecker</name>
 		<state>true</state>
 	</rule>

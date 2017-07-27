@@ -80,7 +80,7 @@ public abstract class AbstractRunner {
         scanClassPath(rules);
 
         // 3
-        getProcessVariables();
+        getProcessVariables(rules);
 
         // 4
         createIssues(rules);
@@ -105,25 +105,40 @@ public abstract class AbstractRunner {
         try {
             rules = new XmlConfigReader().read(new File(ConstantsConfig.RULESET));
         } catch (final ConfigReaderException e) {
-            throw new RuntimeException("Config file couldn`t be read");
+            throw new RuntimeException("Config file could not be read");
         }
         return rules;
     }
 
     // 2b - Scan classpath for models
     public static void scanClassPath(Map<String, Rule> rules) {
+
+        final Rule processVariablesLocationRule = rules.get(ConstantsConfig.PROCESS_VARIABLES_LOCATION);
+        final String location = processVariablesLocationRule.getSettings().get("location").getValue();
         try {
-            fileScanner = new FileScanner(rules, classLoader);
+            fileScanner = new FileScanner(rules, classLoader, location);
         } catch (final DependencyResolutionRequiredException e) {
             throw new RuntimeException("Classpath couldn't be resolved");
         }
     }
 
     // 3 - Get process variables
-    public static void getProcessVariables() throws RuntimeException {
-        variableScanner = new OuterProcessVariablesScanner(
-                fileScanner.getJavaResources(), fileScanner.getClassLoader());
-        readOuterProcessVariables(variableScanner);
+    public static void getProcessVariables(final Map<String, Rule> rules) throws RuntimeException {
+        final Rule processVariablesLocationRule = rules.get(ConstantsConfig.PROCESS_VARIABLES_LOCATION);
+
+        if (rules.containsKey(ConstantsConfig.PROCESS_VARIABLES_LOCATION) && processVariablesLocationRule.isActive()) {
+            if (fileScanner.getJavaResources() == null || fileScanner.getJavaResources().isEmpty()) {
+                logger.warning("Location to ProcessVariables could not be resolved.");
+            } else {
+                variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
+                        fileScanner.getClassLoader());
+                readOuterProcessVariables(variableScanner);
+            }
+
+        } else {
+            variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
+                    fileScanner.getClassLoader());
+        }
     }
 
     // 4 - Check each model
@@ -172,7 +187,7 @@ public abstract class AbstractRunner {
     public static void copyFiles() throws RuntimeException {
         // 7a delete files before copy
         ArrayList<Path> destinations = new ArrayList<Path>();
-        destinations.add(Paths.get("target/bpmn-navigated-viewer.js"));
+        destinations.add(Paths.get("target/bpmn-viewer.js"));
         destinations.add(Paths.get("target/bpmn.io.viewer.app.js"));
         destinations.add(Paths.get("target/bpmn.io.viewer.html"));
         destinations.add(Paths.get("target/logo.png"));
@@ -180,7 +195,7 @@ public abstract class AbstractRunner {
         deleteFiles(destinations);
 
         if (filteredIssues.size() > 0) {
-            copyFileToTarget("bpmn-navigated-viewer.js");
+            copyFileToTarget("bpmn-viewer.js");
             copyFileToTarget("bpmn.io.viewer.app.js");
             copyFileToTarget("bpmn.io.viewer.html");
             copyFileToTarget("logo.png");
@@ -334,7 +349,8 @@ public abstract class AbstractRunner {
      * @param scanner
      * @throws IOException
      */
-    private static void readOuterProcessVariables(final OuterProcessVariablesScanner scanner) throws RuntimeException {
+    private static void readOuterProcessVariables(final OuterProcessVariablesScanner scanner)
+            throws RuntimeException {
         try {
             scanner.scanProcessVariables();
         } catch (final IOException e) {

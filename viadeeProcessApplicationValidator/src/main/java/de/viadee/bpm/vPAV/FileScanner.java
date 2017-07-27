@@ -21,25 +21,24 @@
 package de.viadee.bpm.vPAV;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.DirectoryScanner;
@@ -76,7 +75,7 @@ public class FileScanner {
 
     public static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
-    public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader)
+    public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader, final String classPathScanLocation)
             throws DependencyResolutionRequiredException {
 
         this.classLoader = classLoader;
@@ -95,13 +94,17 @@ public class FileScanner {
         // get file paths of java files
         URL[] urls = ((URLClassLoader) classLoader).getURLs();
 
+        LinkedList<File> files = new LinkedList<File>();
+
         // retrieve all jars during runtime and pass them to get class files
         for (URL url : urls) {
-            if (url.getFile().endsWith(ConstantsConfig.JAR_FILE_PATTERN)) {
-                try {
-                    passURL(url.getFile().substring(1));
-                } catch (IOException e) {
-                    logger.warning("could not resolve java resources");
+            if (url.getFile().contains("target/classes")) {
+                File f = new File(url.getFile().substring(1) + classPathScanLocation);
+                if (f.exists()) {
+                    files = (LinkedList<File>) FileUtils.listFiles(f,
+                            TrueFileFilter.INSTANCE,
+                            TrueFileFilter.INSTANCE);
+                    addResources(files);
                 }
             }
         }
@@ -126,26 +129,15 @@ public class FileScanner {
     }
 
     /**
-     * process each jar file and retrieve classes
+     * process classes and add resource
      *
      */
-    private void process(Object obj) {
-        JarEntry entry = (JarEntry) obj;
-        String name = entry.getName();
-        if (name.endsWith(".class")) {
-            javaResources.add(name);
-        }
-    }
+    private void addResources(LinkedList<File> classes) {
 
-    /**
-     * find all jar files and process each of them
-     *
-     */
-    public void passURL(String url) throws IOException {
-        JarFile jarFile = new JarFile(url);
-        Enumeration<JarEntry> enumeration = jarFile.entries();
-        while (enumeration.hasMoreElements()) {
-            process(enumeration.nextElement());
+        for (File file : classes) {
+            if (file.getName().endsWith(".class")) {
+                javaResources.add(file.getName());
+            }
         }
     }
 
