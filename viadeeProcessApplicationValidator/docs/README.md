@@ -11,24 +11,20 @@ We recommend to integrate the consistency check in your CI builds - you can't fi
 # Features
 
 ## Checker
+Consistency checks are performed by individual modules called checkers, which search for certain types of inconsistencies. Currently, the following checkers are implemented: 
 
-### [BusinessRuleTaskChecker](BusinessRuleTaskChecker.md)
+| Checker                                                                              | Summary                                                                  | Status       |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------   | ------------ |
+|[JavaDelegateChecker](JavaDelegateChecker.md)                                         | Is the implementation (or Spring bean reference) available and usable?   | Done         |
+|[BusinessRuleTaskChecker](BusinessRuleTaskChecker.md)                                 | Is the implementation available?                                         | Done         |
+|[DmnTaskChecker](DmnTaskChecker.md)                                                   | Is the implementation available?                                         | Done         |
+|[EmbeddedGroovyScriptChecker](EmbeddedGroovyScriptChecker.md)                         | Is the implementation available and does it look like a script?          | Done         |
+|[ProcessVariablesModelChecker](ProcessVariablesModelChecker.md)                       | Are process variables in the model provided in the code for all paths?   | Experimental |
+|[ProcessVariablesNameConventionChecker](ProcessVariablesNameConventionChecker.md)     | Do process variables in the model fit into a desired regex pattern?      | Done         |
+|[TaskNamingConventionChecker](TaskNamingConventionChecker.md)                         | Do task names in the model fit into a desired regex pattern?             | Done         |
+|[VersioningChecker](VersioningChecker.md)                                             | Are java classes implementing tasks fit to a version scheme?             | Done         |
 
-### [DmnTaskChecker](DmnTaskChecker.md)
-
-### [EmbeddedGroovyScriptChecker](EmbeddedGroovyScriptChecker.md)
-
-### [JavaDelegateChecker](JavaDelegateChecker.md)
-
-### [ProcessVariablesModelChecker](ProcessVariablesModelChecker.md)
-
-### [ProcessVariablesNameConventionChecker](ProcessVariablesNameConventionChecker.md)
-
-### [TaskNamingConventionChecker](TaskNamingConventionChecker.md)
-
-### [VersioningChecker](VersioningChecker.md)
-
-All of these are configurable.
+All of these can be switched on or off as required. Implementing further checkers is rather simple.
 
 ## Output
 
