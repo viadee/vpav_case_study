@@ -26,6 +26,27 @@ The rule should be configured as follows:
 
 ```
 
+Additionally, it should be configured where to find the process variables which are used at runtime
+The location points at the target folder as starting point and searches recursively for the class "InitialProcessVariables" 
+```xml
+<rule>
+	<name>ProcessVariablesLocation</name>
+	<state>false</state>
+	<settings>
+		<setting name="location">de/viasurance/kfzglasbruch</setting>
+	</settings>		
+</rule>
+```
+
+In the class "InitialProcessVariables" all variables used at runtime should be declared in order to evaluate them.
+```java
+public class InitialProcessVariables extends InitialProcessVariablesBase {
+
+    String filename;
+    
+}
+```
+
 ## Error messages
 -----------------------------------------
 **process variable creates an anomaly (compare %Chapter%,%ElementFieldType%)**
