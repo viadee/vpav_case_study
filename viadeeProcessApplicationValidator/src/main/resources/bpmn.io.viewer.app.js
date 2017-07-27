@@ -1,8 +1,5 @@
 //mark all nodes with issues
-function markNodes(bpmnViewer, elementsToMark, bpmnFile) {
-
-    var canvas = bpmnViewer.get('canvas');
-
+function markNodes(canvas, bpmnFile) {
     for (id in elementsToMark) {
         if (elementsToMark[id].bpmnFile == ("src\\main\\resources\\" + bpmnFile)) {
             if (elementsToMark[id].ruleName == "VersioningChecker") {
@@ -28,8 +25,24 @@ function markNodes(bpmnViewer, elementsToMark, bpmnFile) {
     }
 }
 
+//mark invalide path
+function markPath(canvas, id, pos) {
+    for (y in elementsToMark) {
+        if (elementsToMark[y].id == id) {
+            for (x in elementsToMark[y].paths[pos]) {
+                canvas.addMarker(elementsToMark[y].paths[pos][x].elementId, 'path');
+            }
+        }
+    }
+}
+
+//mark one element
+function markElement(canvas, id) {
+    canvas.addMarker(id, 'oneElement');
+}
+
 //create issue count on each node
-function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
+function addCountOverlay(overlays, bpmnFile) {
 
     //getElemtIds
     var eId = [];
@@ -92,7 +105,6 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
     }
 
     //Add Overlays
-    var overlays = bpmnViewer.get('overlays');
     for (id in issues) {
         var overlayHtml = document.createElement("div");
         overlayHtml.setAttribute("class", "diagram-zahl");
@@ -156,7 +168,7 @@ function addCountOverlay(bpmnViewer, elementsToMark, bpmnFile) {
         });
     }
 }
-
+//delete table under diagram
 function deleteTable() {
     //delete tBodys
     var tb = document.querySelectorAll('tbody');
@@ -172,9 +184,8 @@ function deleteTable() {
         myTable.deleteRow(myTable.rows.length - 1);
     }
 }
-
 //create issue table
-function createTable(elementsToMark, bpmnFile) {
+function createTable(bpmnFile) {
     var myTable = document.getElementById("table_issues");
 
     //fill table with all issuesof current model
@@ -190,7 +201,7 @@ function createTable(elementsToMark, bpmnFile) {
             myText = document.createTextNode(issue.ruleName);
             myRow.setAttribute("id", issue.ruleName) // mark hole row
 
-            //create link to mark the issue path
+            //create link 
             var a = document.createElement("a");
             a.appendChild(myText);
             //link to docu
@@ -201,7 +212,14 @@ function createTable(elementsToMark, bpmnFile) {
             //elementId
             myCell = document.createElement("td");
             myText = document.createTextNode(issue.elementId);
-            myCell.appendChild(myText);
+
+            //create link 
+            var c = document.createElement("a");
+            c.appendChild(myText);
+            c.setAttribute("onclick", "selectModel('" + bpmnFile + "','" + issue.elementId + "', 0 , 2)");
+            c.setAttribute("href", "#");
+
+            myCell.appendChild(c);
             myRow.appendChild(myCell);
             //elementName
             myCell = document.createElement("td");
@@ -235,7 +253,16 @@ function createTable(elementsToMark, bpmnFile) {
                             path_text += issue.paths[x][y].elementName
                 }
                 myText = document.createTextNode(path_text);
-                myCell.appendChild(myText);
+
+                //path markieren
+                var p = issue.paths[x];
+
+                var b = document.createElement("a");
+                b.appendChild(myText);
+                b.setAttribute("onclick", "selectModel('" + bpmnFile + "','" + issue.id + "','" + x + "', 1)");
+                b.setAttribute("href", "#");
+
+                myCell.appendChild(b);
                 path_text = "";
 
                 //add break
@@ -262,7 +289,7 @@ function createTable(elementsToMark, bpmnFile) {
  * This is an example script that loads an embedded diagram file <diagramXML>
  * and opens it using the bpmn-js viewer.
  */
-function initDiagram(diagramXML, r, paths) {
+function initDiagram(diagramXML, issue_id, path_nr, func) {
     // create viewer
     var bpmnViewer = new window.BpmnJS({
         container: '#canvas'
@@ -285,13 +312,15 @@ function initDiagram(diagramXML, r, paths) {
             canvas.zoom('fit-viewport');
             setUeberschrift(diagramXML.name);
             if (countIssues(diagramXML.name) > 0) {
-                if (r == 0) {
-                    markNodes(bpmnViewer, elementsToMark, diagramXML.name);
-                    addCountOverlay(bpmnViewer, elementsToMark, diagramXML.name);
-                } else {
-                    markNodesIssue(bpmnViewer, paths, diagramXML.name);
+                if (func == 0 || func == null) {
+                    markNodes(canvas, diagramXML.name);
+                    addCountOverlay(overlays, diagramXML.name);
+                } else if (func == 1) {
+                    markPath(canvas, issue_id, path_nr);
+                } else if (func == 2) {
+                    markElement(canvas, issue_id);
                 }
-                createTable(elementsToMark, diagramXML.name);
+                createTable(diagramXML.name);
                 tableVisible(true);
             } else {
                 document.getElementById("noIssues").setAttribute("style", "display: initial");
@@ -304,15 +333,20 @@ function initDiagram(diagramXML, r, paths) {
 
     bpmnViewer.reload = function (model) {
         document.querySelector("#canvas").innerHTML = "";
-
         deleteTable();
-        initDiagram(model, 0, null);
+        initDiagram(model, null, null, 0);
     };
 
-    bpmnViewer.reloadMark = function (model, paths) {
+    bpmnViewer.reloadMarkPath = function (model, issue_id, path_nr) {
         document.querySelector("#canvas").innerHTML = "";
         deleteTable();
-        initDiagram(model, 1, paths);
+        initDiagram(model, issue_id, path_nr, 1);
+    };
+
+    bpmnViewer.reloadMarkElement = function (model, issue_id) {
+        document.querySelector("#canvas").innerHTML = "";
+        deleteTable();
+        initDiagram(model, issue_id, null, 2);
     };
 
     // import xml
@@ -372,27 +406,25 @@ function toggleDialog(sh) {
         var ul = document.getElementById("linkList");
         var li = document.createElement("li");
         var a = document.createElement("a");
-
         li.appendChild(a);
-        a.appendChild(document.createTextNode(model.name + " (" + countIssues(model.name)+" issues)"));
-        a.setAttribute("onclick", "selectModel('" + model.name + "', null )");
+        a.appendChild(document.createTextNode(model.name));
+        a.setAttribute("onclick", "selectModel('" + model.name + "', null, null, 0 )");
         a.setAttribute("href", "#");
-        if (countIssues(model.name) > 0)
-            a.setAttribute("style", "color: red;");
-            else
-            a.setAttribute("style", "color: green;");
         ul.appendChild(li);
     }
 })();
 
 //reload model diagram
-function selectModel(name, paths) {
+function selectModel(name, issue_id, path_nr, func) {
     for (id in diagramXMLSource) {
         if (diagramXMLSource[id].name == name) {
-            if (paths == null)
+            if (func == 0)
                 viewer.reload(diagramXMLSource[id]);
-            else
-                viewer.reloadMark(diagramXMLSource[id], paths);
+            else if (func == 1) {
+                viewer.reloadMarkPath(diagramXMLSource[id], issue_id, path_nr);
+            } else if (func == 2) {
+                viewer.reloadMarkElement(diagramXMLSource[id], issue_id);
+            }
         }
     }
 }

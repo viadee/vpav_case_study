@@ -16,6 +16,7 @@
 		body,
 		#canvas {
 			height: 100%;
+			width: 97%;
 			padding: 0;
 		}
 
@@ -79,40 +80,124 @@
 			text-align: center;
 		}
 
-		.ProcessVariablesNameConventionChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(255, 255, 0, 0.5) !important;
+		.path .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 0, 0, 1.0) !important;
 		}
 
-		.JavaDelegateChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
+		.path:not(.djs-connection) .djs-visual> :nth-child(1) {
 			fill: rgba(255, 0, 0, 0.5) !important;
 		}
 
+		.oneElement .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 0, 0, 1.0) !important;
+		}
+
+		.oneElement:not(.djs-connection) .djs-visual> :nth-child(1) {
+			fill: rgba(255, 0, 0, 0.5) !important;
+		}
+
+		.ProcessVariablesNameConventionChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 0, 0, 1.0) !important;
+		}
+
+		.ProcessVariablesNameConventionChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
+			fill: rgba(255, 0, 0, 0.5) !important;
+		}
+
+		.JavaDelegateChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 255, 0, 1.0) !important;			
+		}
+
+		.JavaDelegateChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
+			fill: rgba(255, 255, 0, 0.5) !important;			
+		}
+
+		.VersioningChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 135, 41, 1.0) !important;
+		}
+
 		.VersioningChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(0, 255, 0, 0.5) !important;
+			fill: rgba(255, 135, 41, 0.5) !important;
+		}
+
+		.EmbeddedGroovyScriptChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(0, 0, 255, 1.0) !important;
 		}
 
 		.EmbeddedGroovyScriptChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
 			fill: rgba(0, 0, 255, 0.5) !important;
 		}
 
+		.DmnTaskChecker .djs-visual> :nth-child(1) {			
+			stroke: rgba(128, 128, 128, 1.0) !important;
+		}
+
 		.DmnTaskChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(255, 20, 197, 0.5) !important;
-		}
-
-		.ProcessVariablesModelChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(255, 135, 41, 0.5) !important;
-		}
-
-		.TaskNamingConventionChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
 			fill: rgba(128, 128, 128, 0.5) !important;
 		}
 
+		.ProcessVariablesModelChecker .djs-visual> :nth-child(1) {	
+			stroke: rgba(0, 255, 0, 1.0) !important;
+		}
+
+		.ProcessVariablesModelChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
+			fill: rgba(0, 255, 0, 0.5) !important;
+		}
+
+		.TaskNamingConventionChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(255, 20, 197, 1.0) !important;
+		}
+
+		.TaskNamingConventionChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
+			fill: rgba(255, 20, 197, 0.5) !important;
+		}
+
+		.BusinessRuleTaskChecker .djs-visual> :nth-child(1) {
+			stroke: rgba(168, 168, 168, 1.0) !important;
+		}
+
 		.BusinessRuleTaskChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(168,168,168,0.5) !important;
+			fill: rgba(168, 168, 168, 0.5) !important;
+		}
+
+		.new .djs-visual> :nth-child(1) {
+			stroke: rgba(0, 0, 0, 1.0) !important;
 		}
 
 		.new:not(.djs-connection) .djs-visual> :nth-child(1) {
 			fill: rgba(0, 0, 0, 0.5) !important;
+		}
+
+		#ProcessVariablesNameConventionChecker {			
+			background-color: rgba(255, 0, 0, 0.5)
+		}
+
+		#JavaDelegateChecker {
+			background-color: rgba(255, 255, 0, 0.5);
+		}
+
+		#VersioningChecker {
+			background-color: rgba(255, 135, 41, 0.5);			
+		}
+
+		#EmbeddedGroovyScriptChecker {
+			background-color: rgba(0, 0, 255, 0.5)
+		}
+
+		#DmnTaskChecker {
+			background-color: rgba(128, 128, 128, 0.5);
+		}
+
+		#ProcessVariablesModelChecker {
+			background-color: rgba(0, 255, 0, 0.5)
+		}
+
+		#TaskNamingConventionChecker {			
+			background-color: rgba(255, 20, 197, 0.5);
+		}
+
+		#BusinessRuleTaskChecker{
+			background-color: rgba(168,168,168,0.5);
 		}
 
 		dialog {
@@ -197,39 +282,7 @@
 		tr:hover {
 			opacity: 0.8;
 		}
-
-		#ProcessVariablesNameConventionChecker {
-			background-color: rgba(255, 255, 0, 0.5);
-		}
-
-		#JavaDelegateChecker {
-			background-color: rgba(255, 0, 0, 0.5)
-		}
-
-		#VersioningChecker {
-			background-color: rgba(0, 255, 0, 0.5)
-		}
-
-		#EmbeddedGroovyScriptChecker {
-			background-color: rgba(0, 0, 255, 0.5)
-		}
-
-		#DmnTaskChecker {
-			background-color: rgba(255, 20, 197, 0.5);
-		}
-
-		#ProcessVariablesModelChecker {
-			background-color: rgba(255, 135, 41, 0.5);
-		}
-
-		#TaskNamingConventionChecker {
-			background-color: rgba(128, 128, 128, 0.5);
-		}
-
-		#BusinessRuleTaskChecker{
-			background-color: rgba(168,168,168,0.5);
-		}
-
+		
 		.header img{
 			float: right;
 		}
@@ -249,7 +302,7 @@
 	<div class="header">
   		<a href="https://www.viadee.de/"><img src="logo.png" alt="viadee Homepage" /></a>
 		<h1 id=modell></h1>
-		<h2 id=noIssues> no issues were found in this model</h2>
+		<h2 id=noIssues> no issues were found</h2>
 	</div>		
 	<div id="model">
 		<ul id="linkList">
@@ -286,11 +339,13 @@
 	<!-- scripts -->
 
 	<!-- bpmn-js viewer -->
-	<script src="bpmn-viewer.js"></script>
+	<script src="bpmn-navigated-viewer.js"></script>
 	<!-- bpmn-files and issues -->
 	<script src="bpmn_validation.js"></script>
 	<!-- application -->
-	<script src="bpmn.io.viewer.app.js"></script>
+	<script src="bpmn.io.viewer.app.js"></script> 
+	
+	
 </body>
 
 </html>
