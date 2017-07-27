@@ -70,7 +70,7 @@ public abstract class AbstractRunner {
         /*
          * 1. Read Config 1b. Read Bean Mapping (Mojo) 1c. Create Bean Mapping (JUnit) 2. Retrieve Class Path for
          * JUnit/Maven 2b. Scan Class Path for Models 3. Get Process Variables 4. Check Each Model 5. Remove Ignored
-         * Issues 6. Write Check Results 7. Copy Files
+         * Issues 6. Write Check Results 6a. delete files 7. Copy Files 7a. delete files before
          */
 
         // 1
@@ -143,6 +143,7 @@ public abstract class AbstractRunner {
      * @throws OutputWriterException
      */
     // 6 write check results to xml and json and js file
+    // 6a if no issues, delete files
     public static void writeOutput(final Collection<CheckerIssue> filteredIssues) throws RuntimeException {
         if (filteredIssues.size() > 0) {
             final IssueOutputWriter xmlOutputWriter = new XmlOutputWriter();
@@ -156,12 +157,28 @@ public abstract class AbstractRunner {
             } catch (final OutputWriterException e) {
                 throw new RuntimeException("Output couldn't be written");
             }
+        } else {
+            // 6a if no issues, then delete files if exists
+            ArrayList<Path> destinations = new ArrayList<Path>();
+            destinations.add(Paths.get("target/bpmn_validation.js"));
+            destinations.add(Paths.get("target/bpmn_validation.json"));
+            destinations.add(Paths.get("target/bpmn_validation.xml"));
+            deleteFiles(destinations);
         }
     }
 
     // 7 copy html-files to target
+    // 7a delete files before
     public static void copyFiles() throws RuntimeException {
-        deleteFiles();
+        // 7a delete files before copy
+        ArrayList<Path> destinations = new ArrayList<Path>();
+        destinations.add(Paths.get("target/bpmn-viewer.js"));
+        destinations.add(Paths.get("target/bpmn.io.viewer.app.js"));
+        destinations.add(Paths.get("target/bpmn.io.viewer.html"));
+        destinations.add(Paths.get("target/logo.png"));
+        destinations.add(Paths.get("target/noIssues.html"));
+        deleteFiles(destinations);
+
         if (filteredIssues.size() > 0) {
             copyFileToTarget("bpmn-viewer.js");
             copyFileToTarget("bpmn.io.viewer.app.js");
@@ -245,14 +262,7 @@ public abstract class AbstractRunner {
         return ignoredIssues;
     }
 
-    private static void deleteFiles() {
-        ArrayList<Path> destinations = new ArrayList<Path>();
-        destinations.add(Paths.get("target/bpmn-viewer.js"));
-        destinations.add(Paths.get("target/bpmn.io.viewer.app.js"));
-        destinations.add(Paths.get("target/bpmn.io.viewer.html"));
-        destinations.add(Paths.get("target/logo.png"));
-        destinations.add(Paths.get("target/noIssues.html"));
-
+    private static void deleteFiles(ArrayList<Path> destinations) {
         for (Path destination : destinations) {
             if (destination.toFile().exists()) // if file exist, delete
                 destination.toFile().delete();
