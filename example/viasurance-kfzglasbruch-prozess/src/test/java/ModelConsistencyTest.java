@@ -66,7 +66,5 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue("EmbeddedGroovyScriptChecker doesn't work correct", filteredIssues.size() == 1);
-        filteredIssues.clear();
-        filteredIssues.addAll(issues);
     }
 }

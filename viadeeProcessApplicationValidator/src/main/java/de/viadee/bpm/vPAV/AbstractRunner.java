@@ -187,7 +187,7 @@ public abstract class AbstractRunner {
     public static void copyFiles() throws RuntimeException {
         // 7a delete files before copy
         ArrayList<Path> destinations = new ArrayList<Path>();
-        destinations.add(Paths.get("target/bpmn-viewer.js"));
+        destinations.add(Paths.get("target/bpmn-navigated-viewer.js"));
         destinations.add(Paths.get("target/bpmn.io.viewer.app.js"));
         destinations.add(Paths.get("target/bpmn.io.viewer.html"));
         destinations.add(Paths.get("target/logo.png"));
@@ -195,7 +195,7 @@ public abstract class AbstractRunner {
         deleteFiles(destinations);
 
         if (filteredIssues.size() > 0) {
-            copyFileToTarget("bpmn-viewer.js");
+            copyFileToTarget("bpmn-navigated-viewer.js");
             copyFileToTarget("bpmn.io.viewer.app.js");
             copyFileToTarget("bpmn.io.viewer.html");
             copyFileToTarget("logo.png");
