@@ -92,19 +92,28 @@ public class FileScanner {
         processIdToPathMap = createProcessIdToPathMap(processdefinitions);
 
         // get file paths of java files
-        URL[] urls = ((URLClassLoader) classLoader).getURLs();
+        if (classPathScanLocation != null && !classPathScanLocation.isEmpty()) {
+            URL[] urls;
+            LinkedList<File> files = new LinkedList<File>();
 
-        LinkedList<File> files = new LinkedList<File>();
+            URLClassLoader ucl;
+            if (classLoader instanceof URLClassLoader) {
+                ucl = ((URLClassLoader) classLoader);
+            } else {
+                ucl = ((URLClassLoader) classLoader.getParent());
+            }
+            urls = ucl.getURLs();
 
-        // retrieve all jars during runtime and pass them to get class files
-        for (URL url : urls) {
-            if (url.getFile().contains("target/classes")) {
-                File f = new File(url.getFile().substring(1) + classPathScanLocation);
-                if (f.exists()) {
-                    files = (LinkedList<File>) FileUtils.listFiles(f,
-                            TrueFileFilter.INSTANCE,
-                            TrueFileFilter.INSTANCE);
-                    addResources(files);
+            // retrieve all jars during runtime and pass them to get class files
+            for (URL url : urls) {
+                if (url.getFile().contains("target/classes")) {
+                    File f = new File(url.getFile().substring(1) + classPathScanLocation);
+                    if (f.exists()) {
+                        files = (LinkedList<File>) FileUtils.listFiles(f,
+                                TrueFileFilter.INSTANCE,
+                                TrueFileFilter.INSTANCE);
+                        addResources(files);
+                    }
                 }
             }
         }
