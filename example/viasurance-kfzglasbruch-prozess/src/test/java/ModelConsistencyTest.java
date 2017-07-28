@@ -27,7 +27,7 @@ public class ModelConsistencyTest {
         Collection<CheckerIssue> filteredIssues = new ArrayList<CheckerIssue>();
         filteredIssues.addAll(issues);
 
-        assertTrue("More or less issues were found than expected", issues.size() == 12);
+        assertTrue("More or less issues were found than expected", issues.size() == 13);
 
         // VersioningChecker
         for (CheckerIssue issue : issues) {
@@ -66,5 +66,16 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue("EmbeddedGroovyScriptChecker doesn't work correct", filteredIssues.size() == 1);
+        filteredIssues.clear();
+        filteredIssues.addAll(issues);
+
+        // XorNamingConventionChecker
+        for (CheckerIssue issue : issues) {
+            if (!issue.getRuleName().equals("XorNamingConventionChecker")) {
+                filteredIssues.remove(issue);
+            }
+        }
+        assertTrue("XorNamingConventionChecker doesn't work correct", filteredIssues.size() == 1);
+
     }
 }
