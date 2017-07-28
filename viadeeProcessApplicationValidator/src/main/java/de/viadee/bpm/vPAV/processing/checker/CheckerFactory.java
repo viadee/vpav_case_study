@@ -79,7 +79,7 @@ public final class CheckerFactory {
 
         final Rule dmnTaskRule = ruleConf.get(getClassName(DmnTaskChecker.class));
         if (dmnTaskRule == null)
-            throw new ConfigItemNotFoundException(getClassName(DmnTaskChecker.class) + " not found");     
+            throw new ConfigItemNotFoundException(getClassName(DmnTaskChecker.class) + " not found");
 
         if (baseElement instanceof ServiceTask || baseElement instanceof BusinessRuleTask
                 || baseElement instanceof SendTask) {
@@ -103,6 +103,13 @@ public final class CheckerFactory {
             if (implementation.equals(imp)) {
                 // TODO: Write issue
             }
+        }
+
+        final Rule xorNamingConventionRule = ruleConf.get(getClassName(XorNamingConventionChecker.class));
+        if (xorNamingConventionRule == null)
+            throw new ConfigItemNotFoundException(getClassName(XorNamingConventionChecker.class) + " not found");
+        if (xorNamingConventionRule.isActive()) {
+            checkers.add(new XorNamingConventionChecker(xorNamingConventionRule));
         }
 
         final Rule processVariablesNameConventionRule = ruleConf
