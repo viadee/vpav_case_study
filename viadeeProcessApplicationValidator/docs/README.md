@@ -23,6 +23,8 @@ Consistency checks are performed by individual modules called checkers, which se
 |[ProcessVariablesNameConventionChecker](ProcessVariablesNameConventionChecker.md)     | Do process variables in the model fit into a desired regex pattern?      | Done         |
 |[TaskNamingConventionChecker](TaskNamingConventionChecker.md)                         | Do task names in the model fit into a desired regex pattern?             | Done         |
 |[VersioningChecker](VersioningChecker.md)                                             | Are java classes implementing tasks fit to a version scheme?             | Done         |
+|[XorNamingConventionChecker](XorNamingConventionChecker.md)                           | Are XOR gateways ending with "?"                                         | Done         |
+
 
 All of these can be switched on or off as required. Implementing further checkers is rather simple.
 
