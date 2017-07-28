@@ -32,6 +32,9 @@ Der Process Variables Name Convention Checker überprüft, ob definierte Prozess
 ### Task Naming Convention Checker
 Der Task Naming Convention Checker überprüft, ob Tasks einer vormals definierten Namenskonvention folgen.
 
+### XOR Gate Naming Convention Checker
+Der XOR Gate Naming Convention Checker überprüft ob XOR Gates mit "?" enden. 
+
 ## Einstieg
 Prozessbeschreibung/Einstieg in Klasse
 master/viadeeProcessApplicationValidator/src/main/java/de/viadee/bpm/vPAV/BpmnCheckerMojo.java

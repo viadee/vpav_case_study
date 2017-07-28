@@ -49,8 +49,6 @@ public class BPMNScanner {
 
     private final String sendTask_old = "sendTask";
 
-    private final String scriptTag = "camunda:script";
-
     private final String c_class = "camunda:class";
 
     private final String c_exp = "camunda:expression";
@@ -63,6 +61,10 @@ public class BPMNScanner {
 
     private final String imp = "implementation";
 
+    private final String gateway_new = "bpmn:exclusiveGateway";
+
+    private final String gateway_old = "exclusiveGateway";
+
     private String node_name;
 
     private DocumentBuilderFactory factory;
@@ -73,7 +75,7 @@ public class BPMNScanner {
 
     private boolean new_model = true;
 
-    /*
+    /**
      * The Camunda API's method "getimplementation" doesn't return the correct Implementation, so the we have to scan
      * the xml of the model for the implementation
      */
@@ -83,10 +85,11 @@ public class BPMNScanner {
         builder = factory.newDocumentBuilder();
     }
 
-    /*
+    /**
      * Return the Implementation of an specific element (sendTask, ServiceTask or BusinessRuleTask)
      *
-     * @param path from model
+     * @param path
+     *            from model
      *
      * @id from specific element
      */
@@ -152,30 +155,46 @@ public class BPMNScanner {
         return return_implementation;
     }
 
-    /*
-     * Check if model has an scriptTag
+    /**
+     * Return a list of used gateways for a given bpmn model
      *
-     * @param path from model
+     * @param path
+     *            from model
+     * @throws IOException
+     * @throws SAXException
      *
-     * return boolean
      */
-    public boolean hasScript(String path) throws SAXException, IOException {
-        // bool to hold return values
-        boolean return_script = false;
+    public String getXorGateWays(String path, String id) throws SAXException, IOException {
+        final ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
 
-        // List for all Task elements
-        // ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
-        NodeList nodeList;
+        String gateway = "";
 
-        // parse the given bpmn model
         doc = builder.parse(path);
 
-        // search for script tag
-        nodeList = doc.getElementsByTagName(scriptTag);
+        if (doc.getElementsByTagName("bpmn:definitions").getLength() == 0)
+            new_model = false;
 
-        if (nodeList.getLength() > 0)
-            return_script = true;
+        if (new_model) {
+            // create nodelist that contains all Tasks with the namespace
+            listNodeList.add(doc.getElementsByTagName(gateway_new));
+        } else {
+            listNodeList.add(doc.getElementsByTagName(gateway_old));
+        }
 
-        return return_script;
+        // iterate over list<NodeList> and check each NodeList
+        for (final NodeList list : listNodeList) {
+            // iterate over list and check child of each node
+            for (int i = 0; i < list.getLength(); i++) {
+                Element Task_Element = (Element) list.item(i);
+
+                // check if the ids are corresponding
+                if (id.equals(Task_Element.getAttribute("id"))) {
+                    // check if more than 1 inner attribute exists
+                    gateway = Task_Element.getAttribute("id");
+                }
+            }
+        }
+        return gateway;
     }
+
 }

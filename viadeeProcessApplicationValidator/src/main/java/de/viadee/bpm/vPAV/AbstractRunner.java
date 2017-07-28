@@ -114,27 +114,34 @@ public abstract class AbstractRunner {
     public static void scanClassPath(Map<String, Rule> rules) {
 
         final Rule processVariablesLocationRule = rules.get(ConstantsConfig.PROCESS_VARIABLES_LOCATION);
-        final String location = processVariablesLocationRule.getSettings().get("location").getValue();
+
         try {
-            fileScanner = new FileScanner(rules, classLoader, location);
+
+            if (processVariablesLocationRule == null) {
+                logger.warning("Could not find rule for ProcessVariablesLocation. Please verify the ruleSet.xml");
+                fileScanner = new FileScanner(rules, classLoader, "");
+            } else {
+                final String location = processVariablesLocationRule.getSettings().get("location").getValue();
+                fileScanner = new FileScanner(rules, classLoader, location);
+            }
+
         } catch (final DependencyResolutionRequiredException e) {
-            throw new RuntimeException("Classpath couldn't be resolved");
+            throw new RuntimeException("Classpath could not be resolved");
         }
     }
 
     // 3 - Get process variables
-    public static void getProcessVariables(final Map<String, Rule> rules) throws RuntimeException {
+    public static void getProcessVariables(final Map<String, Rule> rules) {
+
         final Rule processVariablesLocationRule = rules.get(ConstantsConfig.PROCESS_VARIABLES_LOCATION);
 
-        if (rules.containsKey(ConstantsConfig.PROCESS_VARIABLES_LOCATION) && processVariablesLocationRule.isActive()) {
-            if (fileScanner.getJavaResources() == null || fileScanner.getJavaResources().isEmpty()) {
-                logger.warning("Location to ProcessVariables could not be resolved.");
-            } else {
-                variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
-                        fileScanner.getClassLoader());
-                readOuterProcessVariables(variableScanner);
-            }
-
+        if (processVariablesLocationRule == null) {
+            logger.warning("Could not find rule for ProcessVariablesLocation. Please verify the ruleSet.xml");
+        } else if (processVariablesLocationRule != null && rules.containsKey(ConstantsConfig.PROCESS_VARIABLES_LOCATION)
+                && processVariablesLocationRule.isActive()) {
+            variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
+                    fileScanner.getClassLoader());
+            readOuterProcessVariables(variableScanner);
         } else {
             variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
                     fileScanner.getClassLoader());
