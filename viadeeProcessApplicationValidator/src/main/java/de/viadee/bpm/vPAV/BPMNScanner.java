@@ -184,6 +184,39 @@ public class BPMNScanner {
         return return_script;
     }
 
+    /*
+     * Check if model has an scriptTag
+     *
+     * @param path from model
+     *
+     * return boolean
+     */
+    public boolean hasScriptAsConditionExpression(String path) throws SAXException, IOException {
+        // bool to hold return values
+        boolean return_script = false;
+
+        // List for all Task elements
+        // ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
+        NodeList nodeList;
+
+        // parse the given bpmn model
+        doc = builder.parse(path);
+
+        // search for script tag
+        nodeList = doc.getElementsByTagName("bpmn:conditionExpression");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element Task_Element = (Element) nodeList.item(i);
+            if (Task_Element.getAttribute("language") != null) {
+                return_script = true;
+            }
+        }
+
+        // if (nodeList.getLength() > 0)
+        // return_script = true;
+
+        return return_script;
+    }
+
     /**
      * Return a list of used gateways for a given bpmn model
      *

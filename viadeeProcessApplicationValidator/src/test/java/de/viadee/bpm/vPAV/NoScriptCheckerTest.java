@@ -34,6 +34,7 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
+import org.camunda.bpm.model.bpmn.instance.ScriptTask;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
@@ -49,7 +50,7 @@ import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
 /**
- * unit tests for class JavaDelegateChecker
+ * unit tests for class NoScriptTasks
  *
  */
 public class NoScriptCheckerTest {
@@ -191,7 +192,6 @@ public class NoScriptCheckerTest {
         final Collection<SequenceFlow> baseElementsSequence = modelInstance
                 .getModelElementsByType(SequenceFlow.class);
         final BpmnElement elementSequence = new BpmnElement(PATH, baseElementsSequence.iterator().next());
-        final BaseElement baseSequence = elementSequence.getBaseElement();
 
         issues.addAll(checker.checkSingleModel(elementSequence, cl, PATH));
 
@@ -204,7 +204,7 @@ public class NoScriptCheckerTest {
     }
 
     /**
-     * Case: Model with an TasklistenerScript
+     * Case: Model with a TasklistenerScript
      * 
      * @throws IOException
      * @throws SAXException
@@ -231,6 +231,72 @@ public class NoScriptCheckerTest {
             Assert.fail("collection with the issues is bigger or smaller as expected");
         } else {
             Assert.assertEquals("task " + CheckName.checkName(baseElement) + " with script",
+                    issues.iterator().next().getMessage());
+        }
+    }
+
+    /**
+     * Case: Model with a Script as condition expression of a sequence flow
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     */
+    @Test
+    public void testModelWithScriptAsConditionExpression()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "NoScriptCheckerTest_ModelWithScriptAsConditionExpression.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<SequenceFlow> baseElements = modelInstance
+                .getModelElementsByType(SequenceFlow.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        final BaseElement baseElement = element.getBaseElement();
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() != 1) {
+            Assert.fail("collection with the issues is bigger or smaller as expected");
+        } else {
+            Assert.assertEquals(
+                    "SequenceFlow " + CheckName.checkName(baseElement) + " with Script as condition expression",
+                    issues.iterator().next().getMessage());
+        }
+    }
+
+    /**
+     * Case: Model with a ScriptTask
+     * 
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     */
+    @Test
+    public void testModelWithScriptTask()
+            throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        final String PATH = BASE_PATH + "NoScriptCheckerTest_ModelWithScriptTask.bpmn";
+
+        // parse bpmn model
+        final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
+
+        final Collection<ScriptTask> baseElements = modelInstance
+                .getModelElementsByType(ScriptTask.class);
+
+        final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
+        final BaseElement baseElement = element.getBaseElement();
+
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+
+        if (issues.size() != 1) {
+            Assert.fail("collection with the issues is bigger or smaller as expected");
+        } else {
+            Assert.assertEquals(
+                    "ScriptTask " + CheckName.checkName(baseElement) + " not allowed",
                     issues.iterator().next().getMessage());
         }
     }
