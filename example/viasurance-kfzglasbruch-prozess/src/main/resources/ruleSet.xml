@@ -11,6 +11,10 @@
 		<state>true</state>
 	</rule>
 	<rule>
+		<name>NoScriptChecker</name>
+		<state>true</state>
+	</rule>
+	<rule>
 		<name>JavaDelegateChecker</name>
 		<state>true</state>
 	</rule>
@@ -29,10 +33,6 @@
 	<rule>
 		<name>DmnTaskChecker</name>
 		<state>true</state>
-	</rule>
-	<rule>
-		<name>BusinessRuleTaskChecker</name>
-		<state>false</state>
 	</rule>
 	<rule>
 		<name>ProcessVariablesModelChecker</name>

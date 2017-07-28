@@ -76,6 +76,16 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue("XorNamingConventionChecker doesn't work correct", filteredIssues.size() == 1);
+        filteredIssues.clear();
+        filteredIssues.addAll(issues);
+
+        // NoScriptChecker
+        for (CheckerIssue issue : issues) {
+            if (!issue.getRuleName().equals("NoScriptChecker")) {
+                filteredIssues.remove(issue);
+            }
+        }
+        assertTrue("NoScriptChecker doesn't work correct", filteredIssues.size() == 0);
 
     }
 }

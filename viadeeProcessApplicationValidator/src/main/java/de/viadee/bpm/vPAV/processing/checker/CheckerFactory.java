@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
+import org.camunda.bpm.model.bpmn.instance.ScriptTask;
 import org.camunda.bpm.model.bpmn.instance.SendTask;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.Task;
@@ -112,6 +113,14 @@ public final class CheckerFactory {
             checkers.add(new XorNamingConventionChecker(xorNamingConventionRule));
         }
 
+        if (!(baseElement instanceof ScriptTask)) {
+            final Rule noScriptCheckerRule = ruleConf.get(getClassName(NoScriptChecker.class));
+            if (noScriptCheckerRule == null)
+                throw new ConfigItemNotFoundException(getClassName(NoScriptChecker.class) + " not found");
+            if (noScriptCheckerRule.isActive()) {
+                checkers.add(new NoScriptChecker(noScriptCheckerRule));
+            }
+        }
         final Rule processVariablesNameConventionRule = ruleConf
                 .get(getClassName(ProcessVariablesNameConventionChecker.class));
         if (processVariablesNameConventionRule == null)

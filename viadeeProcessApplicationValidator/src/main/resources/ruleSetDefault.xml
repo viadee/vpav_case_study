@@ -11,6 +11,10 @@
 		<state>true</state>
 	</rule>
 	<rule>
+		<name>NoScriptChecker</name>
+		<state>false</state>
+	</rule>
+	<rule>
 		<name>JavaDelegateChecker</name>
 		<state>true</state>
 	</rule>
