@@ -49,6 +49,8 @@ public class BPMNScanner {
 
     private final String sendTask_old = "sendTask";
 
+    private final String scriptTag = "camunda:script";
+
     private final String c_class = "camunda:class";
 
     private final String c_exp = "camunda:expression";
@@ -153,6 +155,33 @@ public class BPMNScanner {
             }
         }
         return return_implementation;
+    }
+
+    /*
+     * Check if model has an scriptTag
+     *
+     * @param path from model
+     *
+     * return boolean
+     */
+    public boolean hasScript(String path) throws SAXException, IOException {
+        // bool to hold return values
+        boolean return_script = false;
+
+        // List for all Task elements
+        // ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
+        NodeList nodeList;
+
+        // parse the given bpmn model
+        doc = builder.parse(path);
+
+        // search for script tag
+        nodeList = doc.getElementsByTagName(scriptTag);
+
+        if (nodeList.getLength() > 0)
+            return_script = true;
+
+        return return_script;
     }
 
     /**
