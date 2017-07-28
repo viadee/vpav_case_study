@@ -16,7 +16,6 @@ Consistency checks are performed by individual modules called checkers, which se
 | Checker                                                                              | Summary                                                                  | Status       |
 | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------   | ------------ |
 |[JavaDelegateChecker](JavaDelegateChecker.md)                                         | Is the implementation (or Spring bean reference) available and usable?   | Done         |
-|[BusinessRuleTaskChecker](BusinessRuleTaskChecker.md)                                 | Is the implementation available?                                         | Done         |
 |[DmnTaskChecker](DmnTaskChecker.md)                                                   | Is the implementation available?                                         | Done         |
 |[EmbeddedGroovyScriptChecker](EmbeddedGroovyScriptChecker.md)                         | Is the implementation available and does it look like a script?          | Done         |
 |[ProcessVariablesModelChecker](ProcessVariablesModelChecker.md)                       | Are process variables in the model provided in the code for all paths?   | Experimental |
