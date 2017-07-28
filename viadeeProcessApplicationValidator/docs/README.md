@@ -24,7 +24,7 @@ Consistency checks are performed by individual modules called checkers, which se
 |[TaskNamingConventionChecker](TaskNamingConventionChecker.md)                         | Do task names in the model fit into a desired regex pattern?             | Done         |
 |[VersioningChecker](VersioningChecker.md)                                             | Are java classes implementing tasks fit to a version scheme?             | Done         |
 |[XorNamingConventionChecker](XorNamingConventionChecker.md)                           | Are XOR gateways ending with "?"                                         | Done         |
-
+|[NoScriptChecker](NoScriptChecker.md)                                                 | Is there any script in the model?                                        | Done         |
 
 All of these can be switched on or off as required. Implementing further checkers is rather simple.
 
