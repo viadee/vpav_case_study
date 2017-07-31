@@ -39,7 +39,7 @@
         <flowNodeRef>sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F</flowNodeRef>
       </lane>
     </laneSet>
-    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;prüfen" implementation="##WebService" camunda:delegateExpression="">
+    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" implementation="##WebService" camunda:delegateExpression="">
       <documentation id="sid-18c5d645-ace8-4407-be28-b9a6e039f231"><![CDATA[Schaden ist gedeckt UND
 Vertrag ist nicht im Zahlungsrückstand UND
 ...]]></documentation>
@@ -217,6 +217,11 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <signavio:signavioMetaData metaKey="externaldocuments" metaValue="[]" />
         <signavio:signavioMetaData metaKey="meta-response" metaValue="" />
         <signavio:signavioMetaData metaKey="meta-request" metaValue="" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_17c9aa5">
+            <camunda:script />
+          </camunda:inputParameter>
+        </camunda:inputOutput>
       </extensionElements>
       <incoming>sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D</incoming>
       <outgoing>sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE</outgoing>
@@ -224,14 +229,14 @@ Vertrag ist nicht im Zahlungsrückstand UND
     <sequenceFlow id="sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE" name="" isImmediate="true" sourceRef="sid-73C4C8D1-F0CF-4531-BBAF-6FB0F491FA56" targetRef="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.setVariable("schadenNr", true)}]]></conditionExpression>
     </sequenceFlow>
-    <endEvent id="sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F" name="Schadenfall&#10;manuell &#10;bearbeitet">
+    <endEvent id="sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F" name="Schadenfall&#10;&#10;manuell &#10;&#10;bearbeitet">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />
       </extensionElements>
       <incoming>sid-A6FB34E5-5D1B-46C8-AEE0-0C9B47E3AE79</incoming>
     </endEvent>
-    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;automatisiert&#10;bearbeitet">
+    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;&#10;automatisiert&#10;&#10;bearbeitet">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />

@@ -27,7 +27,7 @@ public class ModelConsistencyTest {
         Collection<CheckerIssue> filteredIssues = new ArrayList<CheckerIssue>();
         filteredIssues.addAll(issues);
 
-        assertTrue("More or less issues were found than expected", issues.size() == 14);
+        assertTrue("More or less issues were found than expected", issues.size() == 15);
 
         // VersioningChecker
         for (CheckerIssue issue : issues) {
@@ -85,7 +85,7 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("NoScriptChecker doesn't work correct", filteredIssues.size() == 1);
+        assertTrue("NoScriptChecker doesn't work correct", filteredIssues.size() == 2);
 
     }
 }

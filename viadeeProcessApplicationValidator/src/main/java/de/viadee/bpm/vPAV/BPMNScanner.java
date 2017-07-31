@@ -164,12 +164,11 @@ public class BPMNScanner {
      *
      * return boolean
      */
-    public boolean hasScript(String path) throws SAXException, IOException {
+    public boolean hasScript(String path, String id) throws SAXException, IOException {
         // bool to hold return values
         boolean return_script = false;
 
         // List for all Task elements
-        // ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
         NodeList nodeList;
 
         // parse the given bpmn model
@@ -178,41 +177,17 @@ public class BPMNScanner {
         // search for script tag
         nodeList = doc.getElementsByTagName(scriptTag);
 
-        if (nodeList.getLength() > 0)
-            return_script = true;
-
-        return return_script;
-    }
-
-    /*
-     * Check if model has an scriptTag
-     *
-     * @param path from model
-     *
-     * return boolean
-     */
-    public boolean hasScriptAsConditionExpression(String path) throws SAXException, IOException {
-        // bool to hold return values
-        boolean return_script = false;
-
-        // List for all Task elements
-        // ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
-        NodeList nodeList;
-
-        // parse the given bpmn model
-        doc = builder.parse(path);
-
-        // search for script tag
-        nodeList = doc.getElementsByTagName("bpmn:conditionExpression");
+        // search for parent with id
         for (int i = 0; i < nodeList.getLength(); i++) {
-            Element Task_Element = (Element) nodeList.item(i);
-            if (Task_Element.getAttribute("language") != null) {
-                return_script = true;
+            Node n = nodeList.item(i).getParentNode();
+            while (n.getParentNode() != null) {
+                if (((Element) n).getAttribute("id").equals(id)) {
+                    return true;
+                } else {
+                    n = n.getParentNode();
+                }
             }
         }
-
-        // if (nodeList.getLength() > 0)
-        // return_script = true;
 
         return return_script;
     }

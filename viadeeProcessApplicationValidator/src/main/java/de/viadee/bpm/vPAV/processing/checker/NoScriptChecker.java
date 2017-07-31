@@ -28,8 +28,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.ScriptTask;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.xml.sax.SAXException;
 
 import de.viadee.bpm.vPAV.AbstractRunner;
@@ -45,8 +46,7 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  * Class NoScriptChecker
  *
  * Checks a bpmn model, if there is any script (Script inside a script task - Script as an execution listener - Script
- * as a task listener - Script as condition expression of a sequence flow - Script inside an inputOutput parameter
- * mapping)
+ * as a task listener - Script inside an inputOutput parameter mapping)
  *
  */
 public class NoScriptChecker extends AbstractElementChecker {
@@ -77,30 +77,25 @@ public class NoScriptChecker extends AbstractElementChecker {
         final BaseElement bpmnElement = element.getBaseElement();
         BPMNScanner scan = new BPMNScanner();
 
-        // Search for camunda:script tag
-        if (scan.hasScript(path)) {
-            // Error, because script were found
-            issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                    element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                    bpmnElement.getAttributeValue("name"), null, null, null,
-                    "task " + CheckName.checkName(bpmnElement) + " with script"));
-        }
-        // Script as condition expression of a sequence flow
-        if (bpmnElement instanceof SequenceFlow) {
-            if (scan.hasScriptAsConditionExpression(path)) {
-                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                        bpmnElement.getAttributeValue("name"), null, null, null,
-                        "SequenceFlow " + CheckName.checkName(bpmnElement) + " with Script as condition expression"));
-            }
-        }
         // ScripTasks not allowed
         if (bpmnElement instanceof ScriptTask) {
             issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
                     element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
                     bpmnElement.getAttributeValue("name"), null, null, null,
-                    "ScriptTask " + CheckName.checkName(bpmnElement) + " not allowed"));
+                    "ScriptTask '" + CheckName.checkName(bpmnElement) + "' not allowed"));
         }
+
+        if (!(bpmnElement instanceof Process) && !(bpmnElement instanceof SubProcess)) {
+            // Search for camunda:script tag
+            if (scan.hasScript(path, bpmnElement.getAttributeValue("id"))) {
+                // Error, because script were found
+                issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
+                        element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
+                        bpmnElement.getAttributeValue("name"), null, null, null,
+                        "task '" + CheckName.checkName(bpmnElement) + "' with script"));
+            }
+        }
+
         return issues;
     }
 }
