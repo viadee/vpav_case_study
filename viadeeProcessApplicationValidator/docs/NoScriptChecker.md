@@ -2,6 +2,10 @@ No Script Checker
 ================================= 
 The No Script Checker processes BPMN models and checks whether there is a script in the model.
 
+**Exclusion:** 	Script as condition expression of a sequence flow <br\>
+**Reason:** The goal of the checker is to separate process control and technical content. A script in a sequence flow is always part of the sequence control.
+
+
 ## Assumptions
 ----------------------------------------------
 - The **BPMN-models** have to be in the **classpath** at build time
@@ -23,9 +27,6 @@ The rule should be configured as follows:
 
 _There is a script inside a script task or a script as an execution listener or a script as a task listener or a script inside an inputOutput parameter mapping_
 
-**SequenceFlow %elementId with Script as condition expression**
-
-_There is a script as condition expression of a sequence flow_
 
 **ScriptTask %elementId not allowed**
 
@@ -37,11 +38,6 @@ _ScriptTask not allowed_
 | **task %elementId with script**                                                                        | 
 |:------------------------------------------------------------------------------------------------------:| 
 |![script in task](img/NoScriptChecker_task.PNG "There is a script inside a script task or a script as an execution listener or a script as a task listener or a script inside an inputOutput parameter mapping")    |
-| |
-
-| **SequenceFlow %elementId with Script as condition expression**                                                   |
-|:------------------------------------------------------------------------------------------------------:| 
-| ![Script as condition expression](img/NoScriptChecker_condition.PNG "There is a script as condition expression of a sequence flow")                           |
 | |
 
 | **ScriptTask %elementId not allowed**                                                |
