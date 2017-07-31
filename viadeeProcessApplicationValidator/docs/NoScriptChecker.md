@@ -34,4 +34,17 @@ _ScriptTask not allowed_
 ## Examples
 ----------------------------------------
 
+| **task %elementId with script**                                                                        | 
+|:------------------------------------------------------------------------------------------------------:| 
+|![script in task](img/NoScriptChecker_task.PNG "There is a script inside a script task or a script as an execution listener or a script as a task listener or a script inside an inputOutput parameter mapping")    |
+| |
 
+| **SequenceFlow %elementId with Script as condition expression**                                                   |
+|:------------------------------------------------------------------------------------------------------:| 
+| ![Script as condition expression](img/NoScriptChecker_condition.PNG "There is a script as condition expression of a sequence flow")                           |
+| |
+
+| **ScriptTask %elementId not allowed**                                                |
+|:------------------------------------------------------------------------------------------------------:| 
+![ScriptTask](img/NoScriptChecker_scripttask.PNG "ScriptTask not allowed")      |
+| |
