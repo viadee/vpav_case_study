@@ -51,7 +51,13 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
     public void execute() throws MojoExecutionException {
 
         // 2) get MavenProject classloader
-        retrieveClassLoader();
+
+        try {
+            RuntimeConfig.getInstance().setClassLoader(RuntimeConfig.getInstance().getClassLoader(project));
+        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         run_vPAV();
 
@@ -60,14 +66,6 @@ public class BpmnCheckerMojo extends AbstractRunner implements org.apache.maven.
         } else {
             throw new MojoExecutionException(
                     "Model inconsistency found. Please check target folder for validation output");
-        }
-    }
-
-    public void retrieveClassLoader() {
-        try {
-            classLoader = FileScanner.getClassLoader(project);
-        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
-
         }
     }
 

@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.BPMNScanner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -53,14 +54,14 @@ public class DmnTaskChecker extends AbstractElementChecker {
     }
 
     @Override
-    public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {
+    public Collection<CheckerIssue> check(final BpmnElement element) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         if (element.getBaseElement() instanceof BusinessRuleTask) {
             String path;
             for (final String output : AbstractRunner.getModelPath()) {
                 path = ConstantsConfig.BASEPATH + output;
                 try {
-                    issues.addAll(checkSingleModel(element, cl, path));
+                    issues.addAll(checkSingleModel(element, path));
                 } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }
@@ -69,7 +70,7 @@ public class DmnTaskChecker extends AbstractElementChecker {
         return issues;
     }
 
-    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader cl, String path)
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, String path)
             throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
@@ -90,22 +91,21 @@ public class DmnTaskChecker extends AbstractElementChecker {
                             bpmnElement.getAttributeValue("name"), null, null, null,
                             "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
                 } else {
-                    issues.addAll(checkDMNFile(element, cl, dmnAttr, path));
+                    issues.addAll(checkDMNFile(element, dmnAttr, path));
                 }
             }
         }
         return issues;
     }
 
-    private Collection<CheckerIssue> checkDMNFile(final BpmnElement element,
-            final ClassLoader classLoader, final String dmnName, final String path) {
+    private Collection<CheckerIssue> checkDMNFile(final BpmnElement element, final String dmnName, final String path) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
         final String dmnPath = dmnName.replaceAll("\\.", "/") + ".dmn";
 
         // If a dmn path has been found, check the correctness
-        URL urlDMN = classLoader.getResource(dmnPath);
+        URL urlDMN = RuntimeConfig.getInstance().getClassLoader().getResource(dmnPath);
 
         if (urlDMN == null) {
             // Throws an error, if the class was not found

@@ -18,7 +18,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package de.viadee.bpm.vPAV;
+package de.viadee.bpm.vPAV.processing.checker;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,9 +42,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
-import de.viadee.bpm.vPAV.processing.checker.NoScriptChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -70,11 +70,12 @@ public class NoScriptCheckerTest {
         final URL classUrl = new URL(currentPath + "src/test/java");
         final URL[] classUrls = { classUrl };
         cl = new URLClassLoader(classUrls);
+        RuntimeConfig.getInstance().setClassLoader(cl);
     }
 
     /**
      * Case: BPMN with no Script
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -93,7 +94,7 @@ public class NoScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() > 0) {
             Assert.fail("correct model generates an issue");
@@ -102,7 +103,7 @@ public class NoScriptCheckerTest {
 
     /**
      * Case: Model with an InputScript
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -122,7 +123,7 @@ public class NoScriptCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -134,7 +135,7 @@ public class NoScriptCheckerTest {
 
     /**
      * Case: Model with an OutputScript
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -154,7 +155,7 @@ public class NoScriptCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -166,7 +167,7 @@ public class NoScriptCheckerTest {
 
     /**
      * Case: Model with an executionlistenerScript
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -186,7 +187,7 @@ public class NoScriptCheckerTest {
         final BpmnElement elementGate = new BpmnElement(PATH, baseElementsGate.iterator().next());
         final BaseElement baseElementGate = elementGate.getBaseElement();
 
-        Collection<CheckerIssue> issues = checker.checkSingleModel(elementGate, cl, PATH);
+        Collection<CheckerIssue> issues = checker.checkSingleModel(elementGate, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -198,7 +199,7 @@ public class NoScriptCheckerTest {
 
     /**
      * Case: Model with a TasklistenerScript
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -218,7 +219,7 @@ public class NoScriptCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -230,7 +231,7 @@ public class NoScriptCheckerTest {
 
     /**
      * Case: Model with a ScriptTask
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -250,7 +251,7 @@ public class NoScriptCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");

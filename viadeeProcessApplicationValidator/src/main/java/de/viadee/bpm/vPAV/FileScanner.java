@@ -61,8 +61,6 @@ import de.viadee.bpm.vPAV.processing.checker.VersioningChecker;
  */
 public class FileScanner {
 
-    private final ClassLoader classLoader;
-
     private final Set<String> processdefinitions;
 
     private Set<String> javaResources = new HashSet<String>();
@@ -75,10 +73,8 @@ public class FileScanner {
 
     public static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
-    public FileScanner(final Map<String, Rule> rules, final ClassLoader classLoader, final String classPathScanLocation)
+    public FileScanner(final Map<String, Rule> rules, final String classPathScanLocation)
             throws DependencyResolutionRequiredException {
-
-        this.classLoader = classLoader;
 
         final DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(ConstantsConfig.BASEPATH);
@@ -97,10 +93,10 @@ public class FileScanner {
             LinkedList<File> files = new LinkedList<File>();
 
             URLClassLoader ucl;
-            if (classLoader instanceof URLClassLoader) {
-                ucl = ((URLClassLoader) classLoader);
+            if (RuntimeConfig.getInstance().getClassLoader() instanceof URLClassLoader) {
+                ucl = ((URLClassLoader) RuntimeConfig.getInstance().getClassLoader());
             } else {
-                ucl = ((URLClassLoader) classLoader.getParent());
+                ucl = ((URLClassLoader) RuntimeConfig.getInstance().getClassLoader().getParent());
             }
             urls = ucl.getURLs();
 
@@ -148,15 +144,6 @@ public class FileScanner {
                 javaResources.add(file.getName());
             }
         }
-    }
-
-    /**
-     * get class loader
-     *
-     * @return
-     */
-    public ClassLoader getClassLoader() {
-        return classLoader;
     }
 
     /**

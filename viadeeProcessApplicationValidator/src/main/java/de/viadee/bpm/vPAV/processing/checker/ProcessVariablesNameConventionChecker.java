@@ -47,12 +47,12 @@ public class ProcessVariablesNameConventionChecker extends AbstractElementChecke
 
     /**
      * Checks process variables in an bpmn element, whether they comply naming conventions
-     * 
+     *
      * @param processdefinition
      * @param cl
      */
     @Override
-    public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader cl) {
+    public Collection<CheckerIssue> check(final BpmnElement element) {
 
         // analyse process variables are matching naming conventions
         final Collection<CheckerIssue> issues = checkNamingConvention(element);
@@ -62,7 +62,7 @@ public class ProcessVariablesNameConventionChecker extends AbstractElementChecke
 
     /**
      * Use regular expressions to check process variable conventions
-     * 
+     *
      * @param element
      * @return issues
      */

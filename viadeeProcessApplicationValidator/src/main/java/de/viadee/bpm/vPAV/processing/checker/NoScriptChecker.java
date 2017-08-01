@@ -56,13 +56,13 @@ public class NoScriptChecker extends AbstractElementChecker {
     }
 
     @Override
-    public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader classLoader) {
+    public Collection<CheckerIssue> check(final BpmnElement element) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         String path;
         for (final String output : AbstractRunner.getModelPath()) {
             path = ConstantsConfig.BASEPATH + output;
             try {
-                issues.addAll(checkSingleModel(element, classLoader, path));
+                issues.addAll(checkSingleModel(element, path));
             } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
                 e.printStackTrace();
             }
@@ -70,8 +70,8 @@ public class NoScriptChecker extends AbstractElementChecker {
         return issues;
     }
 
-    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader classLoader,
-            String path) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, String path)
+            throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();

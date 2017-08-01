@@ -23,7 +23,6 @@ package de.viadee.bpm.vPAV.processing.checker;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -39,6 +38,7 @@ import de.odysseus.el.tree.impl.Builder;
 import de.viadee.bpm.vPAV.AbstractRunner;
 import de.viadee.bpm.vPAV.BPMNScanner;
 import de.viadee.bpm.vPAV.ConstantsConfig;
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -53,21 +53,18 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  */
 public class JavaDelegateChecker extends AbstractElementChecker {
 
-    private Map<String, String> beanMapping;
-
-    public JavaDelegateChecker(final Rule rule, final Map<String, String> beanMapping) {
+    public JavaDelegateChecker(final Rule rule) {
         super(rule);
-        this.beanMapping = beanMapping;
     }
 
     @Override
-    public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader classLoader) {
+    public Collection<CheckerIssue> check(final BpmnElement element) {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         String path;
         for (final String output : AbstractRunner.getModelPath()) {
             path = ConstantsConfig.BASEPATH + output;
             try {
-                issues.addAll(checkSingleModel(element, classLoader, path));
+                issues.addAll(checkSingleModel(element, path));
             } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
                 e.printStackTrace();
             }
@@ -75,8 +72,8 @@ public class JavaDelegateChecker extends AbstractElementChecker {
         return issues;
     }
 
-    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader classLoader,
-            String path) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, String path)
+            throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
@@ -107,7 +104,7 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                             bpmnElement.getAttributeValue("name"), null, null, null,
                             "task " + CheckName.checkName(bpmnElement) + " with no class name"));
                 } else {
-                    issues.addAll(checkClassFile(element, classLoader, classAttr));
+                    issues.addAll(checkClassFile(element, classAttr));
                 }
             }
 
@@ -121,17 +118,18 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                             "task " + CheckName.checkName(bpmnElement) + " with no delegate expression"));
                 } else {
                     // check validity of a bean
-                    if (beanMapping != null) {
+                    if (RuntimeConfig.getInstance().getBeanMapping() != null) {
                         final TreeBuilder treeBuilder = new Builder();
                         final Tree tree = treeBuilder.build(delegateExprAttr);
                         final Iterable<IdentifierNode> identifierNodes = tree.getIdentifierNodes();
                         // if beanMapping ${...} reference
                         if (identifierNodes.iterator().hasNext()) {
                             for (final IdentifierNode node : identifierNodes) {
-                                final String classFile = beanMapping.get(node.getName());
+                                final String classFile = RuntimeConfig.getInstance().getBeanMapping()
+                                        .get(node.getName());
                                 // correct beanmapping was found -> check if class exists
                                 if (classFile != null && classFile.trim().length() > 0) {
-                                    issues.addAll(checkClassFile(element, classLoader, classFile));
+                                    issues.addAll(checkClassFile(element, classFile));
                                 } else {
                                     // incorrect beanmapping
                                     issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
@@ -142,11 +140,11 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                                 }
                             }
                         } else {
-                            issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
+                            issues.addAll(checkClassFile(element, delegateExprAttr));
                         }
                     } else {
                         // check if class exists
-                        issues.addAll(checkClassFile(element, classLoader, delegateExprAttr));
+                        issues.addAll(checkClassFile(element, delegateExprAttr));
                     }
                 }
             }
@@ -200,8 +198,7 @@ public class JavaDelegateChecker extends AbstractElementChecker {
         return issues;
     }
 
-    private Collection<CheckerIssue> checkClassFile(final BpmnElement element,
-            final ClassLoader classLoader, final String className) {
+    private Collection<CheckerIssue> checkClassFile(final BpmnElement element, final String className) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         final BaseElement bpmnElement = element.getBaseElement();
@@ -209,7 +206,7 @@ public class JavaDelegateChecker extends AbstractElementChecker {
 
         // If a class path has been found, check the correctness
         try {
-            Class<?> clazz = classLoader.loadClass(className);
+            Class<?> clazz = RuntimeConfig.getInstance().getClassLoader().loadClass(className);
 
             // Checks, whether the correct interface was implemented
             Class<?> sClass = clazz.getSuperclass();

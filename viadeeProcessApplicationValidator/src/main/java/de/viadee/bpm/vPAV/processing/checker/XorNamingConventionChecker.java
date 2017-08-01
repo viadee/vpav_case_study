@@ -27,7 +27,7 @@ public class XorNamingConventionChecker extends AbstractElementChecker {
     }
 
     @Override
-    public Collection<CheckerIssue> check(BpmnElement element, ClassLoader cl) {
+    public Collection<CheckerIssue> check(BpmnElement element) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         if (element.getBaseElement() instanceof ExclusiveGateway) {
@@ -35,7 +35,7 @@ public class XorNamingConventionChecker extends AbstractElementChecker {
             for (final String output : AbstractRunner.getModelPath()) {
                 path = ConstantsConfig.BASEPATH + output;
                 try {
-                    issues.addAll(checkSingleModel(element, cl, path));
+                    issues.addAll(checkSingleModel(element, path));
                 } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }
@@ -44,7 +44,7 @@ public class XorNamingConventionChecker extends AbstractElementChecker {
         return issues;
     }
 
-    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, final ClassLoader cl, String path)
+    public Collection<CheckerIssue> checkSingleModel(final BpmnElement element, String path)
             throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();

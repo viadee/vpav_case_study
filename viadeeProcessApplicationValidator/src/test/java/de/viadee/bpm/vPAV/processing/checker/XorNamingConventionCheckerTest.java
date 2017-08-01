@@ -18,7 +18,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package de.viadee.bpm.vPAV;
+package de.viadee.bpm.vPAV.processing.checker;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -39,8 +38,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
-import de.viadee.bpm.vPAV.processing.checker.XorNamingConventionChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -56,8 +55,6 @@ public class XorNamingConventionCheckerTest {
 
     private static ClassLoader cl;
 
-    private static Logger logger = Logger.getLogger(XorNamingConventionCheckerTest.class.getName());
-
     @BeforeClass
     public static void setup() throws MalformedURLException {
         final Rule rule = new Rule("DmnTaskChecker", true, null, null, null);
@@ -67,6 +64,7 @@ public class XorNamingConventionCheckerTest {
         final URL classUrl = new URL(currentPath + "src/test/java");
         final URL[] classUrls = { classUrl };
         cl = new URLClassLoader(classUrls);
+        RuntimeConfig.getInstance().setClassLoader(cl);
     }
 
     /**
@@ -92,7 +90,7 @@ public class XorNamingConventionCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() > 0) {
             Assert.fail("correct naming convention should not generate an issue");
@@ -122,7 +120,7 @@ public class XorNamingConventionCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("wrong naming convention should generate an issue");

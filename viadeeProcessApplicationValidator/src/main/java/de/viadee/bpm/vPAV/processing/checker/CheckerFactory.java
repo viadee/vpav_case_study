@@ -51,8 +51,8 @@ public final class CheckerFactory {
     public static String implementation;
 
     public static Collection<ElementChecker> createCheckerInstancesBpmnElement(
-            final Map<String, Rule> ruleConf, final Map<String, String> beanMapping,
-            final Collection<String> resourcesNewestVersions, final BpmnElement element)
+            final Map<String, Rule> ruleConf, final Collection<String> resourcesNewestVersions,
+            final BpmnElement element)
             throws ConfigItemNotFoundException {
 
         final String c_class = "camunda:class";
@@ -86,13 +86,13 @@ public final class CheckerFactory {
             TaskImplementationChecker.getTaskImplementation(element);
 
             if (implementation.equals(c_class) && javaDelegateRule.isActive()) {
-                checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
+                checkers.add(new JavaDelegateChecker(javaDelegateRule));
             }
             if (implementation.equals(c_exp)) {
                 // do nothing for now
             }
             if (implementation.equals(c_dexp)) {
-                checkers.add(new JavaDelegateChecker(javaDelegateRule, beanMapping));
+                checkers.add(new JavaDelegateChecker(javaDelegateRule));
             }
             if (implementation.equals(c_ext)) {
                 // do nothing for now
@@ -141,7 +141,7 @@ public final class CheckerFactory {
         if (versioningRule == null)
             throw new ConfigItemNotFoundException(getClassName(VersioningChecker.class) + " not found");
         if (versioningRule.isActive()) {
-            checkers.add(new VersioningChecker(versioningRule, beanMapping, resourcesNewestVersions));
+            checkers.add(new VersioningChecker(versioningRule, resourcesNewestVersions));
         }
 
         final Rule embeddedGroovyScriptRule = ruleConf

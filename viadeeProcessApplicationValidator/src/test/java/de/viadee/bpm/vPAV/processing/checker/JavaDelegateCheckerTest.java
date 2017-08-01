@@ -18,7 +18,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package de.viadee.bpm.vPAV;
+package de.viadee.bpm.vPAV.processing.checker;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +41,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.CheckName;
-import de.viadee.bpm.vPAV.processing.checker.JavaDelegateChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -67,18 +67,20 @@ public class JavaDelegateCheckerTest {
         final Map<String, String> beanMapping = new HashMap<String, String>();
         beanMapping.put("FalschesDelegate_bla", "de.test.Test");
         beanMapping.put("testDelegate", "de.viadee.bpm.vPAV.delegates.TestDelegate");
+        RuntimeConfig.getInstance().setBeanMapping(beanMapping);
 
-        checker = new JavaDelegateChecker(rule, beanMapping);
+        checker = new JavaDelegateChecker(rule);
         final File file = new File(".");
         final String currentPath = file.toURI().toURL().toString();
         final URL classUrl = new URL(currentPath + "src/test/java");
         final URL[] classUrls = { classUrl };
         cl = new URLClassLoader(classUrls);
+        RuntimeConfig.getInstance().setClassLoader(cl);
     }
 
     /**
      * Case: JavaDelegate has been correct set with interface javaDelegate
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -97,7 +99,7 @@ public class JavaDelegateCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() > 0) {
             Assert.fail("correct java delegate generates an issue");
@@ -106,7 +108,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: JavaDelegate has been correct set with interface SignallableActivityBehavior
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -125,7 +127,7 @@ public class JavaDelegateCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() > 0) {
             Assert.fail("correct java delegate generates an issue");
@@ -134,7 +136,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: JavaDelegate has been correct set with superclass AbstractBpmnActivityBehavior
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -153,7 +155,7 @@ public class JavaDelegateCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() > 0) {
             Assert.fail("correct java delegate generates an issue");
@@ -162,7 +164,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: There are no technical attributes
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -182,7 +184,7 @@ public class JavaDelegateCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -194,7 +196,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: java delegate has not been set
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -214,7 +216,7 @@ public class JavaDelegateCheckerTest {
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -226,7 +228,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: The path of the java delegate isn't correct
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -247,7 +249,7 @@ public class JavaDelegateCheckerTest {
 
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -259,7 +261,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: The java delegates implements no or a wrong interface
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -280,7 +282,7 @@ public class JavaDelegateCheckerTest {
 
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -294,7 +296,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: beanMapping exits, but first map is wrong
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -315,7 +317,7 @@ public class JavaDelegateCheckerTest {
 
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -328,7 +330,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: incorrect JavaDelegateExpression reference
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -349,7 +351,7 @@ public class JavaDelegateCheckerTest {
 
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");
@@ -361,7 +363,7 @@ public class JavaDelegateCheckerTest {
 
     /**
      * Case: incorrect JavaDelegateExpression reference
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -382,7 +384,7 @@ public class JavaDelegateCheckerTest {
 
         final BaseElement baseElement = element.getBaseElement();
 
-        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, cl, PATH);
+        final Collection<CheckerIssue> issues = checker.checkSingleModel(element, PATH);
 
         if (issues.size() != 1) {
             Assert.fail("collection with the issues is bigger or smaller as expected");

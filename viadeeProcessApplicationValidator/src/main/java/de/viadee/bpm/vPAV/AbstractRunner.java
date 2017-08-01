@@ -55,15 +55,11 @@ public abstract class AbstractRunner {
 
     private static FileScanner fileScanner;
 
-    protected static Map<String, String> beanMapping;
-
     private static OuterProcessVariablesScanner variableScanner;
 
     private static Collection<CheckerIssue> issues;
 
     private static Collection<CheckerIssue> filteredIssues;
-
-    protected static ClassLoader classLoader;
 
     public static void run_vPAV() {
 
@@ -119,10 +115,10 @@ public abstract class AbstractRunner {
 
             if (processVariablesLocationRule == null) {
                 logger.warning("Could not find rule for ProcessVariablesLocation. Please verify the ruleSet.xml");
-                fileScanner = new FileScanner(rules, classLoader, "");
+                fileScanner = new FileScanner(rules, "");
             } else {
                 final String location = processVariablesLocationRule.getSettings().get("location").getValue();
-                fileScanner = new FileScanner(rules, classLoader, location);
+                fileScanner = new FileScanner(rules, location);
             }
 
         } catch (final DependencyResolutionRequiredException e) {
@@ -140,17 +136,17 @@ public abstract class AbstractRunner {
         } else if (processVariablesLocationRule != null && rules.containsKey(ConstantsConfig.PROCESS_VARIABLES_LOCATION)
                 && processVariablesLocationRule.isActive()) {
             variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
-                    fileScanner.getClassLoader());
+                    RuntimeConfig.getInstance().getClassLoader());
             readOuterProcessVariables(variableScanner);
         } else {
             variableScanner = new OuterProcessVariablesScanner(fileScanner.getJavaResources(),
-                    fileScanner.getClassLoader());
+                    RuntimeConfig.getInstance().getClassLoader());
         }
     }
 
     // 4 - Check each model
     public static void createIssues(Map<String, Rule> rules) throws RuntimeException {
-        issues = checkModels(rules, beanMapping, fileScanner, variableScanner);
+        issues = checkModels(rules, fileScanner, variableScanner);
     }
 
     // 5 remove ignored issues
@@ -312,13 +308,13 @@ public abstract class AbstractRunner {
      * @return
      * @throws ConfigItemNotFoundException
      */
-    private static Collection<CheckerIssue> checkModels(final Map<String, Rule> rules,
-            final Map<String, String> beanMapping, final FileScanner fileScanner,
+    private static Collection<CheckerIssue> checkModels(final Map<String, Rule> rules, final FileScanner fileScanner,
             final OuterProcessVariablesScanner variableScanner) throws RuntimeException {
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
         for (final String pathToModel : fileScanner.getProcessdefinitions()) {
-            issues.addAll(checkModel(rules, beanMapping, pathToModel, fileScanner, variableScanner));
+            issues.addAll(checkModel(rules, pathToModel, fileScanner,
+                    variableScanner));
         }
         return issues;
     }
@@ -334,15 +330,15 @@ public abstract class AbstractRunner {
      * @return
      * @throws ConfigItemNotFoundException
      */
-    private static Collection<CheckerIssue> checkModel(final Map<String, Rule> rules,
-            final Map<String, String> beanMapping, final String processdef, final FileScanner fileScanner,
+    private static Collection<CheckerIssue> checkModel(final Map<String, Rule> rules, final String processdef,
+            final FileScanner fileScanner,
             final OuterProcessVariablesScanner variableScanner) throws RuntimeException {
         Collection<CheckerIssue> modelIssues;
         try {
             modelIssues = BpmnModelDispatcher.dispatch(new File(ConstantsConfig.BASEPATH + processdef),
-                    fileScanner.getDecisionRefToPathMap(), fileScanner.getProcessIdToPathMap(), beanMapping,
+                    fileScanner.getDecisionRefToPathMap(), fileScanner.getProcessIdToPathMap(),
                     variableScanner.getMessageIdToVariableMap(), variableScanner.getProcessIdToVariableMap(),
-                    fileScanner.getResourcesNewestVersions(), rules, fileScanner.getClassLoader());
+                    fileScanner.getResourcesNewestVersions(), rules, RuntimeConfig.getInstance().getClassLoader());
 
         } catch (final ConfigItemNotFoundException e) {
             throw new RuntimeException("Config item couldn't be read");

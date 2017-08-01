@@ -18,7 +18,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package de.viadee.bpm.vPAV;
+package de.viadee.bpm.vPAV.processing.checker;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -35,9 +35,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
-import de.viadee.bpm.vPAV.processing.checker.ElementChecker;
-import de.viadee.bpm.vPAV.processing.checker.EmbeddedGroovyScriptChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -58,6 +57,7 @@ public class EmbeddedGroovyScriptCheckerTest {
         final URL classUrl = new URL(currentPath + "src/test/java");
         final URL[] classUrls = { classUrl };
         cl = new URLClassLoader(classUrls);
+        RuntimeConfig.getInstance().setClassLoader(cl);
     }
 
     /**
@@ -75,7 +75,7 @@ public class EmbeddedGroovyScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final Collection<CheckerIssue> issues = checker.check(element);
 
         if (issues.size() == 0) {
             Assert.fail("there should be generated an issue");
@@ -99,7 +99,7 @@ public class EmbeddedGroovyScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final Collection<CheckerIssue> issues = checker.check(element);
 
         if (issues.size() == 0) {
             Assert.fail("there should be generated an issue");
@@ -123,7 +123,7 @@ public class EmbeddedGroovyScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final Collection<CheckerIssue> issues = checker.check(element);
 
         if (issues.size() == 0) {
             Assert.fail("there should be generated an issue");
@@ -147,7 +147,7 @@ public class EmbeddedGroovyScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final Collection<CheckerIssue> issues = checker.check(element);
 
         if (issues.size() == 0) {
             Assert.fail("there should be generated an issue");
@@ -172,7 +172,7 @@ public class EmbeddedGroovyScriptCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final Collection<CheckerIssue> issues = checker.check(element);
 
         if (issues.size() == 0) {
             Assert.fail("there should be generated an issue");

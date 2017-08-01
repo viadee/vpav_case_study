@@ -18,7 +18,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package de.viadee.bpm.vPAV;
+package de.viadee.bpm.vPAV.processing.checker;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,10 +37,9 @@ import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.config.model.Setting;
-import de.viadee.bpm.vPAV.processing.checker.ElementChecker;
-import de.viadee.bpm.vPAV.processing.checker.VersioningChecker;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
 import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 
@@ -57,6 +56,7 @@ public class VersioningCheckerTest {
         final URL classUrl = new URL(currentPath + "src/test/java");
         final URL[] classUrls = { classUrl };
         cl = new URLClassLoader(classUrls);
+        RuntimeConfig.getInstance().setClassLoader(cl);
     }
 
     /**
@@ -80,8 +80,8 @@ public class VersioningCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final ElementChecker checker = new VersioningChecker(rule, null, resourcesNewestVersions);
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final ElementChecker checker = new VersioningChecker(rule, resourcesNewestVersions);
+        final Collection<CheckerIssue> issues = checker.check(element);
         assertEquals(1, issues.size());
     }
 
@@ -106,8 +106,8 @@ public class VersioningCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final ElementChecker checker = new VersioningChecker(rule, null, resourcesNewestVersions);
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final ElementChecker checker = new VersioningChecker(rule, resourcesNewestVersions);
+        final Collection<CheckerIssue> issues = checker.check(element);
         assertEquals(1, issues.size());
     }
 
@@ -131,6 +131,7 @@ public class VersioningCheckerTest {
         // Bean-Mapping
         final Map<String, String> beanMapping = new HashMap<String, String>();
         beanMapping.put("myBean_1_1", "de.test.TestDelegate_1_1");
+        RuntimeConfig.getInstance().setBeanMapping(beanMapping);
 
         // parse bpmn model
         final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -140,9 +141,8 @@ public class VersioningCheckerTest {
 
         final BpmnElement element = new BpmnElement(PATH, baseElements.iterator().next());
 
-        final ElementChecker checker = new VersioningChecker(rule, beanMapping,
-                resourcesNewestVersions);
-        final Collection<CheckerIssue> issues = checker.check(element, cl);
+        final ElementChecker checker = new VersioningChecker(rule, resourcesNewestVersions);
+        final Collection<CheckerIssue> issues = checker.check(element);
         assertEquals(1, issues.size());
     }
 }

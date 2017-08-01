@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.el.ELException;
@@ -45,6 +44,7 @@ import de.odysseus.el.tree.IdentifierNode;
 import de.odysseus.el.tree.Tree;
 import de.odysseus.el.tree.TreeBuilder;
 import de.odysseus.el.tree.impl.Builder;
+import de.viadee.bpm.vPAV.RuntimeConfig;
 import de.viadee.bpm.vPAV.config.model.Rule;
 import de.viadee.bpm.vPAV.processing.ProcessingException;
 import de.viadee.bpm.vPAV.processing.model.data.BpmnElement;
@@ -57,19 +57,15 @@ import de.viadee.bpm.vPAV.processing.model.data.CriticalityEnum;
  */
 public class VersioningChecker extends AbstractElementChecker {
 
-    private Map<String, String> beanMapping;
-
     private Collection<String> resourcesNewestVersions;
 
-    public VersioningChecker(final Rule rule, final Map<String, String> beanMapping,
-            final Collection<String> resourcesNewestVersions) {
+    public VersioningChecker(final Rule rule, final Collection<String> resourcesNewestVersions) {
         super(rule);
-        this.beanMapping = beanMapping;
         this.resourcesNewestVersions = resourcesNewestVersions;
     }
 
     @Override
-    public Collection<CheckerIssue> check(final BpmnElement element, final ClassLoader classLoader) {
+    public Collection<CheckerIssue> check(final BpmnElement element) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
 
@@ -100,7 +96,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * check versioning for execution listener
-     * 
+     *
      * @param element
      * @param extensionElements
      * @return issues
@@ -136,7 +132,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * check versioning for task listener
-     * 
+     *
      * @param element
      * @param extensionElements
      * @return issues
@@ -172,7 +168,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * check versioning for service task, send task or business rule task
-     * 
+     *
      * @param element
      * @return issues
      */
@@ -204,7 +200,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * check versioning for script task
-     * 
+     *
      * @param element
      * @return issues
      */
@@ -224,7 +220,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * check versioning for message event
-     * 
+     *
      * @param element
      * @return
      */
@@ -252,7 +248,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * convert package format into java file path
-     * 
+     *
      * @param javaResource
      * @return file path
      */
@@ -265,7 +261,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * Finds java bean in an expression and returns the java file path
-     * 
+     *
      * @param expression
      * @return file path
      */
@@ -280,8 +276,8 @@ public class VersioningChecker extends AbstractElementChecker {
             final Iterable<IdentifierNode> identifierNodes = tree.getIdentifierNodes();
             final Set<String> paths = new HashSet<String>();
             for (final IdentifierNode node : identifierNodes) {
-                if (beanMapping != null) {
-                    final String packagePath = beanMapping.get(node.getName());
+                if (RuntimeConfig.getInstance().getBeanMapping() != null) {
+                    final String packagePath = RuntimeConfig.getInstance().getBeanMapping().get(node.getName());
                     if (packagePath != null) {
                         paths.add(packagePath);
                     }
@@ -301,7 +297,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * prepares an issue for script after check
-     * 
+     *
      * @param resourcePath
      * @param element
      * @param issues
@@ -320,7 +316,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * prepares an issue for bean after check
-     * 
+     *
      * @param expression
      * @param element
      * @param issues
@@ -338,7 +334,7 @@ public class VersioningChecker extends AbstractElementChecker {
 
     /**
      * prepares an issue for class after check
-     * 
+     *
      * @param javaReference
      * @param element
      * @param issues

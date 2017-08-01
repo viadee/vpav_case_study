@@ -16,8 +16,8 @@ public class ProcessApplicationValidator extends AbstractRunner {
      */
     public static Collection<CheckerIssue> findModelInconsistencies(ApplicationContext ctx) {
 
-        beanMapping = BeanMappingGenerator.generateBeanMappingFile(ctx);
-        retrieveClassLoader();
+        RuntimeConfig.getInstance().setBeanMapping(BeanMappingGenerator.generateBeanMappingFile(ctx));
+        RuntimeConfig.getInstance().setClassLoader(ProcessApplicationValidator.class.getClassLoader());
         run_vPAV();
 
         return AbstractRunner.getfilteredIssues();
@@ -28,14 +28,10 @@ public class ProcessApplicationValidator extends AbstractRunner {
      */
     public static Collection<CheckerIssue> findModelInconsistencies() {
 
-        retrieveClassLoader();
+        RuntimeConfig.getInstance().setClassLoader(ProcessApplicationValidator.class.getClassLoader());
         run_vPAV();
 
         return AbstractRunner.getfilteredIssues();
-    }
-
-    public static void retrieveClassLoader() {
-        classLoader = ProcessApplicationValidator.class.getClassLoader();
     }
 
 }
