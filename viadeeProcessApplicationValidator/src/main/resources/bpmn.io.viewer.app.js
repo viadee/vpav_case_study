@@ -325,7 +325,7 @@ function initDiagram(diagramXML, issue_id, path_nr, func) {
                 createTable(diagramXML.name);
                 tableVisible(true);
             } else {
-                document.getElementById("noIssues").setAttribute("style", "display: initial");
+                document.getElementById("noIssues").style.display = "initial";
                 tableVisible(false);
             }
         });
@@ -361,17 +361,18 @@ function initDiagram(diagramXML, issue_id, path_nr, func) {
 function setUeberschrift(name) {
     subName = name.substr(0, name.length - 5);
     document.querySelector("#modell").innerHTML = "Consistency check: " + subName;
-    document.getElementById("noIssues").setAttribute("style", "display: none");
+    document.getElementById("noIssues").style.display = "none";
+    setFocus(name);
 }
 
 //hideTable
 function tableVisible(show) {
     if (show) {
-        document.getElementById("h1_table").setAttribute("style", "display: block");
-        document.getElementById("table_issues").setAttribute("style", "display: table");
+        document.getElementById("h1_table").style.display = "block";
+        document.getElementById("table_issues").style.display = "table";
     } else {
-        document.getElementById("h1_table").setAttribute("style", "display: none");
-        document.getElementById("table_issues").setAttribute("style", "display: none");
+        document.getElementById("h1_table").style.display = "none";
+        document.getElementById("table_issues").style.display = "none";
     }
 }
 
@@ -395,7 +396,6 @@ function toggleDialog(sh) {
         dialogOpen = true;
         // show the dialog  
         dialog.setAttribute('open', 'open');
-
     } else {
         dialogOpen = false;
         dialog.setAttribute('open', 'false');
@@ -411,24 +411,40 @@ function toggleDialog(sh) {
         var a = document.createElement("a");
         var subName = model.name.substr(0, model.name.length - 5);
         li.appendChild(a);
+        li.style.display = "inline";
+        li.style.listStyle = "none";
+        li.style.margin = "0";
+        li.style.padding = "0";
+
         a.appendChild(document.createTextNode(subName + " (" + countIssues(model.name) + ")"));
         a.setAttribute("onclick", "selectModel('" + model.name + "', null, null, 0 )");
         a.setAttribute("href", "#");
-        if(countIssues(model.name) == 0)
-            a.setAttribute("style", "color: green");
+        a.style.padding = "0.4em";
+        a.style.border = "1px solid black";
+        a.style.color = "black";
+        a.style.borderRadius = "10px 10px 0 0";
+        a.style.boxShadow = "0px 5px 10px white inset";
+        if (countIssues(model.name) == 0)
+            a.style.background = "rgba(0, 255, 0, 0.5)";
         else
-            a.setAttribute("style", "color: red");
+            a.style.background = "rgba(255, 0, 0, 0.5)";
+        a.setAttribute("class", "focusClass");
+        a.setAttribute("id", model.name);
         ul.appendChild(li);
     }
 })();
+
+function setFocus(name) {
+    document.getElementById(name).focus();
+}
 
 //reload model diagram
 function selectModel(name, issue_id, path_nr, func) {
     for (id in diagramXMLSource) {
         if (diagramXMLSource[id].name == name) {
-            if (func == 0)
+            if (func == 0) {
                 viewer.reload(diagramXMLSource[id]);
-            else if (func == 1) {
+            } else if (func == 1) {
                 viewer.reloadMarkPath(diagramXMLSource[id], issue_id, path_nr);
             } else if (func == 2) {
                 viewer.reloadMarkElement(diagramXMLSource[id], issue_id);
