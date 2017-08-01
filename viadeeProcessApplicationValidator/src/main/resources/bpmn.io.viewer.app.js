@@ -16,8 +16,10 @@ function markNodes(canvas, bpmnFile) {
                 canvas.addMarker(elementsToMark[id].elementId, 'ProcessVariablesModelChecker');
             } else if (elementsToMark[id].ruleName == "TaskNamingConventionChecker") {
                 canvas.addMarker(elementsToMark[id].elementId, 'TaskNamingConventionChecker');
-            } else if (elementsToMark[id].ruleName == "BusinessRuleTaskChecker") {
-                canvas.addMarker(elementsToMark[id].elementId, 'BusinessRuleTaskChecker');
+            } else if (elementsToMark[id].ruleName == "NoScriptChecker") {
+                canvas.addMarker(elementsToMark[id].elementId, 'NoScriptChecker');
+            } else if (elementsToMark[id].ruleName == "XorNamingConventionChecker") {
+                canvas.addMarker(elementsToMark[id].elementId, 'XorNamingConventionChecker');
             } else {
                 canvas.addMarker(elementsToMark[id].elementId, 'new');
             }
@@ -357,7 +359,8 @@ function initDiagram(diagramXML, issue_id, path_nr, func) {
 
 //set Filename as Header
 function setUeberschrift(name) {
-    document.querySelector("#modell").innerHTML = "Consistency check: " + name;
+    subName = name.substr(0, name.length - 5);
+    document.querySelector("#modell").innerHTML = "Consistency check: " + subName;
     document.getElementById("noIssues").setAttribute("style", "display: none");
 }
 
@@ -406,10 +409,15 @@ function toggleDialog(sh) {
         var ul = document.getElementById("linkList");
         var li = document.createElement("li");
         var a = document.createElement("a");
+        var subName = model.name.substr(0, model.name.length - 5);
         li.appendChild(a);
-        a.appendChild(document.createTextNode(model.name));
+        a.appendChild(document.createTextNode(subName + " (" + countIssues(model.name) + ")"));
         a.setAttribute("onclick", "selectModel('" + model.name + "', null, null, 0 )");
         a.setAttribute("href", "#");
+        if(countIssues(model.name) == 0)
+            a.setAttribute("style", "color: green");
+        else
+            a.setAttribute("style", "color: red");
         ul.appendChild(li);
     }
 })();
