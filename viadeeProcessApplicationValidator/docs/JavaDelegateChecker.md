@@ -34,7 +34,8 @@ _No reference to source code has been deposited. An implementation must be creat
 _A Java class has been specified that does not exist. Check whether the package-path has changed (e.g. in the context of a refactoring) or the file has been accidentally deleted._
 
 **class for task %taskName% does not implement/extends the correct interface/class**<br/>
-_A Java class has been specified that doesn't implement the JavaDelegate interface. The Java class have to be changed, so that it implements the JavaDelegate interface._
+_A Java class has been specified that doesn't implement the JavaDelegate or SignallableActivityBehavior interface or extends the AbstractBpmnActivityBehavior class._ <br/>
+_The Java class have to be changed, so that it implements/extends the correct interface/class._
 
 **Couldn't find correct beanmapping for delegate expression in task '%taskName'** <br/>
 _Bean-name coudn't be found in the beanmapping.xml_
