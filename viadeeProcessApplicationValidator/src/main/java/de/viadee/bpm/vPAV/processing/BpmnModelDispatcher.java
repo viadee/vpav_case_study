@@ -85,7 +85,7 @@ public class BpmnModelDispatcher {
         if (processVariablesModelRule.isActive()) {
             final ModelChecker processVarChecker = new ProcessVariablesModelChecker(
                     processVariablesModelRule, invalidPathMap);
-            issues.addAll(processVarChecker.check(modelInstance, cl));
+            issues.addAll(processVarChecker.check(modelInstance));
         }
 
         // execute element checkers

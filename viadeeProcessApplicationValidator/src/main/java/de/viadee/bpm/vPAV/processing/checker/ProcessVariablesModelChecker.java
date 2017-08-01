@@ -48,8 +48,7 @@ public class ProcessVariablesModelChecker implements ModelChecker {
     }
 
     @Override
-    public Collection<CheckerIssue> check(final BpmnModelInstance processdefinition,
-            final ClassLoader cl) {
+    public Collection<CheckerIssue> check(final BpmnModelInstance processdefinition) {
 
         final Collection<CheckerIssue> issues = new ArrayList<CheckerIssue>();
         for (final AnomalyContainer anomaly : invalidPathsMap.keySet()) {
