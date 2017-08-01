@@ -202,7 +202,7 @@ public class BPMNScanner {
      *
      */
     public String getXorGateWays(String path, String id) throws SAXException, IOException {
-        final ArrayList<NodeList> listNodeList = new ArrayList<NodeList>();
+        final NodeList nodeList;
 
         String gateway = "";
 
@@ -213,22 +213,18 @@ public class BPMNScanner {
 
         if (new_model) {
             // create nodelist that contains all Tasks with the namespace
-            listNodeList.add(doc.getElementsByTagName(gateway_new));
+            nodeList = doc.getElementsByTagName(gateway_new);
         } else {
-            listNodeList.add(doc.getElementsByTagName(gateway_old));
+            nodeList = doc.getElementsByTagName(gateway_old);
         }
 
-        // iterate over list<NodeList> and check each NodeList
-        for (final NodeList list : listNodeList) {
-            // iterate over list and check child of each node
-            for (int i = 0; i < list.getLength(); i++) {
-                Element Task_Element = (Element) list.item(i);
+        // iterate over list and check each item
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element Task_Element = (Element) nodeList.item(i);
 
-                // check if the ids are corresponding
-                if (id.equals(Task_Element.getAttribute("id"))) {
-                    // check if more than 1 inner attribute exists
-                    gateway = Task_Element.getAttribute("id");
-                }
+            // check if the ids are corresponding
+            if (id.equals(Task_Element.getAttribute("id"))) {
+                gateway = Task_Element.getAttribute("id");
             }
         }
         return gateway;
