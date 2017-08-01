@@ -37,10 +37,13 @@ Further, the consistency check will provide an XML version, a JSON version and
 an visual version based on  [BPMN.io](https://bpmn.io/) of all errors and warnings found.
 
 ### Visual output
-The header contains the name of the current model. Below the heading, you can select a different model of the project to be displayed. 
+The header contains the name of the current model. Below the heading, you can select a different model of the project to be displayed.
+You can zoom in and out with the mouse wheel and move the model by click and hold.
 In the BPMN model, the elements with errors are highlighted. Error categories are indicated by color. 
 An overlay specifies the number of errors found on an element. Details can be seen by clicking on the overlay.
-All errors are laid out in a table below the model. Clicking on the rulename opens the corresponding documentation.
+All errors are laid out in a table below the model. Clicking on the _rulename opens_ the corresponding documentation.
+Clicking on the _Element-Id_ or _invalid sequenzflow_ marks the corresponding element(s) in the model.
+<br/>[Here](img/output.png) you can find an example of the output. 
 
 ## Requirements
 - Camunda BPM Engine 7.4.0 and above
