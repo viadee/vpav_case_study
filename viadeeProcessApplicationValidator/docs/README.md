@@ -43,7 +43,8 @@ In the BPMN model, the elements with errors are highlighted. Error categories ar
 An overlay specifies the number of errors found on an element. Details can be seen by clicking on the overlay.
 All errors are laid out in a table below the model. Clicking on the _rulename opens_ the corresponding documentation.
 Clicking on the _Element-Id_ or _invalid sequenzflow_ marks the corresponding element(s) in the model.
-<br/>[Here](img/output.png) you can find an example of the output. 
+<br/><br/>
+[Here](Output.md) you can find an example of the output. 
 
 ## Requirements
 - Camunda BPM Engine 7.4.0 and above
