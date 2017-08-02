@@ -37,17 +37,29 @@ import org.xml.sax.SAXException;
 
 public class BPMNScanner {
 
-    private final String businessRuleTask_new = "bpmn:businessRuleTask";
+    private final String businessRuleTask_one = "bpmn:businessRuleTask";
 
-    private final String serviceTask_new = "bpmn:serviceTask";
+    private final String serviceTask_one = "bpmn:serviceTask";
 
-    private final String sendTask_new = "bpmn:sendTask";
+    private final String sendTask_one = "bpmn:sendTask";
 
-    private final String businessRuleTask_old = "businessRuleTask";
+    private final String gateway_one = "bpmn:exclusiveGateway";
 
-    private final String serviceTask_old = "serviceTask";
+    private final String businessRuleTask_two = "bpmn2:businessRuleTask";
 
-    private final String sendTask_old = "sendTask";
+    private final String serviceTask_two = "bpmn2:serviceTask";
+
+    private final String sendTask_two = "bpmn2:sendTask";
+
+    private final String gateway_two = "bpmn2:exclusiveGateway";
+
+    private final String businessRuleTask_three = "businessRuleTask";
+
+    private final String serviceTask_three = "serviceTask";
+
+    private final String sendTask_three = "sendTask";
+
+    private final String gateway_three = "exclusiveGateway";
 
     private final String scriptTag = "camunda:script";
 
@@ -63,10 +75,6 @@ public class BPMNScanner {
 
     private final String imp = "implementation";
 
-    private final String gateway_new = "bpmn:exclusiveGateway";
-
-    private final String gateway_old = "exclusiveGateway";
-
     private String node_name;
 
     private DocumentBuilderFactory factory;
@@ -75,7 +83,9 @@ public class BPMNScanner {
 
     private Document doc;
 
-    private boolean new_model = true;
+    // private boolean new_model = true;
+
+    private String model_Version;
 
     /**
      * The Camunda API's method "getimplementation" doesn't return the correct Implementation, so the we have to scan
@@ -87,16 +97,31 @@ public class BPMNScanner {
         builder = factory.newDocumentBuilder();
     }
 
+    private void setModelVersion(String path) throws SAXException, IOException, ParserConfigurationException {
+        // parse the given bpmn model
+        doc = builder.parse(path);
+
+        if (doc.getElementsByTagName("bpmn:definitions").getLength() > 0)
+            model_Version = "one";
+        else if (doc.getElementsByTagName("bpmn2:definitions").getLength() > 0)
+            model_Version = "two";
+        else if (doc.getElementsByTagName("definitions").getLength() > 0)
+            model_Version = "three";
+        else
+            throw new ParserConfigurationException("Can't get the version of the BPMN Model");
+    }
+
     /**
      * Return the Implementation of an specific element (sendTask, ServiceTask or BusinessRuleTask)
      *
      * @param path
      *            from model
+     * @throws ParserConfigurationException
      *
      * @id from specific element
      */
     public String getImplementation(String path, String id)
-            throws SAXException, IOException, XPathExpressionException {
+            throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
         // List to hold return values
         String return_implementation = null;
 
@@ -106,19 +131,22 @@ public class BPMNScanner {
         // parse the given bpmn model
         doc = builder.parse(path);
 
-        // check if its new model
-        if (doc.getElementsByTagName("bpmn:definitions").getLength() == 0)
-            new_model = false;
+        // set Model Version
+        setModelVersion(path);
 
-        if (new_model) {
+        if (model_Version == "one") {
             // create nodelist that contains all Tasks with the namespace
-            listNodeList.add(doc.getElementsByTagName(businessRuleTask_new));
-            listNodeList.add(doc.getElementsByTagName(serviceTask_new));
-            listNodeList.add(doc.getElementsByTagName(sendTask_new));
-        } else {
-            listNodeList.add(doc.getElementsByTagName(businessRuleTask_old));
-            listNodeList.add(doc.getElementsByTagName(serviceTask_old));
-            listNodeList.add(doc.getElementsByTagName(sendTask_old));
+            listNodeList.add(doc.getElementsByTagName(businessRuleTask_one));
+            listNodeList.add(doc.getElementsByTagName(serviceTask_one));
+            listNodeList.add(doc.getElementsByTagName(sendTask_one));
+        } else if (model_Version == "two") {
+            listNodeList.add(doc.getElementsByTagName(businessRuleTask_two));
+            listNodeList.add(doc.getElementsByTagName(serviceTask_two));
+            listNodeList.add(doc.getElementsByTagName(sendTask_two));
+        } else if (model_Version == "three") {
+            listNodeList.add(doc.getElementsByTagName(businessRuleTask_three));
+            listNodeList.add(doc.getElementsByTagName(serviceTask_three));
+            listNodeList.add(doc.getElementsByTagName(sendTask_three));
         }
 
         // iterate over list<NodeList> and check each NodeList (BRTask, ServiceTask and SendTask)
@@ -199,23 +227,29 @@ public class BPMNScanner {
      *            from model
      * @throws IOException
      * @throws SAXException
+     * @throws ParserConfigurationException
      *
      */
-    public String getXorGateWays(String path, String id) throws SAXException, IOException {
+    public String getXorGateWays(String path, String id)
+            throws SAXException, IOException, ParserConfigurationException {
         final NodeList nodeList;
 
         String gateway = "";
 
         doc = builder.parse(path);
 
-        if (doc.getElementsByTagName("bpmn:definitions").getLength() == 0)
-            new_model = false;
+        // set Model Version
+        setModelVersion(path);
 
-        if (new_model) {
+        if (model_Version == "one") {
             // create nodelist that contains all Tasks with the namespace
-            nodeList = doc.getElementsByTagName(gateway_new);
+            nodeList = doc.getElementsByTagName(gateway_one);
+        } else if (model_Version == "two") {
+            nodeList = doc.getElementsByTagName(gateway_two);
+        } else if (model_Version == "three") {
+            nodeList = doc.getElementsByTagName(gateway_three);
         } else {
-            nodeList = doc.getElementsByTagName(gateway_old);
+            return "";
         }
 
         // iterate over list and check each item
