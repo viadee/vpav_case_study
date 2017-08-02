@@ -54,7 +54,7 @@ public class XorNamingConventionChecker extends AbstractElementChecker {
         String xor_gateway = scan.getXorGateWays(path, bpmnElement.getId());
 
         if (xor_gateway != null && !xor_gateway.isEmpty()) {
-            if (!CheckName.checkName(bpmnElement).endsWith("?")) {
+            if (!CheckName.checkName(bpmnElement).endsWith("?") && scan.getOutgoing(path, bpmnElement.getId()) > 1) {
                 issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.WARNING,
                         element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
                         bpmnElement.getAttributeValue("name"), null, null, null,

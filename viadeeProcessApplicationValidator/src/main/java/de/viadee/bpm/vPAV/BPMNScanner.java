@@ -45,6 +45,8 @@ public class BPMNScanner {
 
     private final String gateway_one = "bpmn:exclusiveGateway";
 
+    private final String out_one = "bpmn:outgoing";
+
     private final String businessRuleTask_two = "bpmn2:businessRuleTask";
 
     private final String serviceTask_two = "bpmn2:serviceTask";
@@ -53,6 +55,8 @@ public class BPMNScanner {
 
     private final String gateway_two = "bpmn2:exclusiveGateway";
 
+    private final String out_two = "bpmn2:outgoing";
+
     private final String businessRuleTask_three = "businessRuleTask";
 
     private final String serviceTask_three = "serviceTask";
@@ -60,6 +64,8 @@ public class BPMNScanner {
     private final String sendTask_three = "sendTask";
 
     private final String gateway_three = "exclusiveGateway";
+
+    private final String out_three = "outgoing";
 
     private final String scriptTag = "camunda:script";
 
@@ -264,4 +270,51 @@ public class BPMNScanner {
         return gateway;
     }
 
+    /*
+     * Return number of outgoing
+     * 
+     * @param path, id
+     * 
+     * @return number of outgoing
+     */
+    public int getOutgoing(String path, String id) throws SAXException, IOException, ParserConfigurationException {
+        final NodeList nodeList;
+        String out = "";
+        int outgoing = 0;
+
+        doc = builder.parse(path);
+
+        // set Model Version
+        setModelVersion(path);
+
+        if (model_Version == "one") {
+            // create nodelist that contains all Tasks with the namespace
+            nodeList = doc.getElementsByTagName(gateway_one);
+            out = out_one;
+        } else if (model_Version == "two") {
+            nodeList = doc.getElementsByTagName(gateway_two);
+            out = out_two;
+        } else if (model_Version == "three") {
+            nodeList = doc.getElementsByTagName(gateway_three);
+            out = out_three;
+        } else {
+            return -1;
+        }
+
+        // iterate over list and check each item
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element Task_Element = (Element) nodeList.item(i);
+
+            // check if the ids are corresponding
+            if (id.equals(Task_Element.getAttribute("id"))) {
+                NodeList childNodeGateway = Task_Element.getChildNodes();
+                for (int x = 0; x < childNodeGateway.getLength(); x++) {
+                    if (childNodeGateway.item(x).getNodeName().equals(out)) {
+                        outgoing++;
+                    }
+                }
+            }
+        }
+        return outgoing;
+    }
 }
