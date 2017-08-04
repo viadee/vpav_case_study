@@ -60,7 +60,8 @@ public class JsOutputWriter implements IssueOutputWriter {
         String output = "var diagramXMLSource = [\n";
         try {
             for (final String bpmnFilename : AbstractRunner.getModelPath()) {
-                output += "{\"name\":\"" + bpmnFilename + "\",\n \"xml\": \"";
+                String prettyBpmnFileName = bpmnFilename.replaceAll("\\\\", "\\\\\\\\"); // replace \\ with \\\\
+                output += "{\"name\":\"" + prettyBpmnFileName + "\",\n \"xml\": \"";
                 output += convertBpmnFile(ConstantsConfig.BASEPATH + bpmnFilename);
                 output += "\"},\n";
             }
@@ -73,9 +74,9 @@ public class JsOutputWriter implements IssueOutputWriter {
     private String convertBpmnFile(String path) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         String s = new String(encoded);
-        s = s.replace("\"", "\\\""); // ersetze " durch \"
-        s = s.replace('\n', ' '); // umbrueche entfernen
-        s = s.replace('\r', ' '); // umbrueche entfernen
+        s = s.replace("\"", "\\\""); // replace " with \"
+        s = s.replace('\n', ' '); // delete all \n
+        s = s.replace('\r', ' '); // delete all \r
         s = s.replaceAll(">\\u0020*<", "><");
         s = s.replaceAll(">\\u0027*<", "><");
         return s;
