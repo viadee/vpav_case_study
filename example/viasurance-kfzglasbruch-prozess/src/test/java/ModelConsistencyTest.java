@@ -27,7 +27,7 @@ public class ModelConsistencyTest {
         Collection<CheckerIssue> filteredIssues = new ArrayList<CheckerIssue>();
         filteredIssues.addAll(issues);
 
-        assertTrue("More or less issues were found than expected", issues.size() == 15);
+        assertTrue("More or less issues were found than expected", issues.size() == 19);
 
         // VersioningChecker
         for (CheckerIssue issue : issues) {
@@ -86,6 +86,16 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue("NoScriptChecker doesn't work correct", filteredIssues.size() == 2);
+        filteredIssues.clear();
+        filteredIssues.addAll(issues);
+
+        // ProcessVariablesModelChecker
+        for (CheckerIssue issue : issues) {
+            if (!issue.getRuleName().equals("ProcessVariablesModelChecker")) {
+                filteredIssues.remove(issue);
+            }
+        }
+        assertTrue("ProcessVariablesModelChecker doesn't work correct", filteredIssues.size() == 4);
 
     }
 }
