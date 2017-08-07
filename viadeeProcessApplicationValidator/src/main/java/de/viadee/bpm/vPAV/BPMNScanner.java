@@ -22,6 +22,7 @@ package de.viadee.bpm.vPAV;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -198,9 +199,10 @@ public class BPMNScanner {
      *
      * return boolean
      */
-    public boolean hasScript(String path, String id) throws SAXException, IOException {
+    public Map<Boolean, String> hasScript(String path, String id) throws SAXException, IOException {
         // bool to hold return values
-        boolean return_script = false;
+        Map<Boolean, String> return_Map = null;
+        return_Map.put(false, "");
 
         // List for all Task elements
         NodeList nodeList;
@@ -214,16 +216,19 @@ public class BPMNScanner {
         // search for parent with id
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node n = nodeList.item(i).getParentNode();
+            String scriptType = n.getNodeName();
             while (n.getParentNode() != null) {
                 if (((Element) n).getAttribute("id").equals(id)) {
-                    return true;
+                    return_Map.clear();
+                    return_Map.put(true, scriptType);
+                    return return_Map;
                 } else {
                     n = n.getParentNode();
                 }
             }
         }
 
-        return return_script;
+        return return_Map;
     }
 
     /**
