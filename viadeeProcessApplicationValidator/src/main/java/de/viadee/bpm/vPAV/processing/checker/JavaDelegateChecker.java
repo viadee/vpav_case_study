@@ -161,18 +161,6 @@ public class JavaDelegateChecker extends AbstractElementChecker {
                 // expression überprüfbar?
             }
 
-            // check if DMN reference is not empty
-            else if (implementationAttr.equals("camunda:decisionRef")) {
-                if (dmnAttr == null || dmnAttr.trim().length() == 0) {
-                    // Error, because no delegateExpression has been configured
-                    issues.add(new CheckerIssue(rule.getName(), CriticalityEnum.ERROR,
-                            element.getProcessdefinition(), null, bpmnElement.getAttributeValue("id"),
-                            bpmnElement.getAttributeValue("name"), null, null, null,
-                            "task " + CheckName.checkName(bpmnElement) + " with no dmn reference"));
-                }
-                // toDo auf DMN datei prüfen (hier Sinnvoll oder nur im BRTChecker?)
-            }
-
             // check if external is correct
             else if (implementationAttr.equals("camunda:type")) {
                 if (typeAttr == null || typeAttr.trim().length() == 0) {

@@ -88,8 +88,8 @@ public final class CheckerFactory {
             if (implementation.equals(c_class) && javaDelegateRule.isActive()) {
                 checkers.add(new JavaDelegateChecker(javaDelegateRule));
             }
-            if (implementation.equals(c_exp)) {
-                // do nothing for now
+            if (implementation.equals(c_exp) && javaDelegateRule.isActive()) {
+                checkers.add(new JavaDelegateChecker(javaDelegateRule));
             }
             if (implementation.equals(c_dexp) && javaDelegateRule.isActive()) {
                 checkers.add(new JavaDelegateChecker(javaDelegateRule));
@@ -102,6 +102,7 @@ public final class CheckerFactory {
             }
             if (implementation.equals(imp)) {
                 // TODO: Write issue
+                checkers.add(new JavaDelegateChecker(javaDelegateRule));
             }
         }
 

@@ -82,7 +82,7 @@ public class DmnTaskCheckerTest {
     @Test
     public void testCorrectDMN()
             throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-        final String PATH = BASE_PATH + "BusinessRuleTaskTest_CorrectDMN.bpmn";
+        final String PATH = BASE_PATH + "DmnTaskCheckerTest_CorrectDMN.bpmn";
 
         // parse bpmn model
         final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
@@ -146,7 +146,7 @@ public class DmnTaskCheckerTest {
     @Test
     public void testDMNTaskWithWrongDMN()
             throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-        final String PATH = BASE_PATH + "BusinessRuleTaskTest_wrongDMNReference.bpmn";
+        final String PATH = BASE_PATH + "DmnTaskCheckerTest_wrongDMNReference.bpmn";
 
         // parse bpmn model
         final BpmnModelInstance modelInstance = Bpmn.readModelFromFile(new File(PATH));
