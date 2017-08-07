@@ -36,7 +36,7 @@
 	</rule>
 	<rule>
 		<name>ProcessVariablesModelChecker</name>
-		<state>false</state>
+		<state>true</state>
 	</rule>
 	<rule>
 		<name>ProcessVariablesNameConventionChecker</name>

@@ -19,10 +19,65 @@
 			padding: 0;
 		}
 
+		#canvas {
+			border-radius: 10px 10px 10px 10px;
+			border: 3px solid black;
+		}
+
 		#noIssues {
 			background-color: green;
 			color: white;
 			display: none;
+			width: 83%;
+			border-radius: 10px 10px 10px 10px;
+			border: 2px solid green;
+			box-shadow: 0px 5px 10px white inset;
+		}
+
+		#linkList {
+			margin: 0;
+			padding: 0.3em;
+			text-align: left;
+			width: 83%;
+		}
+
+		#h2 {
+			margin: 2px;
+			padding: 4px;
+		}
+
+		.focusClass:hover,
+		.focusClass:focus {
+			font-weight: bold;
+		}
+
+		table {
+            border: 1px none black;
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		td,
+		th {
+			border: 1px solid #ddd;
+			padding: 8px;
+			border-radius: 5px 5px 0 0;
+		}
+
+		th {
+			padding-top: 12px;
+			padding-bottom: 12px;
+			text-align: center;
+			background-color: darkgray;
+			color: black;
+		}
+
+		td{
+			font-size: 12px;
+		}
+
+		tr:hover {
+			opacity: 0.8;
 		}
 
 		.path .djs-visual> :nth-child(1) {
@@ -50,11 +105,11 @@
 		}
 
 		.JavaDelegateChecker .djs-visual> :nth-child(1) {
-			stroke: rgba(255, 255, 0, 1.0) !important;
+			stroke: rgba(255, 255, 0, 1.0) !important;			
 		}
 
 		.JavaDelegateChecker:not(.djs-connection) .djs-visual> :nth-child(1) {
-			fill: rgba(255, 255, 0, 0.5) !important;
+			fill: rgba(255, 255, 0, 0.5) !important;			
 		}
 
 		.VersioningChecker .djs-visual> :nth-child(1) {
@@ -73,7 +128,7 @@
 			fill: rgba(0, 0, 255, 0.5) !important;
 		}
 
-		.DmnTaskChecker .djs-visual> :nth-child(1) {
+		.DmnTaskChecker .djs-visual> :nth-child(1) {			
 			stroke: rgba(128, 128, 128, 1.0) !important;
 		}
 
@@ -81,7 +136,7 @@
 			fill: rgba(128, 128, 128, 0.5) !important;
 		}
 
-		.ProcessVariablesModelChecker .djs-visual> :nth-child(1) {
+		.ProcessVariablesModelChecker .djs-visual> :nth-child(1) {	
 			stroke: rgba(0, 255, 0, 1.0) !important;
 		}
 
@@ -121,7 +176,7 @@
 			fill: rgba(0, 0, 0, 0.5) !important;
 		}
 
-		#ProcessVariablesNameConventionChecker {
+		#ProcessVariablesNameConventionChecker {			
 			background-color: rgba(255, 0, 0, 0.5)
 		}
 
@@ -130,7 +185,7 @@
 		}
 
 		#VersioningChecker {
-			background-color: rgba(255, 135, 41, 0.5);
+			background-color: rgba(255, 135, 41, 0.5);			
 		}
 
 		#EmbeddedGroovyScriptChecker {
@@ -145,16 +200,20 @@
 			background-color: rgba(0, 255, 0, 0.5)
 		}
 
-		#TaskNamingConventionChecker {
+		#TaskNamingConventionChecker {			
 			background-color: rgba(255, 20, 197, 0.5);
 		}
 
-		#NoScriptChecker {
-			background-color: rgba(168, 168, 168, 0.5);
+		#NoScriptChecker{
+			background-color: rgba(168,168,168,0.5);
 		}
 
-		#XorNamingConventionChecker {
+		#XorNamingConventionChecker{
 			background-color: rgba(255, 20, 197, 0.5);
+		}
+		
+		.header img{
+			float: right;
 		}
 
 		.diagram-zahl {
@@ -219,37 +278,6 @@
 			font-style: italic;
 		}
 
-		table {
-			border: 1px solid black;
-			border-collapse: collapse;
-			width: 100%;
-		}
-
-		td,
-		th {
-			border: 1px solid #ddd;
-			padding: 8px;
-		}
-
-		th {
-			padding-top: 12px;
-			padding-bottom: 12px;
-			text-align: center;
-			background-color: darkgray;
-			color: black;
-		}
-
-		td {
-			font-size: 12px;
-		}
-
-		tr:hover {
-			opacity: 0.8;
-		}
-
-		.header img {
-			float: right;
-		}
 	</style>
 
 	<title>Process Model Validation Report</title>
@@ -257,9 +285,11 @@
 
 <body>
 	<div class="header">
-		<a href="https://www.viadee.de/"><img src="logo.png" alt="viadee Homepage" /></a>
+		<a id=logo href="https://www.viadee.de/"><img src="logo.png" alt="viadee Homepage" /></a>
 		<h1 id=modell></h1>
-		<h2 id=noIssues> no issues were found</h2>
+		<div id=h2>
+			<h2 id=noIssues> no issues were found</h2>
+		</div>
 	</div>
 	<div id="model">
 		<ul id="linkList">
@@ -273,7 +303,7 @@
 	</div>
 
 	<!-- element to draw bpmn diagram in -->
-	<div id="canvas" style="border:3px solid black;"></div>
+	<div id="canvas"></div>
 
 	<!-- Issue table -->
 	<h1 id="h1_table">Error list</h1>
