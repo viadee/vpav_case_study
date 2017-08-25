@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" id="sid-984e85ec-b9d5-4374-b826-71ebfb17bd88" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="1.8.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" id="sid-984e85ec-b9d5-4374-b826-71ebfb17bd88" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="8.6.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <collaboration id="sid-812a3b0a-d033-4110-a225-a103f0cb257c">
     <extensionElements>
       <signavio:signavioDiagramMetaData metaKey="revisionid" metaValue="b79cf283a00f4812893d6d44e7d1cdd9" />
@@ -39,7 +39,7 @@
         <flowNodeRef>sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F</flowNodeRef>
       </lane>
     </laneSet>
-    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" camunda:delegateExpression="">
+    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;prüfen" implementation="##WebService" camunda:delegateExpression="${leistungsanspruchPruefenDelegate}">
       <documentation id="sid-18c5d645-ace8-4407-be28-b9a6e039f231"><![CDATA[Schaden ist gedeckt UND
 Vertrag ist nicht im Zahlungsrückstand UND
 ...]]></documentation>
@@ -68,10 +68,10 @@ Vertrag ist nicht im Zahlungsrückstand UND
     <sequenceFlow id="sid-5973171C-3C73-48FE-807B-4A274BC15019" name="nein" sourceRef="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" targetRef="sid-CD42EBF4-2128-46D4-8F07-15196AF68641">
       <conditionExpression xsi:type="tFormalExpression">${!ext_leistungsanspruchVorhanden}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-0FDDF026-08CA-4AAB-9C8B-75AF8CF21ABA" name="Ja" sourceRef="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" targetRef="sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6">
+    <sequenceFlow id="sid-0FDDF026-08CA-4AAB-9C8B-75AF8CF21ABA" name="ja" sourceRef="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" targetRef="sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6">
       <conditionExpression xsi:type="tFormalExpression">${ext_leistungsanspruchVorhanden}</conditionExpression>
     </sequenceFlow>
-    <exclusiveGateway id="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C" name="VSNR übergeben" gatewayDirection="Diverging">
+    <exclusiveGateway id="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C" name="VSNR übergeben?" gatewayDirection="Diverging">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioLabel align="center" ref="text_name" valign="middle" x="22.0" y="-21.0" />
@@ -217,11 +217,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <signavio:signavioMetaData metaKey="externaldocuments" metaValue="[]" />
         <signavio:signavioMetaData metaKey="meta-response" metaValue="" />
         <signavio:signavioMetaData metaKey="meta-request" metaValue="" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Input_17c9aa5">
-            <camunda:script />
-          </camunda:inputParameter>
-        </camunda:inputOutput>
       </extensionElements>
       <incoming>sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D</incoming>
       <outgoing>sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE</outgoing>
@@ -229,14 +224,14 @@ Vertrag ist nicht im Zahlungsrückstand UND
     <sequenceFlow id="sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE" name="" isImmediate="true" sourceRef="sid-73C4C8D1-F0CF-4531-BBAF-6FB0F491FA56" targetRef="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.setVariable("schadenNr", true)}]]></conditionExpression>
     </sequenceFlow>
-    <endEvent id="sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F" name="Schadenfall&#10;&#10;manuell &#10;&#10;bearbeitet">
+    <endEvent id="sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F" name="Schadenfall&#10;manuell &#10;bearbeitet">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />
       </extensionElements>
       <incoming>sid-A6FB34E5-5D1B-46C8-AEE0-0C9B47E3AE79</incoming>
     </endEvent>
-    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;&#10;automatisiert&#10;&#10;bearbeitet">
+    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;automatisiert&#10;bearbeitet">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />
@@ -399,7 +394,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
       <bpmndi:BPMNShape id="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C_gui" bpmnElement="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C" isMarkerVisible="true">
         <omgdc:Bounds x="224" y="165" width="40" height="40" />
         <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="204" y="136" width="85" height="12" />
+          <omgdc:Bounds x="189" y="136" width="113" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-B70B9DC2-798A-4500-8757-BACCE156E8AE_gui" bpmnElement="sid-B70B9DC2-798A-4500-8757-BACCE156E8AE">
@@ -477,7 +472,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <omgdi:waypoint xsi:type="omgdc:Point" x="1021" y="185" />
         <omgdi:waypoint xsi:type="omgdc:Point" x="1064" y="185" />
         <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="1036" y="189" width="9" height="12" />
+          <omgdc:Bounds x="1032" y="189" width="16" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-2E1B8972-BFF9-48F2-8F0B-153026CEA5D5_gui" bpmnElement="sid-2E1B8972-BFF9-48F2-8F0B-153026CEA5D5">
@@ -538,7 +533,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <omgdi:waypoint xsi:type="omgdc:Point" x="264" y="185" />
         <omgdi:waypoint xsi:type="omgdc:Point" x="408" y="185" />
         <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="289" y="187" width="18" height="12" />
+          <omgdc:Bounds x="288" y="187" width="19" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-7589B5AF-1247-4E85-BBD5-45129E2A7F43_gui" bpmnElement="sid-7589B5AF-1247-4E85-BBD5-45129E2A7F43">
