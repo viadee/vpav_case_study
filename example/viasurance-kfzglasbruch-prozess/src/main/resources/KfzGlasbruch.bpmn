@@ -39,7 +39,7 @@
         <flowNodeRef>sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F</flowNodeRef>
       </lane>
     </laneSet>
-    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" camunda:delegateExpression="">
+    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" camunda:decisionRef="tet">
       <documentation id="sid-18c5d645-ace8-4407-be28-b9a6e039f231"><![CDATA[Schaden ist gedeckt UND
 Vertrag ist nicht im Zahlungsrückstand UND
 ...]]></documentation>
@@ -56,7 +56,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
     <sequenceFlow id="sid-2E1B8972-BFF9-48F2-8F0B-153026CEA5D5" name="" sourceRef="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" targetRef="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" />
     <sequenceFlow id="sid-41282E98-35F2-4A06-858D-8225F73C79B2" name="" isImmediate="true" sourceRef="sid-F5BAA376-5683-48D6-9418-0B9FC8C99CE6" targetRef="ScriptTask_17pb5vg" />
     <sequenceFlow id="sid-17959BAD-12A5-4DAC-A098-B8F53AC9A8AA" name="" sourceRef="sid-CD42EBF4-2128-46D4-8F07-15196AF68641" targetRef="sid-9DFDCA3C-A035-4C51-82C0-6EF2F75BD463" />
-    <exclusiveGateway id="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" name="Besteht &#10;Versicherungsschutz?" gatewayDirection="Diverging">
+    <exclusiveGateway id="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" name="Besteht Versicherungsschutz?" gatewayDirection="Diverging">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
         <signavio:signavioLabel align="center" bottom="false" left="false" ref="text_name" right="false" top="true" valign="bottom" x="20.0" y="-8.0" />
@@ -393,7 +393,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
       <bpmndi:BPMNShape id="sid-D8512EA4-1D0B-41BA-B945-758A92127B21_gui" bpmnElement="sid-D8512EA4-1D0B-41BA-B945-758A92127B21" isMarkerVisible="true">
         <omgdc:Bounds x="981" y="165" width="40" height="40" />
         <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="934" y="133" width="135" height="38" />
+          <omgdc:Bounds x="960" y="133" width="83" height="36" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C_gui" bpmnElement="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C" isMarkerVisible="true">

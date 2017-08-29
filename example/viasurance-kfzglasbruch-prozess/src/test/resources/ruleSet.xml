@@ -1,6 +1,7 @@
 <ruleSet>
 	<rule>
-		<name>ProcessVariablesLocation</name>		
+		<name>ProcessVariablesLocation</name>
+		<state>false</state>
 		<settings>
 			<setting name="location">de/viasurance/kfzglasbruch</setting>
 		</settings>
@@ -11,11 +12,11 @@
 		<elementConventions>
 			<elementConvention>
 				<name>convention</name>
-				<pattern>[A-ZÄÖÜ][a-zäöü]*\\?</pattern>
+				<pattern>.*\?</pattern>
 			</elementConvention>
 			<elementConvention>
-				<name>convention2</name>
-				<pattern>[A-ZÄÖÜ][a-zäöü]*</pattern>
+				<name>out</name>
+				<pattern>.*</pattern>
 			</elementConvention>
 		</elementConventions>
 	</rule>
@@ -35,8 +36,7 @@
 		<name>VersioningChecker</name>
 		<state>true</state>
 		<settings>
-			<setting name="versioningSchemaClass">([^_]*)_{1}([0-9][_][0-9]{1})\.(class|groovy)
-			</setting>
+			<setting name="versioningSchemaClass">([^_]*)_{1}([0-9][_][0-9]{1})\.(groovy|class)</setting>
 		</settings>
 	</rule>
 	<rule>
@@ -45,7 +45,7 @@
 	</rule>
 	<rule>
 		<name>ProcessVariablesModelChecker</name>
-		<state>false</state>
+		<state>true</state>
 	</rule>
 	<rule>
 		<name>ProcessVariablesNameConventionChecker</name>

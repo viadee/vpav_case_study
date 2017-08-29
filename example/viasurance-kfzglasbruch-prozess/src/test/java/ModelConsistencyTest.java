@@ -27,7 +27,7 @@ public class ModelConsistencyTest {
         Collection<CheckerIssue> filteredIssues = new ArrayList<CheckerIssue>();
         filteredIssues.addAll(issues);
 
-        assertTrue("More or less issues were found than expected", issues.size() == 19);
+        assertTrue("More or less issues were found than expected 15/" + issues.size(), issues.size() == 15);
 
         // VersioningChecker
         for (CheckerIssue issue : issues) {
@@ -35,7 +35,7 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("VersioningChecker doesn't work correct", filteredIssues.size() == 6);
+        assertTrue("VersioningChecker doesn't work correct 2/" + filteredIssues.size(), filteredIssues.size() == 2);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -45,7 +45,7 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("JavaDelegateChecker doesn't work correct", filteredIssues.size() == 4);
+        assertTrue("JavaDelegateChecker doesn't work correct 3/" + filteredIssues.size(), filteredIssues.size() == 3);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -55,7 +55,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct", filteredIssues.size() == 1);
+        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct 1/" + filteredIssues.size(),
+                filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -65,7 +66,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("EmbeddedGroovyScriptChecker doesn't work correct", filteredIssues.size() == 1);
+        assertTrue("EmbeddedGroovyScriptChecker doesn't work correct 1/" + filteredIssues.size(),
+                filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -75,7 +77,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("XorNamingConventionChecker doesn't work correct", filteredIssues.size() == 1);
+        assertTrue("XorNamingConventionChecker doesn't work correct 1/" + filteredIssues.size(),
+                filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -85,7 +88,7 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("NoScriptChecker doesn't work correct", filteredIssues.size() == 2);
+        assertTrue("NoScriptChecker doesn't work correct 2/" + filteredIssues.size(), filteredIssues.size() == 2);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -95,7 +98,19 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ProcessVariablesModelChecker doesn't work correct", filteredIssues.size() == 4);
+        assertTrue("ProcessVariablesModelChecker doesn't work correct 4/" + filteredIssues.size(),
+                filteredIssues.size() == 4);
+        filteredIssues.clear();
+        filteredIssues.addAll(issues);
+
+        // DmnTaskChecker
+        for (CheckerIssue issue : issues) {
+            if (!issue.getRuleName().equals("DmnTaskChecker")) {
+                filteredIssues.remove(issue);
+            }
+        }
+        assertTrue("DmnTaskChecker doesn't work correct 1/" + filteredIssues.size(),
+                filteredIssues.size() == 1);
 
     }
 }
