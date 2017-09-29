@@ -20,16 +20,15 @@
         <flowNodeRef>sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8</flowNodeRef>
         <flowNodeRef>sid-D8512EA4-1D0B-41BA-B945-758A92127B21</flowNodeRef>
         <flowNodeRef>sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C</flowNodeRef>
-        <flowNodeRef>sid-C96E47EE-4F71-4671-AEED-47D7853E64F6</flowNodeRef>
         <flowNodeRef>sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33</flowNodeRef>
         <flowNodeRef>serviceTaskVertragAnhandVsnrLesen</flowNodeRef>
         <flowNodeRef>serviceTaskSchadenAnlegen</flowNodeRef>
-        <flowNodeRef>sid-91C890DF-17FB-4554-B372-A14443F83A54</flowNodeRef>
         <flowNodeRef>sid-948AEDAC-9E6D-4B1F-93BE-BB6D96741CA1</flowNodeRef>
         <flowNodeRef>sid-CD42EBF4-2128-46D4-8F07-15196AF68641</flowNodeRef>
         <flowNodeRef>serviceTaskKontoErmitteln</flowNodeRef>
         <flowNodeRef>ScriptTask_17pb5vg</flowNodeRef>
-        <flowNodeRef>Teeeeeeeeest</flowNodeRef>
+        <flowNodeRef>sid-91C890DF-17FB-4554-B372-A14443F83A54</flowNodeRef>
+        <flowNodeRef>sid-C96E47EE-4F71-4671-AEED-47D7853E64F6</flowNodeRef>
       </lane>
       <lane id="sid-F401A5A6-8713-4C7E-A3BE-E50E0732BB3F" name="Sachbearbeiter">
         <extensionElements>
@@ -100,16 +99,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
       <outgoing>sid-A6FB34E5-5D1B-46C8-AEE0-0C9B47E3AE79</outgoing>
     </manualTask>
     <sequenceFlow id="sid-A6FB34E5-5D1B-46C8-AEE0-0C9B47E3AE79" name="" sourceRef="sid-9DFDCA3C-A035-4C51-82C0-6EF2F75BD463" targetRef="sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F" />
-    <startEvent id="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6" name="Schadenmeldung&#10;eingetroffen" camunda:async="true">
-      <extensionElements>
-        <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
-        <signavio:signavioMetaData metaKey="vorgngerprozesse" metaValue="[]" />
-        <signavio:signavioMetaData metaKey="viaitsystem" metaValue="" />
-        <camunda:executionListener delegateExpression="${prozessGestartetListener}" event="end" />
-      </extensionElements>
-      <outgoing>sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12</outgoing>
-      <messageEventDefinition id="MessageEventDefinition_1" messageRef="schadensmeldung" />
-    </startEvent>
     <sequenceFlow id="sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12" name="" isImmediate="true" sourceRef="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6" targetRef="sid-8A624867-6078-4EF5-9F5D-1BEE4E75057C" />
     <userTask id="sid-B70B9DC2-798A-4500-8757-BACCE156E8AE" name="Versicherungsscheinnummer manuell&#10;ermitteln" implementation="##WebService" camunda:formKey="embedded:app:forms/vsnr-eintragen.html" camunda:candidateGroups="camunda-sachbearbeiter">
       <extensionElements>
@@ -200,7 +189,9 @@ Vertrag ist nicht im Zahlungsrückstand UND
       <incoming>sid-AC89A8AA-5111-4843-B690-B17A29B2E28E</incoming>
       <outgoing>sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C" name="" sourceRef="sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33" targetRef="serviceTaskVertragAnhandVsnrLesen" />
+    <sequenceFlow id="sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C" name="" sourceRef="sid-4562D27E-CDAB-4A7E-81A5-1E9FD874FE33" targetRef="serviceTaskVertragAnhandVsnrLesen">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ext_vsnr != null && ext_vsnr != ""}]]></conditionExpression>
+    </sequenceFlow>
     <serviceTask id="serviceTaskVertragAnhandVsnrLesen" name="Vertrag anhand VSNR lesen" implementation="##WebService" camunda:delegateExpression="${vertragErmittelnDelegate}">
       <extensionElements>
         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc" />
@@ -231,6 +222,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
             <camunda:script scriptFormat="fdgbfd" />
           </camunda:outputParameter>
         </camunda:inputOutput>
+        <camunda:executionListener expression="fsdfsd" event="start" />
       </extensionElements>
       <incoming>sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D</incoming>
       <outgoing>sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE</outgoing>
@@ -244,13 +236,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />
       </extensionElements>
       <incoming>sid-A6FB34E5-5D1B-46C8-AEE0-0C9B47E3AE79</incoming>
-    </endEvent>
-    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;&#10;automatisiert&#10;&#10;bearbeitet">
-      <extensionElements>
-        <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
-        <signavio:signavioMetaData metaKey="nachfolgerprozesse" metaValue="[]" />
-      </extensionElements>
-      <incoming>sid-0A361FEA-4CB7-450D-AFFE-54E3876A51BE</incoming>
     </endEvent>
     <sendTask id="sid-948AEDAC-9E6D-4B1F-93BE-BB6D96741CA1" name="Betrag auszahlen" implementation="##WebService" camunda:class="de.viasurance.kfzglasbruch.BetragAuszahlenDelegate_1_0">
       <extensionElements>
@@ -291,8 +276,19 @@ Vertrag ist nicht im Zahlungsrückstand UND
       <outgoing>SequenceFlow_0perxom</outgoing>
       <script><![CDATA[%&&//((%&]]></script>
     </scriptTask>
-    <startEvent id="Teeeeeeeeest">
-      <timerEventDefinition />
+    <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;&#10;automatisiert&#10;&#10;bearbeitet">
+      <incoming>sid-0A361FEA-4CB7-450D-AFFE-54E3876A51BE</incoming>
+      <messageEventDefinition camunda:expression="" />
+    </endEvent>
+    <startEvent id="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6" name="Schadenmeldung&#10;eingetroffen" camunda:async="true">
+      <extensionElements>
+        <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff" />
+        <signavio:signavioMetaData metaKey="vorgngerprozesse" metaValue="[]" />
+        <signavio:signavioMetaData metaKey="viaitsystem" metaValue="" />
+        <camunda:executionListener delegateExpression="${prozessGestartetListener}" event="end" />
+      </extensionElements>
+      <outgoing>sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_1" messageRef="schadensmeldung" />
     </startEvent>
     <association id="sid-1A7599CF-2179-4B3D-957B-AB81C9EA7A5F" sourceRef="serviceTaskVertragAnhandVsnrLesen" targetRef="sid-63A0932C-22FE-4B7A-AF81-FBC5CDDC07A1" />
     <association id="sid-DD8700F6-AA29-4E46-82DF-E048822781E8" sourceRef="serviceTaskSchadenAnlegen" targetRef="sid-E3D2592A-E8ED-4A47-A65A-3B6F6C08ABF6" />
@@ -384,18 +380,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
           <omgdc:Bounds x="1908.255" y="147.82083" width="60" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6_gui" bpmnElement="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6">
-        <omgdc:Bounds x="132" y="170" width="30" height="30" />
-        <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="94" y="202" width="106" height="38" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-91C890DF-17FB-4554-B372-A14443F83A54_gui" bpmnElement="sid-91C890DF-17FB-4554-B372-A14443F83A54">
-        <omgdc:Bounds x="1453" y="171" width="28" height="28" />
-        <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
-          <omgdc:Bounds x="1390" y="201" width="152" height="38" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-CD42EBF4-2128-46D4-8F07-15196AF68641_gui" bpmnElement="sid-CD42EBF4-2128-46D4-8F07-15196AF68641">
         <omgdc:Bounds x="1064" y="244" width="100" height="80" />
         <bpmndi:BPMNLabel labelStyle="sid-3bf9e8fa-17ee-400d-a227-43a1523d718e">
@@ -458,16 +442,16 @@ Vertrag ist nicht im Zahlungsrückstand UND
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="sid-0A361FEA-4CB7-450D-AFFE-54E3876A51BE_gui" bpmnElement="sid-0A361FEA-4CB7-450D-AFFE-54E3876A51BE">
         <omgdi:waypoint xsi:type="omgdc:Point" x="1420" y="185" />
-        <omgdi:waypoint xsi:type="omgdc:Point" x="1453" y="185" />
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1449" y="185" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1387" y="185" width="6" height="6" />
+          <omgdc:Bounds x="1389.5" y="167" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12_gui" bpmnElement="sid-B26D1F9A-59B8-46F2-9208-D814C88A2A12">
         <omgdi:waypoint xsi:type="omgdc:Point" x="162" y="185" />
         <omgdi:waypoint xsi:type="omgdc:Point" x="224" y="185" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="190" y="185" width="6" height="6" />
+          <omgdc:Bounds x="148" y="185" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-41282E98-35F2-4A06-858D-8225F73C79B2_gui" bpmnElement="sid-41282E98-35F2-4A06-858D-8225F73C79B2">
@@ -586,10 +570,16 @@ Vertrag ist nicht im Zahlungsrückstand UND
           <omgdc:Bounds x="1267" y="175" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="StartEvent_1tbfsby_di" bpmnElement="Teeeeeeeeest">
-        <omgdc:Bounds x="129" y="293" width="36" height="36" />
+      <bpmndi:BPMNShape id="EndEvent_1mffigy_di" bpmnElement="sid-91C890DF-17FB-4554-B372-A14443F83A54">
+        <omgdc:Bounds x="1449" y="167" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="147" y="333" width="0" height="12" />
+          <omgdc:Bounds x="1435" y="201" width="62" height="60" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6_gui" bpmnElement="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6">
+        <omgdc:Bounds x="132" y="170" width="30" height="30" />
+        <bpmndi:BPMNLabel labelStyle="sid-c5b723ac-39a2-4c94-a3e3-4e1d73805cdf">
+          <omgdc:Bounds x="105" y="202" width="84" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

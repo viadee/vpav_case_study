@@ -1,9 +1,9 @@
 <ruleSet>
 	<rule>
 		<name>ProcessVariablesLocation</name>
-		<state>false</state>
+		<state>true</state>
 		<settings>
-			<setting name="location"></setting>
+			<setting name="location">de/viasurance/kfzglasbruch/</setting>
 		</settings>
 	</rule>
 	<rule>
@@ -42,6 +42,13 @@
 		<name>NoScriptChecker</name>
 		<state>true</state>
 		<settings>
+		</settings>
+	</rule>
+	<rule>
+		<name>NoExpressionChecker</name>
+		<state>true</state>	
+		<settings>
+			<setting name =""></setting>
 		</settings>
 	</rule>
 	<rule>
