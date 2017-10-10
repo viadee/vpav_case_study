@@ -1,14 +1,7 @@
 <ruleSet>
 	<rule>
-		<name>ProcessVariablesLocation</name>
-		<state>true</state>
-		<settings>
-			<setting name="location">de/viasurance/kfzglasbruch/</setting>
-		</settings>
-	</rule>
-	<rule>
 		<name>HasParentRuleSet</name>
-		<state>true</state>
+		<state>false</state>
 	</rule>
 	<rule>
 		<name>XorNamingConventionChecker</name>
@@ -44,6 +37,10 @@
 		<settings>
 		</settings>
 	</rule>
+	<rule>
+        <name>MessageEventChecker</name>
+        <state>true</state>
+    </rule>
 	<rule>
 		<name>NoExpressionChecker</name>
 		<state>true</state>	

@@ -3,6 +3,10 @@
   <collaboration id="sid-812a3b0a-d033-4110-a225-a103f0cb257c">
     <extensionElements>
       <signavio:signavioDiagramMetaData metaKey="revisionid" metaValue="b79cf283a00f4812893d6d44e7d1cdd9" />
+      <camunda:properties>
+        <camunda:property />
+        <camunda:property />
+      </camunda:properties>
     </extensionElements>
     <participant id="sid-9B57A6DA-F469-48C0-9D0E-DBDA3E380F3F" name="Versicherung (Process-Engine)" processRef="KfzGlasbruch">
       <extensionElements>
@@ -39,7 +43,7 @@
         <flowNodeRef>sid-FC6BE174-BE59-48F1-A4BB-500772B1B65F</flowNodeRef>
       </lane>
     </laneSet>
-    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" camunda:decisionRef="tet">
+    <businessRuleTask id="sid-80B79E0E-7AC1-42C4-A1A4-DF0D116340C8" name="Leistungs-anspruch&#10;&#10;prüfen" camunda:resultVariable="ext_leistungsanspruchVorhanden" camunda:decisionRef="tet" camunda:mapDecisionResult="singleResult">
       <documentation id="sid-18c5d645-ace8-4407-be28-b9a6e039f231"><![CDATA[Schaden ist gedeckt UND
 Vertrag ist nicht im Zahlungsrückstand UND
 ...]]></documentation>
@@ -199,9 +203,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <signavio:signavioMetaData metaKey="externaldocuments" metaValue="[]" />
         <signavio:signavioMetaData metaKey="meta-response" metaValue="" />
         <signavio:signavioMetaData metaKey="meta-request" metaValue="" />
-        <camunda:executionListener delegateExpression="${TestEx}" event="start" />
-        <camunda:executionListener class="java.class" event="start" />
-        <camunda:executionListener expression="" event="start" />
       </extensionElements>
       <incoming>sid-CB7AD45D-62F4-42DB-9ECA-2838A2E4506C</incoming>
       <outgoing>sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D</outgoing>
@@ -214,15 +215,6 @@ Vertrag ist nicht im Zahlungsrückstand UND
         <signavio:signavioMetaData metaKey="externaldocuments" metaValue="[]" />
         <signavio:signavioMetaData metaKey="meta-response" metaValue="" />
         <signavio:signavioMetaData metaKey="meta-request" metaValue="" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Input_17c9aa5">
-            <camunda:script />
-          </camunda:inputParameter>
-          <camunda:outputParameter name="Output_0bcrjuf">
-            <camunda:script scriptFormat="fdgbfd" />
-          </camunda:outputParameter>
-        </camunda:inputOutput>
-        <camunda:executionListener expression="fsdfsd" event="start" />
       </extensionElements>
       <incoming>sid-1E30FAC7-BD6E-4C4D-9D75-EA433C987E8D</incoming>
       <outgoing>sid-E8C1A8AB-7E39-474B-9C60-453D3DBE8EFE</outgoing>
@@ -278,7 +270,7 @@ Vertrag ist nicht im Zahlungsrückstand UND
     </scriptTask>
     <endEvent id="sid-91C890DF-17FB-4554-B372-A14443F83A54" name="Schadenfall&#10;&#10;automatisiert&#10;&#10;bearbeitet">
       <incoming>sid-0A361FEA-4CB7-450D-AFFE-54E3876A51BE</incoming>
-      <messageEventDefinition camunda:expression="" />
+      <messageEventDefinition />
     </endEvent>
     <startEvent id="sid-C96E47EE-4F71-4671-AEED-47D7853E64F6" name="Schadenmeldung&#10;eingetroffen" camunda:async="true">
       <extensionElements>

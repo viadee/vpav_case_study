@@ -22,12 +22,16 @@ public class ModelConsistencyTest {
     private ApplicationContext ctx;
 
     @Test
+    public void validateModel() {
+        assertTrue("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.findModelErrors(ctx).isEmpty());
+    }
+
+    @Test
     public void errorsInModelMustBeFound() {
         Collection<CheckerIssue> issues = ProcessApplicationValidator.findModelInconsistencies(ctx);
         Collection<CheckerIssue> filteredIssues = new ArrayList<CheckerIssue>();
         filteredIssues.addAll(issues);
-
-        // assertTrue("More or less issues were found than expected 23/" + issues.size(), issues.size() == 23);
 
         // VersioningChecker
         for (CheckerIssue issue : issues) {
@@ -35,7 +39,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("VersioningChecker doesn't work correct 3/" + filteredIssues.size(), filteredIssues.size() == 3);
+        assertTrue("VersioningChecker doesn't work correct. Expected 2 issues but found " + filteredIssues.size(),
+                filteredIssues.size() == 2);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -45,7 +50,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("JavaDelegateChecker doesn't work correct 6/" + filteredIssues.size(), filteredIssues.size() == 6);
+        assertTrue("JavaDelegateChecker doesn't work correct. Expected 3 issues but found " + filteredIssues.size(),
+                filteredIssues.size() == 3);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -55,8 +61,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct 1/" + filteredIssues.size(),
-                filteredIssues.size() == 1);
+        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct. Expected 3 issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == 3);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -66,7 +73,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("EmbeddedGroovyScriptChecker doesn't work correct 1/" + filteredIssues.size(),
+        assertTrue(
+                "EmbeddedGroovyScriptChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
                 filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
@@ -77,7 +85,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("XorNamingConventionChecker doesn't work correct 1/" + filteredIssues.size(),
+        assertTrue(
+                "XorNamingConventionChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
                 filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
@@ -88,18 +97,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("NoScriptChecker doesn't work correct 4/" + filteredIssues.size(), filteredIssues.size() == 4);
-        filteredIssues.clear();
-        filteredIssues.addAll(issues);
-
-        // ProcessVariablesModelChecker
-        for (CheckerIssue issue : issues) {
-            if (!issue.getRuleName().equals("ProcessVariablesModelChecker")) {
-                filteredIssues.remove(issue);
-            }
-        }
-        assertTrue("ProcessVariablesModelChecker doesn't work correct 4/" + filteredIssues.size(),
-                filteredIssues.size() == 4);
+        assertTrue("NoScriptChecker doesn't work correct. Expected 2 issues but found " + filteredIssues.size(),
+                filteredIssues.size() == 2);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -109,7 +108,7 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("DmnTaskChecker doesn't work correct 1/" + filteredIssues.size(),
+        assertTrue("DmnTaskChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
                 filteredIssues.size() == 1);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
@@ -120,8 +119,8 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("TimerExpressionChecker doesn't work correct 1/" + filteredIssues.size(),
-                filteredIssues.size() == 1);
+        assertTrue("TimerExpressionChecker doesn't work correct. Expected no issues but found " + filteredIssues.size(),
+                filteredIssues.size() == 0);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -131,8 +130,21 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ElementIdConventionChecker doesn't work correct 1/" + filteredIssues.size(),
+        assertTrue(
+                "ElementIdConventionChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
                 filteredIssues.size() == 1);
+        filteredIssues.clear();
+        filteredIssues.addAll(issues);
+
+        // ProcessVariablesModelChecker
+        for (CheckerIssue issue : issues) {
+            if (!issue.getRuleName().equals("ProcessVariablesModelChecker")) {
+                filteredIssues.remove(issue);
+            }
+        }
+        assertTrue("ProcessVariablesModelChecker doesn't work correct. Expected 2 issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == 2);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
