@@ -11,9 +11,14 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import de.viasurance.kfzglasbruch.config.EnvironmentProperties;
 import de.viasurance.kfzglasbruch.delegate.BetragAuszahlenDelegateN_1_0;
+import de.viasurance.kfzglasbruch.delegate.CorrectDelegate_1_0;
 import de.viasurance.kfzglasbruch.delegate.KontoErmittelnDelegate_1_0;
 import de.viasurance.kfzglasbruch.delegate.LeistungsanspruchPruefenDelegate_1_0;
+import de.viasurance.kfzglasbruch.delegate.NoInterfaceDelegate_1_0;
+import de.viasurance.kfzglasbruch.delegate.NoVersionDelegate;
+import de.viasurance.kfzglasbruch.delegate.ReadExternalDelegate_1_0;
 import de.viasurance.kfzglasbruch.delegate.SachbearbeiterInformierenDelegate_1_0;
+import de.viasurance.kfzglasbruch.delegate.VersioningDelegate_1_0;
 import de.viasurance.kfzglasbruch.delegate.VertragErmittelnDelegate_1_0;
 import de.viasurance.kfzglasbruch.listener.ProzessGestartetListener_1_0;
 import de.viasurance.kfzglasbruch.listener.VsnrManuellErmitteltListener_1_0;
@@ -49,9 +54,49 @@ public class SpringTestConfig {
     @InjectMocks
     private VsnrManuellErmitteltListener_1_0 vsnrManuellErmitteltListener;
 
+    @InjectMocks
+    private CorrectDelegate_1_0 correctDelegate;
+
+    @InjectMocks
+    private NoInterfaceDelegate_1_0 noInterfaceDelegate;
+
+    @InjectMocks
+    private ReadExternalDelegate_1_0 readExternalDelegate;
+
+    @InjectMocks
+    private NoVersionDelegate noVersionDelegate;
+
+    @InjectMocks
+    private VersioningDelegate_1_0 versioningDelegate;
+
+    @Bean
+    public NoVersionDelegate noVersionDelegate() {
+        return noVersionDelegate;
+    }
+
+    @Bean
+    public VersioningDelegate_1_0 versioningDelegate() {
+        return versioningDelegate;
+    }
+
     @Bean
     public KontoErmittelnDelegate_1_0 kontoErmittelnDelegate() {
         return kontoErmittelnDelegate;
+    }
+
+    @Bean
+    public ReadExternalDelegate_1_0 readExternalDelegate() {
+        return readExternalDelegate;
+    }
+
+    @Bean
+    public NoInterfaceDelegate_1_0 noInterfaceDelegate() {
+        return noInterfaceDelegate;
+    }
+
+    @Bean
+    public CorrectDelegate_1_0 correctDelegate() {
+        return correctDelegate;
     }
 
     // @Bean

@@ -35,17 +35,18 @@
 		<name>NoScriptChecker</name>
 		<state>true</state>
 		<settings>
+			<setting name="ManualTask"></setting>
 		</settings>
 	</rule>
 	<rule>
-        <name>MessageEventChecker</name>
-        <state>true</state>
-    </rule>
+		<name>MessageEventChecker</name>
+		<state>true</state>
+	</rule>
 	<rule>
 		<name>NoExpressionChecker</name>
-		<state>true</state>	
+		<state>true</state>
 		<settings>
-			<setting name =""></setting>
+			<setting name="ManualTask"></setting>
 		</settings>
 	</rule>
 	<rule>
@@ -97,6 +98,19 @@
 		</elementConventions>
 	</rule>
 	<rule>
+		<name>TaskNamingConventionCheckerExtern</name>
+		<state>true</state>
+		<settings>
+			<setting name="external_Location">de.viadee.vPAV_checker_plugin_example</setting>
+		</settings>
+		<elementConventions>
+			<elementConvention>
+				<name>convention</name>
+				<pattern>[A-ZÄÖÜ].*</pattern>
+			</elementConvention>
+		</elementConventions>
+	</rule>
+	<rule>
 		<name>TaskNamingConventionChecker</name>
 		<state>false</state>
 		<elementConventions>
@@ -111,8 +125,8 @@
 		<state>true</state>
 		<elementConventions>
 			<elementConvention>
-				<name>ServiceTask</name>
-				<pattern>serviceTask[A-Z]([A-Z0-9]*[a-z][a-z0-9]*[A-Z]|[a-z0-9]*[A-Z][A-Z0-9]*[a-z])[A-Za-z0-9]*</pattern>
+				<name>ManualTask</name>
+				<pattern>ManualTask[A-Z]([A-Z0-9]*[a-z][a-z0-9]*[A-Z]|[a-z0-9]*[A-Z][A-Z0-9]*[a-z])[A-Za-z0-9]*</pattern>
 			</elementConvention>
 		</elementConventions>
 	</rule>

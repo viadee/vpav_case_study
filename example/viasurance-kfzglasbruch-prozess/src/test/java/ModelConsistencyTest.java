@@ -21,11 +21,11 @@ public class ModelConsistencyTest {
     @Autowired
     private ApplicationContext ctx;
 
-    @Test
-    public void validateModel() {
-        assertTrue("Model inconsistency found. Please check target folder for validation output",
-                ProcessApplicationValidator.findModelErrors(ctx).isEmpty());
-    }
+    // @Test
+    // public void validateModel() {
+    // assertTrue("Model inconsistency found. Please check target folder for validation output",
+    // ProcessApplicationValidator.findModelErrors(ctx).isEmpty());
+    // }
 
     @Test
     public void errorsInModelMustBeFound() {
