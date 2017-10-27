@@ -18,14 +18,34 @@ import de.viadee.bpm.vPAV.processing.model.data.CheckerIssue;
 @ContextConfiguration(classes = { SpringTestConfig.class })
 public class ModelConsistencyTest {
 
+    private final int anzVersioning = 5;
+
+    private final int anzDelegate = 9;
+
+    private final int anzVariablesNameConvention = 5;
+
+    private final int anzGroovyScript = 3;
+
+    private final int anzXorNaming = 4;
+
+    private final int anzNoScript = 5;
+
+    private final int anzDmnTask = 3;
+
+    private final int anzTimerExpression = 3;
+
+    private final int anzElementId = 2;
+
+    private final int anzProcessVariables = 6;
+
     @Autowired
     private ApplicationContext ctx;
 
-    // @Test
-    // public void validateModel() {
-    // assertTrue("Model inconsistency found. Please check target folder for validation output",
-    // ProcessApplicationValidator.findModelErrors(ctx).isEmpty());
-    // }
+    @Test
+    public void validateModel() {
+        assertTrue("Model inconsistency found. Please check target folder for validation output",
+                ProcessApplicationValidator.findModelErrors(ctx).isEmpty());
+    }
 
     @Test
     public void errorsInModelMustBeFound() {
@@ -39,8 +59,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("VersioningChecker doesn't work correct. Expected 2 issues but found " + filteredIssues.size(),
-                filteredIssues.size() == 2);
+        assertTrue("VersioningChecker doesn't work correct. Expected " + anzVersioning + " issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == anzVersioning);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -50,8 +71,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("JavaDelegateChecker doesn't work correct. Expected 3 issues but found " + filteredIssues.size(),
-                filteredIssues.size() == 3);
+        assertTrue("JavaDelegateChecker doesn't work correct. Expected " + anzDelegate + " issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == anzDelegate);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -61,9 +83,10 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct. Expected 3 issues but found "
+        assertTrue("ProcessVariablesNameConventionChecker doesn't work correct. Expected " + anzVariablesNameConvention
+                + " issues but found "
                 + filteredIssues.size(),
-                filteredIssues.size() == 3);
+                filteredIssues.size() == anzVariablesNameConvention);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -74,8 +97,9 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue(
-                "EmbeddedGroovyScriptChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
-                filteredIssues.size() == 1);
+                "EmbeddedGroovyScriptChecker doesn't work correct. Expected " + anzGroovyScript + " issue but found "
+                        + filteredIssues.size(),
+                filteredIssues.size() == anzGroovyScript);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -86,8 +110,9 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue(
-                "XorNamingConventionChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
-                filteredIssues.size() == 1);
+                "XorNamingConventionChecker doesn't work correct. Expected " + anzXorNaming + " issue but found "
+                        + filteredIssues.size(),
+                filteredIssues.size() == anzXorNaming);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -97,8 +122,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("NoScriptChecker doesn't work correct. Expected 2 issues but found " + filteredIssues.size(),
-                filteredIssues.size() == 2);
+        assertTrue("NoScriptChecker doesn't work correct. Expected " + anzNoScript + " issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == anzNoScript);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -108,8 +134,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("DmnTaskChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
-                filteredIssues.size() == 1);
+        assertTrue("DmnTaskChecker doesn't work correct. Expected " + anzDmnTask + " issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == anzDmnTask);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -119,8 +146,9 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("TimerExpressionChecker doesn't work correct. Expected no issues but found " + filteredIssues.size(),
-                filteredIssues.size() == 0);
+        assertTrue("TimerExpressionChecker doesn't work correct. Expected " + anzTimerExpression + " issues but found "
+                + filteredIssues.size(),
+                filteredIssues.size() == anzTimerExpression);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -131,8 +159,9 @@ public class ModelConsistencyTest {
             }
         }
         assertTrue(
-                "ElementIdConventionChecker doesn't work correct. Expected 1 issue but found " + filteredIssues.size(),
-                filteredIssues.size() == 1);
+                "ElementIdConventionChecker doesn't work correct. Expected " + anzElementId + " issues but found "
+                        + filteredIssues.size(),
+                filteredIssues.size() == anzElementId);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
@@ -142,9 +171,10 @@ public class ModelConsistencyTest {
                 filteredIssues.remove(issue);
             }
         }
-        assertTrue("ProcessVariablesModelChecker doesn't work correct. Expected 2 issues but found "
+        assertTrue("ProcessVariablesModelChecker doesn't work correct. Expected " + anzProcessVariables
+                + " issues but found "
                 + filteredIssues.size(),
-                filteredIssues.size() == 2);
+                filteredIssues.size() == anzProcessVariables);
         filteredIssues.clear();
         filteredIssues.addAll(issues);
 
