@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.7.1">
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_0xzec53</bpmn:outgoing>
@@ -19,6 +19,7 @@
       <bpmn:outgoing>SequenceFlow_19grvoh</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1xb5pb4</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0mx2xpq</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_16vnog6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0xzec53" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_17t3v6v" />
     <bpmn:sequenceFlow id="SequenceFlow_1k1u5q4" name="JavaDelegateChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="Task_1ldm10j" />
@@ -35,7 +36,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1hnlpc0" name="TaskNamingConventionChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="Task_0kigokg" />
     <bpmn:sequenceFlow id="SequenceFlow_19grvoh" name="TimerExpressionChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="IntermediateThrowEvent_1u9k78l" />
     <bpmn:sequenceFlow id="SequenceFlow_1xb5pb4" name="VersioningChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="Task_0own8vb" />
-    <bpmn:sequenceFlow id="SequenceFlow_0mx2xpq" name="XorNamingConventionChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="ExclusiveGateway_0ob5wj9" />
+    <bpmn:sequenceFlow id="SequenceFlow_0mx2xpq" name="XorConventionChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="ExclusiveGateway_0ob5wj9" />
     <bpmn:businessRuleTask id="Task_0g8cikp" name="No DMN Reference" camunda:decisionRef="">
       <bpmn:incoming>SequenceFlow_1jcg20c</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_07lw2nj</bpmn:outgoing>
@@ -171,7 +172,7 @@
     <bpmn:manualTask id="ManualTaskWithNoContent" name="Groovy with no content">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy"></camunda:script>
+          <camunda:script scriptFormat="groovy" />
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0n2rzdn</bpmn:incoming>
@@ -404,6 +405,18 @@ for (c in b) {
       <bpmn:incoming>SequenceFlow_1ofqfps</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ustaxu</bpmn:outgoing>
     </bpmn:manualTask>
+    <bpmn:manualTask id="Task_06eq025" name="Overlapping">
+      <bpmn:incoming>SequenceFlow_16vnog6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04mj6mn</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1xpd4cy</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="SequenceFlow_16vnog6" name="OverlapChecker" sourceRef="ExclusiveGateway_17t3v6v" targetRef="Task_06eq025" />
+    <bpmn:endEvent id="EndEvent_1s7y01c">
+      <bpmn:incoming>SequenceFlow_04mj6mn</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1xpd4cy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_04mj6mn" name="Kante 2" sourceRef="Task_06eq025" targetRef="EndEvent_1s7y01c" />
+    <bpmn:sequenceFlow id="SequenceFlow_1xpd4cy" name="Kante 1" sourceRef="Task_06eq025" targetRef="EndEvent_1s7y01c" />
   </bpmn:process>
   <bpmn:message id="Message_0fqlnnw" name="test" />
   <bpmn:message id="Message_0zxkqmj" />
@@ -529,7 +542,7 @@ for (c in b) {
         <di:waypoint xsi:type="dc:Point" x="245" y="1774" />
         <di:waypoint xsi:type="dc:Point" x="528" y="1774" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="357.36278195488717" y="1736" width="87" height="24" />
+          <dc:Bounds x="358" y="1736" width="86" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BusinessRuleTask_1f9olkh_di" bpmnElement="Task_0g8cikp">
@@ -1142,6 +1155,45 @@ for (c in b) {
       <bpmndi:BPMNShape id="ManualTask_11dhr7r_di" bpmnElement="ManualTaskSetVNew">
         <dc:Bounds x="1189" y="1141" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ManualTask_1t6uabs_di" bpmnElement="Task_06eq025">
+        <dc:Bounds x="503" y="1949" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_16vnog6_di" bpmnElement="SequenceFlow_16vnog6">
+        <di:waypoint xsi:type="dc:Point" x="245" y="859" />
+        <di:waypoint xsi:type="dc:Point" x="245" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="503" y="1989" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="368" y="1959" width="81" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1s7y01c_di" bpmnElement="EndEvent_1s7y01c">
+        <dc:Bounds x="1187" y="1971" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1205" y="2011" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_04mj6mn_di" bpmnElement="SequenceFlow_04mj6mn">
+        <di:waypoint xsi:type="dc:Point" x="603" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="663" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="682" y="2017" />
+        <di:waypoint xsi:type="dc:Point" x="722" y="2017" />
+        <di:waypoint xsi:type="dc:Point" x="735" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="1187" y="1989" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="1996" width="37" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xpd4cy_di" bpmnElement="SequenceFlow_1xpd4cy">
+        <di:waypoint xsi:type="dc:Point" x="603" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="642" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="660" y="1958" />
+        <di:waypoint xsi:type="dc:Point" x="696" y="1958" />
+        <di:waypoint xsi:type="dc:Point" x="708" y="1989" />
+        <di:waypoint xsi:type="dc:Point" x="1187" y="1989" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="660" y="1937" width="37" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
