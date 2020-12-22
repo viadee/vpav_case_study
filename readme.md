@@ -15,3 +15,8 @@ Therefore you have to download the following maven projects and run this project
 | Memory Usage (in mb) | 114,3 | 104,1 | 165,1 | 166,9 | 146,0 | 166,1 | 84,9  | 82,2  | 115,5 | 121,4 |
 | Duration (in sec)    | 3,274 | 3,490 | 2,999 | 3,40  | 3,277 | 3,153 | 3,324 | 3,290 | 3,207 | 3,258 |
 | Classes loaded       | 8414  | 9231  | 8641  | 8851  | 8740  | 8958  | 9149  | 8865  | 9195  | 8787  |
+
+### Equipment:  
+MacBook Pro (15", 2019)  
+Intel Core i9 (8 Core with 2,3 Ghz)  
+16 GB 2400 MHz DDR4
