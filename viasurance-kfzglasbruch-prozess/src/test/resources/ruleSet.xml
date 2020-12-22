@@ -1,9 +1,5 @@
 <ruleSet>
 	<rule>
-		<name>HasParentRuleSet</name>
-		<state>true</state>
-	</rule>
-	<rule>
 		<name>XorNamingConventionChecker</name>
 		<state>true</state>
 		<elementConventions>
@@ -57,7 +53,7 @@
 		<name>VersioningChecker</name>
 		<state>true</state>
 		<settings>
-			<setting name="versioningSchemaClass">([^_]*)_{1}([0-9][_][0-9]{1})\.(groovy|class)
+			<setting name="versioningSchemeClass">([^_]*)_{1}([0-9][_][0-9]{1})\.(groovy|class)
 			</setting>
 		</settings>
 	</rule>

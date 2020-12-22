@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.variable.Variables;
-import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.viadee.bpm.vPAV.beans.InitialProcessVariablesBase;
 import de.viasurance.kfzglasbruch.config.EnvironmentProperties;
 import de.viasurance.model.Anhang;
 import de.viasurance.model.AnhangTyp;
@@ -44,23 +43,6 @@ public class KfzGlasbruchRestController {
 
     @Autowired
     private EnvironmentProperties environmentProperties;
-
-    class InitialProcessVariables extends InitialProcessVariablesBase {
-
-        ObjectValue ext_kunde;
-
-        String ext_vsnr;
-
-        ObjectValue ext_kfz;
-
-        ObjectValue ext_schaden;
-
-        Double ext_schadenshoehe;
-
-        ObjectValue ext_anhang;
-
-        String dateiname;
-    }
 
     private Random random;
 
@@ -89,38 +71,24 @@ public class KfzGlasbruchRestController {
             LOGGER.warning("Datei konnte nicht gespeichert werden - " + e.toString());
         }
 
-        // Prozessvariablen setzen und Prozess starten; die Serialisierung der
-        // Variablen erfolgt explizit als JSON
-
-        ObjectValue kunde = Variables.objectValue(schadensmeldung.getKunde())
-                .serializationDataFormat("application/json").create();
-        ObjectValue kfz = Variables.objectValue(schadensmeldung.getKfz()).serializationDataFormat("application/json")
-                .create();
-        ObjectValue schaden = Variables.objectValue(schadensmeldung.getSchaden())
-                .serializationDataFormat("application/json").create();
-        ObjectValue anhangT = Variables.objectValue(schadensmeldung.getAnhang())
-                .serializationDataFormat("application/json").create();
-
-        final InitialProcessVariables processVariables = new InitialProcessVariables();
-        processVariables.ext_kunde = kunde;
-        processVariables.ext_vsnr = schadensmeldung.getVersicherungsscheinnummer();
-        processVariables.ext_kfz = kfz;
-        processVariables.ext_schaden = schaden;
-        processVariables.ext_schadenshoehe = Double.valueOf(schadensmeldung.getSchaden().getSchadenshoehe()) / 100;
-        processVariables.ext_anhang = anhangT;
-        processVariables.dateiname = path.getFileName().toString();
+        final Map<String, Object> processVariables1 = Variables.createVariables()
+                .putValue("ext_kunde", schadensmeldung.getKunde())
+                .putValue("ext_vsnr", schadensmeldung.getVersicherungsscheinnummer())
+                .putValue("kfz", schadensmeldung.getKfz()).putValue("ext_schaden", schadensmeldung.getSchaden())
+                .putValue("ext_schadenshoehe", Double.valueOf(schadensmeldung.getSchaden().getSchadenshoehe()) / 100)
+                .putValue("ext_anhang", schadensmeldung.getAnhang())
+                .putValue("dateiname", path.getFileName().toString());
 
         ProcessInstance instance = runtimeService.startProcessInstanceByMessage("schadensmeldungKfzGlasbruch",
-                processVariables.createVariableMap());
+                processVariables1);
 
         return instance.getId();
     }
 
     /**
      * simulates some process instances
-     * 
-     * @param numberOfInstances
-     *            number of process instances
+     *
+     * @param numberOfInstances number of process instances
      * @return list of process instance Ids
      * @throws IllegalAccessException
      * @throws IllegalArgumentException

@@ -26,8 +26,8 @@ public class RestService {
         HttpClientBuilder builder = HttpClientBuilder.create();
         if (environmentProperties.isKfzGlasbruchProxyRequired()) {
             final HttpHost proxy = new HttpHost(environmentProperties.getProxyHost(),
-                    Integer.valueOf(environmentProperties.getProxyPort()), environmentProperties.getProxyProtocol());
-            builder = builder.setProxy(proxy);
+                    Integer.parseInt(environmentProperties.getProxyPort()), environmentProperties.getProxyProtocol());
+            builder.setProxy(proxy);
         }
         final HttpClient client = builder.build();
 

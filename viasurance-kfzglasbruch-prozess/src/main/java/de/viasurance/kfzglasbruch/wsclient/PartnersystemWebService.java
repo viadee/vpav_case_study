@@ -1,5 +1,6 @@
 package de.viasurance.kfzglasbruch.wsclient;
 
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;

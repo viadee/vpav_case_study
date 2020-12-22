@@ -91,18 +91,12 @@ public class AppConfig {
     @Bean
     @Lazy
     public VertragssystemWebService vertragssystemWebService() {
-
-        // TODO: Muss die URL hier konfiguriert werden?
-
         return new Vertragssystem().getVertragssystemWebServicePort();
     }
 
     @Bean
     @Lazy
     public PartnersystemWebService partnersystemWebService() {
-
-        // TODO: Muss die URL hier konfiguriert werden?
-
         return new Partnersystem().getPartnersystemWebServicePort();
     }
 
